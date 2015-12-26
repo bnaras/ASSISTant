@@ -4,9 +4,12 @@ ASSISTant
 `ASSISTant` is a package to assist in performing **A**daptive
 **S**ubgroup **S**election **I**n **S**equential **T**rials.
 
-Install this package the usual way in R once it gets on CRAN or via:
+Install this package (after taking care of dependencies shown) the
+usual way in R once it gets on CRAN or via:
 
 ```{r}
+require("mvtnorm")
+require("R6")
 library(devtools)
 install_github("bnaras/ASSISTant")
 ```
