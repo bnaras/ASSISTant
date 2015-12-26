@@ -8,7 +8,7 @@ Install this package the usual way in R once it gets on CRAN or via:
 
 ```{r}
 library(devtools)
-install_github("hrpcisd/ASSISTant")
+install_github("bnaras/ASSISTant")
 ```
 
 `ASSISTant` provides a three-stage adaptive group sequential clinical
