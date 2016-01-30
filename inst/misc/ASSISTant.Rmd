@@ -49,6 +49,9 @@ paper.
 ## Table 1 Results
 
 ### Scenario S0
+
+This is the _null_ setting.
+
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S0
 designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
@@ -65,172 +68,122 @@ analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S1
+### Alternative Scenario S1
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S1
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S2
+### Alternative Scenario S2
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S2
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S3
+### Alternative Scenario S3
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S3
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S4
+### Alternative Scenario S4
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S4
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S5
+### Alternative Scenario S5
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S5
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S6
+### Alternative Scenario S6
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S6
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S7
+### Alternative Scenario S7
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S7
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S8
+### Alternative Scenario S8
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S8
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S9
+### Alternative Scenario S9
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S9
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S10
+### Alternative Scenario S10
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S10
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
@@ -254,172 +207,122 @@ analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S1
+### Alternative Scenario S1
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S1
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S2
+### Alternative Scenario S2
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S2
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S3
+### Alternative Scenario S3
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S3
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S4
+### Alternative Scenario S4
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S4
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S5
+### Alternative Scenario S5
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S5
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S6
+### Alternative Scenario S6
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S6
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S7
+### Alternative Scenario S7
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S7
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S8
+### Alternative Scenario S8
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S8
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S9
+### Alternative Scenario S9
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S9
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
 
-### Scenario S10
+### Alternative Scenario S10
 ```{r}
 scenario <- LLL.SETTINGS$scenarios$S10
-designParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)
-```
-
-```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
