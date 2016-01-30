@@ -20,14 +20,16 @@ and what quantities are computed in a trial run.
 \describe{
   \item{\code{ASSISTDesignB$new(designParameters, trialParameters, generateData)}}{Create a new \code{ASSISTDesign}
         instance object using the parameters specified. }
-  \item{\code{getTrueParameters},\code{getTrialParameters},
+  \item{\code{getDesignParameters},\code{getTrialParameters},
         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
   \item{\code{print()}}{Print the object in a human readable form}
   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-  \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, showProgress = TRUE)}}{Explore the design using
-        the specified number of simulations and random number seed. Show progress if so desired.
-        Returns a data frame of results}
-  \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+  \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design using
+        the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
+        as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
+        Show progress if so desired. Returns a data frame of results}
+  \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
+        the design given. Use the \code{trialHistory} if given, else call \code{explore} to
         simulate the design. Return a list of summary quantities}
   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
         result from the \code{analyze} call}

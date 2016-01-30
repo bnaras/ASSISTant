@@ -10,7 +10,7 @@
 
 <meta name="author" content="Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan" />
 
-<meta name="date" content="2015-12-25" />
+<meta name="date" content="2016-01-29" />
 
 <title>Design of the DEFUSE3 Trial</title>
 
@@ -64,7 +64,7 @@ img {
 <div id="header">
 <h1 class="title">Design of the DEFUSE3 Trial</h1>
 <h4 class="author"><em>Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan</em></h4>
-<h4 class="date"><em>2015-12-25</em></h4>
+<h4 class="date"><em>2016-01-29</em></h4>
 </div>
 
 
@@ -136,7 +136,7 @@ print(defuse3)</code></pre>
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f9128378ad0&gt;</code></pre>
+## &lt;environment: 0x7f9918c5d740&gt;</code></pre>
 <pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
 analysis &lt;- defuse3$analyze(result)
 print(defuse3$summary(analysis))</code></pre>
@@ -186,513 +186,303 @@ print(defuse3$summary(analysis))</code></pre>
 </div>
 <div id="the-alt1-scenario" class="section level2">
 <h2>The ALT1 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt1, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.107
-## Boundaries:
-##  Named num [1:3] -1.86 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912228f7f0&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt1,
+                          showProgress = FALSE)
 analysis &lt;- defuse3$analyze(result)
 print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.319400; P(Reject H0_subgp) = 0.591200; P(Reject H0) = 0.910600
-## P(Early stop for efficacy [futility]) = 0.492400 [0.017400]
-## Mean [SD] Randomized N = 389.923200 [94.447644]
+<pre><code>## P(Reject H0_ITT) = 0.326200; P(Reject H0_subgp) = 0.568800; P(Reject H0) = 0.895000
+## P(Early stop for efficacy [futility]) = 0.454200 [0.019800]
+## Mean [SD] Randomized N = 395.772000 [93.952677]
 ## 
 ## Stage at exit (proportion)
 ## 
 ##      1      2      3 
-## 0.1196 0.3902 0.4902 
+## 0.1126 0.3614 0.5260 
 ## 
-## Mean [SD] Lost N = 125.366800 [108.624613]
-## Mean [SD] Analyzed N = 264.556400 [107.239182]
+## Mean [SD] Lost N = 126.682400 [111.292596]
+## Mean [SD] Analyzed N = 269.089600 [107.547688]
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ##      1      2      3      4      5      6 
-## 0.1190 0.1802 0.2350 0.0478 0.0092 0.3194 
+## 0.1130 0.1674 0.2324 0.0436 0.0124 0.3262 
 ## 
 ## Counts by futility stage and subgroup choice
 ##    
 ##        0    1    2    3    4    5
-##   0 1597    0    0    0    0    0
-##   1    0  363  397  418  120   59
-##   2    0  158  260  417  105   38
-##   3    0  102  283  492  120   71
+##   0 1631    0    0    0    0    0
+##   1    0  342  372  382   99   64
+##   2    0  125  242  363   76   44
+##   3    0  128  292  586  165   89
 ## 
 ## Mean loss by futility stage and subgroup
 ##    0        1        2        3         4        5
 ## 0  0       NA       NA       NA        NA       NA
-## 1 NA 167.0523 133.9773 101.4258  67.40833 34.22034
-## 2 NA 282.2595 227.1077 170.9041 113.25714 57.94737
-## 3 NA 396.0588 315.7880 237.5549 160.00000 79.60563
+## 1 NA 166.9766 133.9489 100.9686  67.25253 33.46875
+## 2 NA 283.4560 225.8636 170.6667 114.80263 57.52273
+## 3 NA 395.8516 316.3664 237.8976 158.63030 80.65169
 ## 
 ## SD loss by futility stage and subgroup
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.331550  6.518194  6.524295  5.821571 4.222549
-## 2 NA 7.411628  8.525452  9.078208  8.587814 8.033536
-## 3 NA 8.379399 10.476803 10.986338 11.068921 7.836688
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.331550  6.518194  6.524295  5.821571 4.222549
-## 2 NA 7.411628  8.525452  9.078208  8.587814 8.033536
-## 3 NA 8.379399 10.476803 10.986338 11.068921 7.836688</code></pre>
+##    0        1         2         3        4        5
+## 0  0       NA        NA        NA       NA       NA
+## 1 NA 5.641232  6.811286  7.093234  5.95792 4.552929
+## 2 NA 6.609504  8.645748  9.379457  7.44763 5.784858
+## 3 NA 8.235787 10.459181 10.990894 10.61363 8.072260
+##    0        1         2         3        4        5
+## 0  0       NA        NA        NA       NA       NA
+## 1 NA 5.641232  6.811286  7.093234  5.95792 4.552929
+## 2 NA 6.609504  8.645748  9.379457  7.44763 5.784858
+## 3 NA 8.235787 10.459181 10.990894 10.61363 8.072260</code></pre>
 </div>
 <div id="the-alt2-scenario" class="section level2">
 <h2>The ALT2 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt2, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.5 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.115
-## Boundaries:
-##  Named num [1:3] -1.87 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9126103698&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt2,
+                          showProgress = FALSE)
 analysis &lt;- defuse3$analyze(result)
 print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.203800; P(Reject H0_subgp) = 0.717600; P(Reject H0) = 0.921400
-## P(Early stop for efficacy [futility]) = 0.605800 [0.034400]
-## Mean [SD] Randomized N = 371.908800 [89.563685]
+<pre><code>## P(Reject H0_ITT) = 0.216400; P(Reject H0_subgp) = 0.692000; P(Reject H0) = 0.908400
+## P(Early stop for efficacy [futility]) = 0.496600 [0.017400]
+## Mean [SD] Randomized N = 392.292000 [90.491991]
 ## 
 ## Stage at exit (proportion)
 ## 
 ##      1      2      3 
-## 0.1216 0.5186 0.3598 
+## 0.0986 0.4154 0.4860 
 ## 
-## Mean [SD] Lost N = 146.197200 [101.466646]
-## Mean [SD] Analyzed N = 225.711600 [100.763046]
+## Mean [SD] Lost N = 162.035800 [113.365815]
+## Mean [SD] Analyzed N = 230.256200 [102.700861]
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ##      1      2      3      4      5      6 
-## 0.1324 0.4570 0.0950 0.0226 0.0106 0.2038 
+## 0.1240 0.4618 0.0788 0.0222 0.0052 0.2164 
 ## 
 ## Counts by futility stage and subgroup choice
 ##    
 ##        0    1    2    3    4    5
-##   0 1019    0    0    0    0    0
-##   1    0  487 1104  273  102   84
-##   2    0  134  767  175   67   64
-##   3    0   56  492  101   47   28
-## 
-## Mean loss by futility stage and subgroup
-##    0        1        2        3         4        5
-## 0  0       NA       NA       NA        NA       NA
-## 1 NA 167.0082 134.0924 101.6777  66.98039 33.98810
-## 2 NA 283.6642 226.1773 170.8057 112.58209 58.04688
-## 3 NA 395.5000 316.3049 238.4059 159.19149 78.60714
-## 
-## SD loss by futility stage and subgroup
-##    0        1         2         3        4        5
-## 0  0       NA        NA        NA       NA       NA
-## 1 NA 5.383248  6.663562  7.444805 6.532448 5.033608
-## 2 NA 6.613888  8.513841  8.813324 8.825152 7.666521
-## 3 NA 8.241800 10.849673 10.400171 9.772718 7.228233
-##    0        1         2         3        4        5
-## 0  0       NA        NA        NA       NA       NA
-## 1 NA 5.383248  6.663562  7.444805 6.532448 5.033608
-## 2 NA 6.613888  8.513841  8.813324 8.825152 7.666521
-## 3 NA 8.241800 10.849673 10.400171 9.772718 7.228233</code></pre>
-</div>
-<div id="the-alt3-scenario" class="section level2">
-<h2>The ALT3 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt3, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.36 0 0.36 0 0.36 0 0.36 0 0.36 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.0887
-## Boundaries:
-##  Named num [1:3] -1.86 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9122145230&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
-analysis &lt;- defuse3$analyze(result)
-print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.890800; P(Reject H0_subgp) = 0.032600; P(Reject H0) = 0.923400
-## P(Early stop for efficacy [futility]) = 0.746600 [0.003600]
-## Mean [SD] Randomized N = 312.624800 [111.633828]
-## 
-## Stage at exit (proportion)
-## 
-##      1      2      3 
-## 0.4382 0.3120 0.2498 
-## 
-## Mean [SD] Lost N = 16.327600 [56.237297]
-## Mean [SD] Analyzed N = 296.297200 [103.083755]
-## 
-## Chance of each subpopulation rejected
-## 
-##      1      2      3      4      5      6 
-## 0.0062 0.0050 0.0064 0.0064 0.0086 0.8908 
-## 
-## Counts by futility stage and subgroup choice
-##    
-##        0    1    2    3    4    5
-##   0 4454    0    0    0    0    0
-##   1    0   21   16    8   13   17
-##   2    0    4    5    8    6    9
-##   3    0   28   38   61   79  233
-## 
-## Mean loss by futility stage and subgroup
-##    0       1        2        3         4        5
-## 0  0      NA       NA       NA        NA       NA
-## 1 NA 168.381 130.2500  97.7500  65.46154 35.17647
-## 2 NA 285.250 222.6000 167.7500 116.00000 58.44444
-## 3 NA 394.250 318.8158 237.1803 159.81013 80.35193
-## 
-## SD loss by futility stage and subgroup
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.417344  4.823553  6.519202  6.411128 4.863580
-## 2 NA 8.958236  7.368853 12.914554  9.252027 6.578585
-## 3 NA 7.346579 13.879511 11.079272 10.066543 8.484555
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.417344  4.823553  6.519202  6.411128 4.863580
-## 2 NA 8.958236  7.368853 12.914554  9.252027 6.578585
-## 3 NA 7.346579 13.879511 11.079272 10.066543 8.484555</code></pre>
-</div>
-<div id="the-alt4-scenario" class="section level2">
-<h2>The ALT4 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt4, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0.3 0 0.3 0 0.3 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.0916
-## Boundaries:
-##  Named num [1:3] -1.86 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9123eae780&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
-analysis &lt;- defuse3$analyze(result)
-print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.730400; P(Reject H0_subgp) = 0.072000; P(Reject H0) = 0.802400
-## P(Early stop for efficacy [futility]) = 0.551000 [0.015200]
-## Mean [SD] Randomized N = 358.900800 [115.249386]
-## 
-## Stage at exit (proportion)
-## 
-##      1      2      3 
-## 0.2864 0.2798 0.4338 
-## 
-## Mean [SD] Lost N = 40.523000 [82.809819]
-## Mean [SD] Analyzed N = 318.377800 [107.852102]
-## 
-## Chance of each subpopulation rejected
-## 
-##      1      2      3      4      5      6 
-## 0.0200 0.0134 0.0134 0.0116 0.0136 0.7304 
-## 
-## Counts by futility stage and subgroup choice
-##    
-##        0    1    2    3    4    5
-##   0 3652    0    0    0    0    0
-##   1    0   76   45   40   28   46
-##   2    0   35   24   23   27   45
-##   3    0   66   83  123  198  489
-## 
-## Mean loss by futility stage and subgroup
-##    0        1        2        3         4        5
-## 0  0       NA       NA       NA        NA       NA
-## 1 NA 166.3816 134.3556 100.0750  67.57143 33.00000
-## 2 NA 283.2286 226.5000 171.1304 108.88889 55.77778
-## 3 NA 395.9697 318.3855 237.4146 158.50000 79.00000
-## 
-## SD loss by futility stage and subgroup
-##    0        1         2        3         4        5
-## 0  0       NA        NA       NA        NA       NA
-## 1 NA 4.808235  6.859484 7.868755  6.674598 5.245104
-## 2 NA 9.149367  8.214515 9.673320  7.386752 8.704463
-## 3 NA 8.139117 10.084801 9.847132 10.722503 8.556706
-##    0        1         2        3         4        5
-## 0  0       NA        NA       NA        NA       NA
-## 1 NA 4.808235  6.859484 7.868755  6.674598 5.245104
-## 2 NA 9.149367  8.214515 9.673320  7.386752 8.704463
-## 3 NA 8.139117 10.084801 9.847132 10.722503 8.556706</code></pre>
-</div>
-<div id="the-alt5-scenario" class="section level2">
-<h2>The ALT5 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt5, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.4 0 0.3 0 0.2 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.111
-## Boundaries:
-##  Named num [1:3] -1.87 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9122e26228&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
-analysis &lt;- defuse3$analyze(result)
-print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.168600; P(Reject H0_subgp) = 0.604600; P(Reject H0) = 0.773200
-## P(Early stop for efficacy [futility]) = 0.418800 [0.081200]
-## Mean [SD] Randomized N = 395.316000 [89.249612]
-## 
-## Stage at exit (proportion)
-## 
-##      1      2      3 
-## 0.0906 0.4094 0.5000 
-## 
-## Mean [SD] Lost N = 139.108600 [95.068994]
-## Mean [SD] Analyzed N = 256.207400 [98.433109]
-## 
-## Chance of each subpopulation rejected
-## 
-##      1      2      3      4      5      6 
-## 0.1866 0.1956 0.1690 0.0424 0.0110 0.1686 
-## 
-## Counts by futility stage and subgroup choice
-##    
-##       0   1   2   3   4   5
-##   0 843   0   0   0   0   0
-##   1   0 660 608 528 204 121
-##   2   0 242 336 354 155 117
-##   3   0 100 200 306 139  87
-## 
-## Mean loss by futility stage and subgroup
-##    0        1        2        3         4        5
-## 0  0       NA       NA       NA        NA       NA
-## 1 NA 166.6000 133.6612 100.7292  67.70098 32.98347
-## 2 NA 282.4876 226.1220 170.0508 112.34194 57.17094
-## 3 NA 395.2100 316.4650 237.0686 161.55396 79.10345
-## 
-## SD loss by futility stage and subgroup
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.377467  6.510947  7.022095  6.776066 6.097791
-## 2 NA 6.876644  8.763220  9.138699  7.539023 5.549605
-## 3 NA 9.216032 10.485634 10.515182 10.126141 7.859278
-##    0        1         2         3         4        5
-## 0  0       NA        NA        NA        NA       NA
-## 1 NA 5.377467  6.510947  7.022095  6.776066 6.097791
-## 2 NA 6.876644  8.763220  9.138699  7.539023 5.549605
-## 3 NA 9.216032 10.485634 10.515182 10.126141 7.859278</code></pre>
-</div>
-<div id="the-alt6-scenario" class="section level2">
-<h2>The ALT6 Scenario</h2>
-<pre class="r"><code>defuse3 &lt;- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt6, showProgress = FALSE)
-print(defuse3)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.5 0 0.3 0 0.3 0 0.1 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 200 340 476
-##  $ type1Error: num 0.025
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.1
-##  $ effectSize: num 0.0937
-## Boundaries:
-##  Named num [1:3] -1.86 2.63 2.61
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9123703558&gt;</code></pre>
-<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
-analysis &lt;- defuse3$analyze(result)
-print(defuse3$summary(analysis))</code></pre>
-<pre><code>## P(Reject H0_ITT) = 0.736800; P(Reject H0_subgp) = 0.196600; P(Reject H0) = 0.933400
-## P(Early stop for efficacy [futility]) = 0.592000 [0.002600]
-## Mean [SD] Randomized N = 355.346400 [113.294543]
-## 
-## Stage at exit (proportion)
-## 
-##      1      2      3 
-## 0.2842 0.3104 0.4054 
-## 
-## Mean [SD] Lost N = 51.395000 [97.741064]
-## Mean [SD] Analyzed N = 303.951400 [109.595706]
-## 
-## Chance of each subpopulation rejected
-## 
-##      1      2      3      4      5      6 
-## 0.0286 0.0692 0.0384 0.0478 0.0126 0.7368 
-## 
-## Counts by futility stage and subgroup choice
-##    
-##        0    1    2    3    4    5
-##   0 3684    0    0    0    0    0
-##   1    0   82   83   40   35   18
-##   2    0   28   78   27   43   13
-##   3    0   51  226  173  274  145
+##   0 1082    0    0    0    0    0
+##   1    0  392  875  173   87   50
+##   2    0  154  711  143   73   29
+##   3    0   95  854  162   79   41
 ## 
 ## Mean loss by futility stage and subgroup
 ##    0        1        2        3        4        5
 ## 0  0       NA       NA       NA       NA       NA
-## 1 NA 166.5000 134.1928 100.8000  70.6000 36.61111
-## 2 NA 285.1071 227.4872 171.1852 117.1163 59.76923
-## 3 NA 398.6275 318.1150 238.7399 159.6131 80.00000
+## 1 NA 166.7934 133.9383 100.9595  69.2069 33.24000
+## 2 NA 283.4351 227.2321 171.3986 114.5616 58.48276
+## 3 NA 394.5263 316.9684 238.5988 159.8101 78.58537
 ## 
 ## SD loss by futility stage and subgroup
-##    0        1         2         3        4        5
-## 0  0       NA        NA        NA       NA       NA
-## 1 NA 5.393755  7.176278  5.473479 6.357950 4.692157
-## 2 NA 5.845792  9.221296  9.110590 8.341546 6.220314
-## 3 NA 7.675834 11.029457 10.316304 9.830615 8.439326
-##    0        1         2         3        4        5
-## 0  0       NA        NA        NA       NA       NA
-## 1 NA 5.393755  7.176278  5.473479 6.357950 4.692157
-## 2 NA 5.845792  9.221296  9.110590 8.341546 6.220314
-## 3 NA 7.675834 11.029457 10.316304 9.830615 8.439326</code></pre>
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 5.271713  6.773102  7.060666  6.523906 5.902473
+## 2 NA 7.033928  8.360092  8.323681  8.927153 7.302743
+## 3 NA 7.473132 10.215850 10.456333 11.033836 8.952585
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 5.271713  6.773102  7.060666  6.523906 5.902473
+## 2 NA 7.033928  8.360092  8.323681  8.927153 7.302743
+## 3 NA 7.473132 10.215850 10.456333 11.033836 8.952585</code></pre>
+</div>
+<div id="the-alt3-scenario" class="section level2">
+<h2>The ALT3 Scenario</h2>
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt3,
+                          showProgress = FALSE)
+analysis &lt;- defuse3$analyze(result)
+print(defuse3$summary(analysis))</code></pre>
+<pre><code>## P(Reject H0_ITT) = 0.876800; P(Reject H0_subgp) = 0.054800; P(Reject H0) = 0.931600
+## P(Early stop for efficacy [futility]) = 0.754000 [0.015200]
+## Mean [SD] Randomized N = 310.040800 [109.372920]
+## 
+## Stage at exit (proportion)
+## 
+##      1      2      3 
+## 0.4382 0.3310 0.2308 
+## 
+## Mean [SD] Lost N = 16.676400 [53.778339]
+## Mean [SD] Analyzed N = 293.364400 [101.893413]
+## 
+## Chance of each subpopulation rejected
+## 
+##      1      2      3      4      5      6 
+## 0.0130 0.0114 0.0098 0.0104 0.0102 0.8768 
+## 
+## Counts by futility stage and subgroup choice
+##    
+##        0    1    2    3    4    5
+##   0 4384    0    0    0    0    0
+##   1    0   51   39   23   28   54
+##   2    0   11   18   16   24   35
+##   3    0   20   22   43   70  162
+## 
+## Mean loss by futility stage and subgroup
+##    0        1        2        3         4        5
+## 0  0       NA       NA       NA        NA       NA
+## 1 NA 167.2745 132.1538 101.4348  65.53571 33.44444
+## 2 NA 285.3636 228.1111 166.1250 114.08333 57.62857
+## 3 NA 397.5500 319.3182 238.8837 155.57143 79.79630
+## 
+## SD loss by futility stage and subgroup
+##    0        1         2        3        4        5
+## 0  0       NA        NA       NA       NA       NA
+## 1 NA 6.161423  5.989194 4.980198 6.420350 4.916920
+## 2 NA 7.965836  7.668798 8.523497 9.641020 7.503277
+## 3 NA 6.992289 12.487656 8.355806 9.319718 8.050415
+##    0        1         2        3        4        5
+## 0  0       NA        NA       NA       NA       NA
+## 1 NA 6.161423  5.989194 4.980198 6.420350 4.916920
+## 2 NA 7.965836  7.668798 8.523497 9.641020 7.503277
+## 3 NA 6.992289 12.487656 8.355806 9.319718 8.050415</code></pre>
+</div>
+<div id="the-alt4-scenario" class="section level2">
+<h2>The ALT4 Scenario</h2>
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt4,
+                          showProgress = FALSE)
+analysis &lt;- defuse3$analyze(result)
+print(defuse3$summary(analysis))</code></pre>
+<pre><code>## P(Reject H0_ITT) = 0.730200; P(Reject H0_subgp) = 0.097800; P(Reject H0) = 0.828000
+## P(Early stop for efficacy [futility]) = 0.573400 [0.036200]
+## Mean [SD] Randomized N = 352.746400 [112.736993]
+## 
+## Stage at exit (proportion)
+## 
+##      1      2      3 
+## 0.2882 0.3214 0.3904 
+## 
+## Mean [SD] Lost N = 36.242600 [73.643642]
+## Mean [SD] Analyzed N = 316.503800 [104.726436]
+## 
+## Chance of each subpopulation rejected
+## 
+##      1      2      3      4      5      6 
+## 0.0232 0.0176 0.0208 0.0206 0.0156 0.7302 
+## 
+## Counts by futility stage and subgroup choice
+##    
+##        0    1    2    3    4    5
+##   0 3651    0    0    0    0    0
+##   1    0  115   65   60   58   96
+##   2    0   33   34   55   63  100
+##   3    0   38   44   92  141  355
+## 
+## Mean loss by futility stage and subgroup
+##    0        1        2        3         4        5
+## 0  0       NA       NA       NA        NA       NA
+## 1 NA 166.4957 134.4308  99.1000  66.24138 33.14583
+## 2 NA 282.2424 223.5294 169.9273 114.33333 56.42000
+## 3 NA 393.5263 315.5909 236.9022 158.59574 79.59437
+## 
+## SD loss by futility stage and subgroup
+##    0        1         2        3        4        5
+## 0  0       NA        NA       NA       NA       NA
+## 1 NA 5.696065  6.297245 7.329300 7.014547 5.593190
+## 2 NA 7.241505  9.854196 8.286210 8.667701 7.585446
+## 3 NA 9.261186 10.872021 9.998967 9.344195 7.539648
+##    0        1         2        3        4        5
+## 0  0       NA        NA       NA       NA       NA
+## 1 NA 5.696065  6.297245 7.329300 7.014547 5.593190
+## 2 NA 7.241505  9.854196 8.286210 8.667701 7.585446
+## 3 NA 9.261186 10.872021 9.998967 9.344195 7.539648</code></pre>
+</div>
+<div id="the-alt5-scenario" class="section level2">
+<h2>The ALT5 Scenario</h2>
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt5,
+                          showProgress = FALSE)
+analysis &lt;- defuse3$analyze(result)
+print(defuse3$summary(analysis))</code></pre>
+<pre><code>## P(Reject H0_ITT) = 0.180600; P(Reject H0_subgp) = 0.583600; P(Reject H0) = 0.764200
+## P(Early stop for efficacy [futility]) = 0.372800 [0.051200]
+## Mean [SD] Randomized N = 407.836000 [86.737984]
+## 
+## Stage at exit (proportion)
+## 
+##     1     2     3 
+## 0.075 0.349 0.576 
+## 
+## Mean [SD] Lost N = 146.941000 [102.891152]
+## Mean [SD] Analyzed N = 260.895000 [103.327083]
+## 
+## Chance of each subpopulation rejected
+## 
+##      1      2      3      4      5      6 
+## 0.1680 0.1916 0.1670 0.0428 0.0142 0.1806 
+## 
+## Counts by futility stage and subgroup choice
+##    
+##       0   1   2   3   4   5
+##   0 903   0   0   0   0   0
+##   1   0 569 517 448 167  99
+##   2   0 224 330 316 134  81
+##   3   0 150 301 440 175 146
+## 
+## Mean loss by futility stage and subgroup
+##    0        1        2        3         4        5
+## 0  0       NA       NA       NA        NA       NA
+## 1 NA 166.7522 133.6538 100.0647  68.27545 34.26263
+## 2 NA 283.6920 227.4424 170.3196 115.20896 57.23457
+## 3 NA 395.5667 317.0399 237.3955 158.78286 79.43836
+## 
+## SD loss by futility stage and subgroup
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 5.444997  6.411446  7.120428  7.038333 6.046733
+## 2 NA 6.524787  8.806154  9.184307  8.886989 7.041434
+## 3 NA 8.919037 10.720311 11.036200 10.359001 8.513658
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 5.444997  6.411446  7.120428  7.038333 6.046733
+## 2 NA 6.524787  8.806154  9.184307  8.886989 7.041434
+## 3 NA 8.919037 10.720311 11.036200 10.359001 8.513658</code></pre>
+</div>
+<div id="the-alt6-scenario" class="section level2">
+<h2>The ALT6 Scenario</h2>
+<pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt6,
+                          showProgress = FALSE)
+analysis &lt;- defuse3$analyze(result)
+print(defuse3$summary(analysis))</code></pre>
+<pre><code>## P(Reject H0_ITT) = 0.704800; P(Reject H0_subgp) = 0.238400; P(Reject H0) = 0.943200
+## P(Early stop for efficacy [futility]) = 0.610400 [0.008000]
+## Mean [SD] Randomized N = 351.521600 [112.162750]
+## 
+## Stage at exit (proportion)
+## 
+##      1      2      3 
+## 0.2884 0.3300 0.3816 
+## 
+## Mean [SD] Lost N = 53.882800 [96.252935]
+## Mean [SD] Analyzed N = 297.638800 [108.519066]
+## 
+## Chance of each subpopulation rejected
+## 
+##      1      2      3      4      5      6 
+## 0.0340 0.0796 0.0518 0.0610 0.0120 0.7048 
+## 
+## Counts by futility stage and subgroup choice
+##    
+##        0    1    2    3    4    5
+##   0 3524    0    0    0    0    0
+##   1    0  100  149   69   86   47
+##   2    0   43  101   70   76   19
+##   3    0   45  194  162  228   87
+## 
+## Mean loss by futility stage and subgroup
+##    0        1        2        3         4        5
+## 0  0       NA       NA       NA        NA       NA
+## 1 NA 166.4100 133.5570 100.0725  66.53488 33.74468
+## 2 NA 282.4186 226.9010 169.8429 115.69737 57.36842
+## 3 NA 398.0667 318.9227 238.0617 159.89474 80.70115
+## 
+## SD loss by futility stage and subgroup
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 6.130063  6.142874  6.625083  7.386311 4.729501
+## 2 NA 7.168823  7.238101 10.397374  8.191084 8.744589
+## 3 NA 8.731864 10.357306 10.203331 10.652185 7.201607
+##    0        1         2         3         4        5
+## 0  0       NA        NA        NA        NA       NA
+## 1 NA 6.130063  6.142874  6.625083  7.386311 4.729501
+## 2 NA 7.168823  7.238101 10.397374  8.191084 8.744589
+## 3 NA 8.731864 10.357306 10.203331 10.652185 7.201607</code></pre>
 </div>
 </div>
 

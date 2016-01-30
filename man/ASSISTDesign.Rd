@@ -18,16 +18,18 @@ adaptive group sequential clinical trial with three stages.
 \describe{
   \item{\code{ASSISTDesign$new(designParameters, trialParameters, generateData)}}{Create a new
         \code{ASSISTDesign} instance object using the parameters specified}
-  \item{\code{getTrueParameters},\code{getTrialParameters},
+  \item{\code{getDesignParameters},\code{getTrialParameters},
         \code{getBoundaries}}{Accessor methods for (obvious) object fields}
   \item{\code{print()}}{Print the object in a human readable form}
   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
         \code{boundaries}}
-  \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, showProgress = TRUE)}}{Explore the
-        design using the specified number of simulations and random number seed.
+  \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the
+        design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
+        as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
         Show progress if so desired. Returns a data frame of results}
-  \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+  \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
+        the design given. Use the \code{trialHistory} if given, else call \code{explore} to
         simulate the design. Return a list of summary quantities}
   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
         result from the \code{analyze} call}
@@ -43,7 +45,7 @@ designParameters <- list(prevalence = prevalence,
 designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
                             designParameters = designParameters)
 print(designA)
-result <- designA$explore()
+result <- designA$explore(showProgress = interactive())
 analysis <- designA$analyze(result)
 designA$summary(analysis)
 

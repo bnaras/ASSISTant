@@ -1,7 +1,7 @@
 Package: ASSISTant
 Type: Package
 Title: Adaptive Subgroup Selection In Group Sequential Trials
-Version: 1.0
+Version: 1.0.1
 Date: 2015-10-27
 VignetteBuilder: knitr
 Authors@R: c(person("Philip", "Lavori", role=c("aut"),
@@ -19,3 +19,7 @@ Description: Clinical trial design for subgroup selection in three-stage group
     such trials. A complete implementation is provided for the DEFUSE-3 trial.
 License: GPL(>=2)
 RoxygenNote: 5.0.1
+Imports: R6,
+    mvtnorm
+Suggests: knitr,
+    rmarkdown

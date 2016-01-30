@@ -85,13 +85,8 @@ print(defuse3$summary(analysis))
 ## The ALT1 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt1, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt1,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```
@@ -99,13 +94,8 @@ print(defuse3$summary(analysis))
 ## The ALT2 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt2, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt2,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```
@@ -113,13 +103,8 @@ print(defuse3$summary(analysis))
 ## The ALT3 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt3, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt3,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```
@@ -127,13 +112,8 @@ print(defuse3$summary(analysis))
 ## The ALT4 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt4, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt4,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```
@@ -141,13 +121,8 @@ print(defuse3$summary(analysis))
 ## The ALT5 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt5, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt5,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```
@@ -155,13 +130,8 @@ print(defuse3$summary(analysis))
 ## The ALT6 Scenario
 
 ```{r}
-defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             designParameters = designParameters$alt6, showProgress = FALSE)
-print(defuse3)
-```
-
-```{r}
-result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt6,
+                          showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
 ```

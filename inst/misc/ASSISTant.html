@@ -10,7 +10,7 @@
 
 <meta name="author" content="Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan" />
 
-<meta name="date" content="2015-12-25" />
+<meta name="date" content="2016-01-29" />
 
 <title>Adaptive Subgroup Selection in Sequential Trials</title>
 
@@ -64,7 +64,7 @@ img {
 <div id="header">
 <h1 class="title">Adaptive Subgroup Selection in Sequential Trials</h1>
 <h4 class="author"><em>Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan</em></h4>
-<h4 class="date"><em>2015-12-25</em></h4>
+<h4 class="date"><em>2016-01-29</em></h4>
 </div>
 
 
@@ -125,6 +125,7 @@ str(LLL.SETTINGS)</code></pre>
 <h2>Table 1 Results</h2>
 <div id="scenario-s0" class="section level3">
 <h3>Scenario S0</h3>
+<p>This is the <em>null</em> setting.</p>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S0
 designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
@@ -164,7 +165,7 @@ print(designA)</code></pre>
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f9129ee1660&gt;</code></pre>
+## &lt;environment: 0x7feb147d9aa0&gt;</code></pre>
 <pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
@@ -212,49 +213,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.820668  9.680403  9.339209  9.783760 7.462151
 ## 3 NA 8.264796 10.621182 11.531937 10.157148 7.999466</code></pre>
 </div>
-<div id="scenario-s1" class="section level3">
-<h3>Scenario S1</h3>
+<div id="alternative-scenario-s1" class="section level3">
+<h3>Alternative Scenario S1</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S1
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0.3 0 0.3 0 0.3 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9123ecae78&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.851000; P(Reject H0_subgp) = 0.039400; P(Reject H0) = 0.890400
@@ -301,49 +267,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 8.227784  9.621157  6.994045 8.485281 11.385036
 ## 3 NA 8.109298 10.438704 12.771528 9.996307  8.355146</code></pre>
 </div>
-<div id="scenario-s2" class="section level3">
-<h3>Scenario S2</h3>
+<div id="alternative-scenario-s2" class="section level3">
+<h3>Alternative Scenario S2</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S2
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0.3 0 0.3 0 0.3 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912626d838&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.698200; P(Reject H0_subgp) = 0.153600; P(Reject H0) = 0.851800
@@ -390,49 +321,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.046067 6.271629  9.660055 7.948794 7.944979
 ## 3 NA 8.508981 8.793105 10.071377 9.921549 8.197065</code></pre>
 </div>
-<div id="scenario-s3" class="section level3">
-<h3>Scenario S3</h3>
+<div id="alternative-scenario-s3" class="section level3">
+<h3>Alternative Scenario S3</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S3
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912614c428&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.135600; P(Reject H0_subgp) = 0.521400; P(Reject H0) = 0.657000
@@ -479,49 +375,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.442887  9.320491  9.353538  9.707750 6.788800
 ## 3 NA 8.531172 10.346484 10.897366 10.088364 8.656078</code></pre>
 </div>
-<div id="scenario-s4" class="section level3">
-<h3>Scenario S4</h3>
+<div id="alternative-scenario-s4" class="section level3">
+<h3>Alternative Scenario S4</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S4
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0 0 0 0 0.3 0 0.3 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91225e5948&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.149600; P(Reject H0_subgp) = 0.115800; P(Reject H0) = 0.265400
@@ -568,49 +429,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 6.629636  8.331238  9.503171  9.84949 7.634140
 ## 3 NA 8.823095 12.628902 13.577905 10.88023 8.284180</code></pre>
 </div>
-<div id="scenario-s5" class="section level3">
-<h3>Scenario S5</h3>
+<div id="alternative-scenario-s5" class="section level3">
+<h3>Alternative Scenario S5</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S5
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.6 0 0 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9122634278&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.130800; P(Reject H0_subgp) = 0.737400; P(Reject H0) = 0.868200
@@ -657,49 +483,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.446637 10.905610 11.80206  9.672581 4.466809
 ## 3 NA 8.303409  9.439835 11.19996 10.055616 7.946812</code></pre>
 </div>
-<div id="scenario-s6" class="section level3">
-<h3>Scenario S6</h3>
+<div id="alternative-scenario-s6" class="section level3">
+<h3>Alternative Scenario S6</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S6
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91262d7200&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.102400; P(Reject H0_subgp) = 0.682200; P(Reject H0) = 0.784600
@@ -746,49 +537,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.022624  9.911882  9.543918  8.955504 7.921931
 ## 3 NA 8.408459 11.394528 10.752799 11.718688 8.589021</code></pre>
 </div>
-<div id="scenario-s7" class="section level3">
-<h3>Scenario S7</h3>
+<div id="alternative-scenario-s7" class="section level3">
+<h3>Alternative Scenario S7</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S7
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91283d2580&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.480800; P(Reject H0_subgp) = 0.444000; P(Reject H0) = 0.924800
@@ -835,49 +591,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 6.718638  8.843301  8.730469 13.413131 6.082763
 ## 3 NA 8.451452 10.745827 11.227952 10.832314 8.179225</code></pre>
 </div>
-<div id="scenario-s8" class="section level3">
-<h3>Scenario S8</h3>
+<div id="alternative-scenario-s8" class="section level3">
+<h3>Alternative Scenario S8</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S8
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 2 1 1.5 1 1 1 0.5 1 0.5 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9122700c28&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.298000; P(Reject H0_subgp) = 0.448200; P(Reject H0) = 0.746200
@@ -924,49 +645,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.513684 10.747597 10.164205 11.381049 8.612394
 ## 3 NA 8.488276 10.373434 10.980348  9.545649 8.777980</code></pre>
 </div>
-<div id="scenario-s9" class="section level3">
-<h3>Scenario S9</h3>
+<div id="alternative-scenario-s9" class="section level3">
+<h3>Alternative Scenario S9</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S9
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 0.5 1 1 1 1.5 1 2 1 2 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912268d588&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.530400; P(Reject H0_subgp) = 0.432800; P(Reject H0) = 0.963200
@@ -1013,49 +699,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 6.530792 8.453168  9.574322 12.09545 8.485281
 ## 3 NA 7.978316 9.893441 10.922535 11.23241 8.167770</code></pre>
 </div>
-<div id="scenario-s10" class="section level3">
-<h3>Scenario S10</h3>
+<div id="alternative-scenario-s10" class="section level3">
+<h3>Alternative Scenario S10</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S10
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.167 0.167 0.167 0.167 0.167 ...
-##  $ mean      : num [1:2, 1:6] 0 0 0 0 0 0 0 0.3 0 0.4 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.39 2.31
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91264d9ed0&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000,
+                          trueParameters = trueParameters, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.473800; P(Reject H0_subgp) = 0.003800; P(Reject H0) = 0.477600
@@ -1146,7 +797,7 @@ print(designA)</code></pre>
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f91223eb920&gt;</code></pre>
+## &lt;environment: 0x7feb147f2ad0&gt;</code></pre>
 <pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
@@ -1194,49 +845,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.049703 8.071443 9.765869  9.379843 8.208440
 ## 3 NA 8.551916 9.301794 9.901561 10.887991 8.470245</code></pre>
 </div>
-<div id="scenario-s1-1" class="section level3">
-<h3>Scenario S1</h3>
+<div id="alternative-scenario-s1-1" class="section level3">
+<h3>Alternative Scenario S1</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S1
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0.3 0 0.3 0 0.3 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9123ed7740&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.847600; P(Reject H0_subgp) = 0.042800; P(Reject H0) = 0.890400
@@ -1283,49 +899,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 8.710147  7.874008 13.023056  7.675719 5.998512
 ## 3 NA 9.301244 10.217252 12.008407 10.350467 9.614809</code></pre>
 </div>
-<div id="scenario-s2-1" class="section level3">
-<h3>Scenario S2</h3>
+<div id="alternative-scenario-s2-1" class="section level3">
+<h3>Alternative Scenario S2</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S2
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0.3 0 0.3 0 0.3 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91262820b0&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.668000; P(Reject H0_subgp) = 0.185600; P(Reject H0) = 0.853600
@@ -1372,49 +953,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 8.267813 12.596877 13.051618  7.647568 8.268015
 ## 3 NA 9.581298 10.217189 10.987997 10.467313 9.387805</code></pre>
 </div>
-<div id="scenario-s3-1" class="section level3">
-<h3>Scenario S3</h3>
+<div id="alternative-scenario-s3-1" class="section level3">
+<h3>Alternative Scenario S3</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S3
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.3 0 0.3 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9126629550&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.113200; P(Reject H0_subgp) = 0.531400; P(Reject H0) = 0.644600
@@ -1461,49 +1007,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 8.230400  9.700266  9.147903  9.365804  9.063942
 ## 3 NA 9.233132 10.123722 11.298517 10.920542 10.079824</code></pre>
 </div>
-<div id="scenario-s4-1" class="section level3">
-<h3>Scenario S4</h3>
+<div id="alternative-scenario-s4-1" class="section level3">
+<h3>Alternative Scenario S4</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S4
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0 0 0 0 0.3 0 0.3 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9123696dc8&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.195800; P(Reject H0_subgp) = 0.134200; P(Reject H0) = 0.330000
@@ -1550,49 +1061,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 10.190406 10.372829  9.868525  9.239185 8.446001
 ## 3 NA  8.942469 10.119809 10.534922 10.259730 9.359236</code></pre>
 </div>
-<div id="scenario-s5-1" class="section level3">
-<h3>Scenario S5</h3>
+<div id="alternative-scenario-s5-1" class="section level3">
+<h3>Alternative Scenario S5</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S5
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.6 0 0 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912664b9c0&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.195600; P(Reject H0_subgp) = 0.713800; P(Reject H0) = 0.909400
@@ -1639,49 +1115,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.986156  8.245704  8.727624  6.039552 7.332576
 ## 3 NA 8.870428 10.269359 11.231086 10.308866 8.951253</code></pre>
 </div>
-<div id="scenario-s6-1" class="section level3">
-<h3>Scenario S6</h3>
+<div id="alternative-scenario-s6-1" class="section level3">
+<h3>Alternative Scenario S6</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S6
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0 0 0 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f912632d2b0&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.136600; P(Reject H0_subgp) = 0.692400; P(Reject H0) = 0.829000
@@ -1728,49 +1169,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.665273  9.226480  9.474004  7.217703 9.259230
 ## 3 NA 8.901227 10.542441 10.885213 10.102130 9.331906</code></pre>
 </div>
-<div id="scenario-s7-1" class="section level3">
-<h3>Scenario S7</h3>
+<div id="alternative-scenario-s7-1" class="section level3">
+<h3>Alternative Scenario S7</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S7
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f9122126740&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.616400; P(Reject H0_subgp) = 0.324200; P(Reject H0) = 0.940600
@@ -1817,49 +1223,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.271910  9.159471 10.83776 10.835622 7.061633
 ## 3 NA 8.107964 10.574377 10.82183 10.725406 8.001604</code></pre>
 </div>
-<div id="scenario-s8-1" class="section level3">
-<h3>Scenario S8</h3>
+<div id="alternative-scenario-s8-1" class="section level3">
+<h3>Alternative Scenario S8</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S8
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 2 1 1.5 1 1 1 0.5 1 0.5 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91225c28e8&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.439200; P(Reject H0_subgp) = 0.344800; P(Reject H0) = 0.784000
@@ -1906,49 +1277,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 7.289990  9.635789  8.946851 8.196334 7.440238
 ## 3 NA 8.464516 10.810169 10.870506 9.774416 9.339095</code></pre>
 </div>
-<div id="scenario-s9-1" class="section level3">
-<h3>Scenario S9</h3>
+<div id="alternative-scenario-s9-1" class="section level3">
+<h3>Alternative Scenario S9</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S9
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0.5 0 0.4 0 0.3 0 0 0 0 ...
-##  $ sd        : num [1:2, 1:6] 1 0.5 1 1 1 1.5 1 2 1 2 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91223ed580&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.640200; P(Reject H0_subgp) = 0.330600; P(Reject H0) = 0.970800
@@ -1995,49 +1331,14 @@ print(designA$summary(analysis))</code></pre>
 ## 2 NA 8.692184  9.191744  8.985954 12.909944       NA
 ## 3 NA 8.891931 10.011530 10.677305  9.887648 8.882600</code></pre>
 </div>
-<div id="scenario-s10-1" class="section level3">
-<h3>Scenario S10</h3>
+<div id="alternative-scenario-s10-1" class="section level3">
+<h3>Alternative Scenario S10</h3>
 <pre class="r"><code>scenario &lt;- LLL.SETTINGS$scenarios$S10
-designParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
+trueParameters &lt;- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-designA &lt;- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
-                            designParameters = designParameters)
-print(designA)</code></pre>
-<pre><code>## True Parameters:
-## List of 4
-##  $ prevalence: num [1:6] 0.2 0.1 0.3 0.1 0.1 0.2
-##  $ mean      : num [1:2, 1:6] 0 0 0 0 0 0 0 0.3 0 0.4 ...
-##  $ sd        : num [1:2, 1:6] 1 1 1 1 1 1 1 1 1 1 ...
-##  $ J         : int 6
-## Trial Parameters:
-## List of 5
-##  $ N         : num [1:3] 300 400 500
-##  $ type1Error: num 0.05
-##  $ eps       : num 0.5
-##  $ type2Error: num 0.2
-##  $ effectSize: num 0.0642
-## Boundaries:
-##  Named num [1:3] -1.46 2.37 2.28
-##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
-## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
-## {
-##     if (N == 0) {
-##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
-##     }
-##     else {
-##         subGroup &lt;- sample(seq_along(prevalence), N, replace = TRUE, 
-##             prob = prevalence)
-##         trt &lt;- sample(c(0L, 1L), N, replace = TRUE)
-##         rankin &lt;- unlist(Map(function(i, j) rnorm(n = 1, mean = mean[i, 
-##             j], sd = sd[i, j]), trt + 1, subGroup))
-##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
-##     }
-## }
-## &lt;environment: 0x7f91223eeb50&gt;</code></pre>
-<pre class="r"><code>result &lt;- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result &lt;- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+                          showProgress = FALSE)
 analysis &lt;- designA$analyze(result)
 print(designA$summary(analysis))</code></pre>
 <pre><code>## P(Reject H0_ITT) = 0.374600; P(Reject H0_subgp) = 0.005200; P(Reject H0) = 0.379800
