@@ -73,10 +73,6 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                     stop("Improper number of subgroups; need at least 3; max 10")
                                 }
 
-                                if ((!numberInRange(designParameters$prevalence, low = 1e-5, high = 1-1e-5)) ||
-                                    (sum(designParameters$prevalence) != 1.0)) {
-                                    stop("Prevalences have to be proportions adding to 1!")
-                                }
                                 if (!scalarInRange(trialParameters$type1Error, low=0.0001, 0.2)) {
                                     stop("Improper type 1 error")
                                 }
@@ -86,7 +82,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 if (!scalarInRange(trialParameters$eps, low=1e-5, high = 1 - 1e-5)) {
                                     stop("Improper epsilon specified")
                                 }
-                                if (!(sum(designParameters$prevalence) == 1.0)) {
+                                if (any(designParameters$prevalence <= 0)) {
                                     stop("Improper prevalence specified")
                                 }
                                 if (!all.equal(dim(designParameters$mean), c(2, designParameters$J))) {
@@ -300,6 +296,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 trialParameters$effectSize <- (qnorm(1 - trialParameters$type1Error) +
                                                                qnorm(1 - trialParameters$type2Error)) /
                                     sqrt(3 * trialParameters$N[3])
+                                designParameters$prevalence <- designParameters$prevalence / sum(designParameters$prevalence)
                                 private$designParameters <- designParameters
                                 private$trialParameters <- trialParameters
                                 if (!is.null(generateData)) {
@@ -390,7 +387,6 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                     trueParameters$J <- length(trueParameters$prevalence)
                                 }
 
-                                ## checkForConformity
                                 glrBoundary <- private$boundaries
                                 prevalence <- trueParameters$prevalence
 
