@@ -30,8 +30,9 @@
 #'         result from the \code{analyze} call}
 #' }
 #'
-#' @references Adaptive Choice of Patient Subgroup for Comparing Two
-#' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
+#' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
+#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -549,8 +550,9 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 #'         result from the \code{analyze} call}
 #' }
 #'
-#' @references Adaptive Choice of Patient Subgroup for Comparing Two
-#' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
+#' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
+#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -748,8 +750,9 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
 #'         result from the \code{analyze} call}
 #' }
 #'
-#' @references Adaptive Choice of Patient Subgroup for Comparing Two
-#' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
+#' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
+#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -884,8 +887,11 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #'         result from the \code{analyze} call}
 #' }
 #'
-#' @references Adaptive Choice of Patient Subgroup for Comparing Two
-#' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+#' @references Adaptive design of confirmatory trials: Advances and challenges,
+#' \url{http://www.sciencedirect.com/science/article/pii/S1551714415300239} by
+#' Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. Contemporary Clinical Trials, Vol. 45, Part A,
+#' pp 93-102 (2015).
+#'
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
