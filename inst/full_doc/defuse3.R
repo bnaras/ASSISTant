@@ -1,23 +1,4 @@
-#
-
----
-title: "Design of the DEFUSE3 Trial"
-author: "Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang
-and Balasubramanian Narasimhan"
-date: '`r Sys.Date()`'
-bibliography: assistant.bib
-output:
-  html_document:
-  theme: cerulean
-  toc: yes
-  toc_depth: 2
-vignette: >
-  %\VignetteIndexEntry{Design of the DEFUSE3 Trial}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
-
-```{r echo=F}
+## ----echo=F--------------------------------------------------------------
 ### get knitr just the way we like it
 
 knitr::opts_chunk$set(
@@ -27,25 +8,14 @@ knitr::opts_chunk$set(
   tidy = FALSE,
   cache = FALSE
 )
-```
 
-## Introduction
-
-Here, we present the calculations for the design of the DEFUSE3 trial
-based on the paper by Lai, Lavori and Liao [-@Lai2014191]. The trial
-parameters are fixed as follows.
-
-
-```{r}
+## ------------------------------------------------------------------------
 library(ASSISTant)
 ##Fix randomization vector N, errors, eps
 trialParameters <- list(N = c(200, 340, 476), type1Error = 0.025,
                         eps = 1/2, type2Error = 0.1)
-```
 
-The design parameters are the following for various scenarios.
-
-```{r}
+## ------------------------------------------------------------------------
 designParameters <- list(
     nul0 = list(prevalence = rep(1/6, 6), mean = matrix(0, 2, 6),
                 sd = matrix(1, 2, 6)),
@@ -66,73 +36,50 @@ designParameters <- list(
                                                        c(0.5, 0.5, 0.3, 0.3, 0.1, 0.1)),
                 sd = matrix(1,2, 6))
 )
-```
 
-## The NULL Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
                              designParameters = designParameters$nul0, showProgress = FALSE)
 print(defuse3)
-```
 
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT1 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt1,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT2 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt2,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT3 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt3,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT4 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt4,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT5 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt5,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
-## The ALT6 Scenario
-
-```{r}
+## ------------------------------------------------------------------------
 result <- defuse3$explore(numberOfSimulations = 5000, trueParameters = designParameters$alt6,
                           showProgress = FALSE)
 analysis <- defuse3$analyze(result)
 print(defuse3$summary(analysis))
-```
 
