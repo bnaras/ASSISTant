@@ -14,7 +14,13 @@ trial, described in the paper by Lai, Lavori and Liao. The package contains ever
 to reproduce the results of the paper.
 }
 \references{
-Adaptive Choice of Patient Subgroup for Comparing Two
-Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+Adaptive Choice of Patient Subgroup for Comparing Two Treatments
+by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
+Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+
+Adaptive design of confirmatory trials: Advances and challenges,
+\url{http://www.sciencedirect.com/science/article/pii/S1551714415300239} by
+Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. Contemporary Clinical Trials, Vol. 45, Part A,
+pp 93-102 (2015).
 }
 
