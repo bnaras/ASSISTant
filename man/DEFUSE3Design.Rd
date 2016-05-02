@@ -76,8 +76,10 @@ print(defuse3$summary(analysis))
 
 }
 \references{
-Adaptive Choice of Patient Subgroup for Comparing Two
-Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
+Adaptive design of confirmatory trials: Advances and challenges,
+\url{http://www.sciencedirect.com/science/article/pii/S1551714415300239} by
+Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. Contemporary Clinical Trials, Vol. 45, Part A,
+pp 93-102 (2015).
 }
 \seealso{
 \code{ASSISTDesign} which is a superclass of this object
