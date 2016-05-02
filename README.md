@@ -18,4 +18,5 @@ install_github("bnaras/ASSISTant")
 trial design with provision for selecting a subgroup where the
 treatment may be effective.  The package provides facilities for
 design, exploration and analysis of such trials. A complete
-implementation is provided for the DEFUSE-3 trial.
+implementation of the initial design for the DEFUSE-3 trial is
+also provided as a vignette.

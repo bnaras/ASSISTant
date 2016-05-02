@@ -24,16 +24,36 @@ and what quantities are computed in a trial run.
         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
   \item{\code{print()}}{Print the object in a human readable form}
   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-  \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design using
-        the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
+  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+        using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
         Show progress if so desired. Returns a data frame of results}
-  \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
-        the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+  \item{\code{analyze(trialHistory)}}{Analyze
+        the design given the \code{trialHistory} which is the result of a call to \code{explore} to
         simulate the design. Return a list of summary quantities}
   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
         result from the \code{analyze} call}
 }
+}
+\examples{
+\dontrun{
+data(LLL.SETTINGS)
+prevalence <- LLL.SETTINGS$prevalences$table1
+scenario <- LLL.SETTINGS$scenarios$S0
+designParameters <- list(prevalence = prevalence,
+                       mean = scenario$mean,
+                       sd = scenario$sd)
+designB <- ASSISTDesignB$new(trialParameters = LLL.SETTINGS$trialParameters,
+                            designParameters = designParameters)
+print(designB)
+## A realistic design uses 5000 simulations or more!
+result <- designB$explore(showProgress = interactive())
+analysis <- designB$analyze(result)
+designB$summary(analysis)
+}
+## For full examples, try:
+## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
+
 }
 \references{
 Adaptive Choice of Patient Subgroup for Comparing Two

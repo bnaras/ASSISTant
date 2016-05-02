@@ -19,12 +19,12 @@
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 #'         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 #'         \code{boundaries}}
-#'   \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the
 #'         design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
-#'         the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+#'   \item{\code{analyze(trialHistory)}}{Analyze
+#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -35,6 +35,7 @@
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
+#' \dontrun{
 #' data(LLL.SETTINGS)
 #' prevalence <- LLL.SETTINGS$prevalences$table1
 #' scenario <- LLL.SETTINGS$scenarios$S0
@@ -44,9 +45,13 @@
 #' designA <- ASSISTDesign$new(trialParameters = LLL.SETTINGS$trialParameters,
 #'                             designParameters = designParameters)
 #' print(designA)
+#' ## A realistic design uses 5000 simulations or more!
 #' result <- designA$explore(showProgress = interactive())
 #' analysis <- designA$analyze(result)
 #' designA$summary(analysis)
+#' }
+#' ## For full examples, try:
+#' ## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
 #'
 ASSISTDesign <- R6Class("ASSISTDesign",
                         private = list(
@@ -356,7 +361,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 c <- private$mHP.c(cov.J, mu.prime, Sigma.prime, alpha * (1 - eps), btilde, b)
                                 c(btilde = btilde, b = b, c = c)
                             },
-                            explore = function (numberOfSimulations = 100, rngSeed = 12345,
+                            explore = function (numberOfSimulations = 5000, rngSeed = 12345,
                                                 trueParameters = self$getDesignParameters(),
                                                 showProgress = TRUE) {
                                 ## Save rng state
@@ -446,21 +451,13 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 }
                                 trialHistory
                             },
-                            analyze = function (trialHistory = NULL, numberOfSimulations = 5000, rngSeed = 12345,
-                                                showProgress = TRUE) {
-                                if (is.null(trialHistory)) {
-                                    cat(sprintf("Running %d simulations to compute operating characterisistics\n",
-                                                numberOfSimulations))
-                                    trialHistory <- explore(numberOfSimulations = numberOfSimulations,
-                                                            rngSeed = rngSeed,
-                                                            showProgress = showProgress)
-                                }
+                            analyze = function (trialHistory) {
                                 numberOfSimulations <- nrow(trialHistory)
                                 reject.ITT <- (trialHistory$decision.ITT == 1)
                                 reject.subgp <- (trialHistory$decision.subgp == 1)
                                 reject.subgp[is.na(reject.subgp)] <- FALSE
                                 reject <- !(reject.ITT + reject.subgp == 0)
-                                        #  numReject <- sum(Reject)
+                                ##  numReject <- sum(Reject)
                                 earlyStop <- (trialHistory$stage < 3)
                                 earlyStopEff <- (reject & earlyStop)
                                 earlyStopFut <- (!reject & earlyStop)
@@ -541,12 +538,12 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design using
-#'         the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+#'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
-#'         the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+#'   \item{\code{analyze(trialHistory)}}{Analyze
+#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -556,6 +553,24 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 #' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
+#' @examples
+#' \dontrun{
+#' data(LLL.SETTINGS)
+#' prevalence <- LLL.SETTINGS$prevalences$table1
+#' scenario <- LLL.SETTINGS$scenarios$S0
+#' designParameters <- list(prevalence = prevalence,
+#'                        mean = scenario$mean,
+#'                        sd = scenario$sd)
+#' designB <- ASSISTDesignB$new(trialParameters = LLL.SETTINGS$trialParameters,
+#'                             designParameters = designParameters)
+#' print(designB)
+#' ## A realistic design uses 5000 simulations or more!
+#' result <- designB$explore(showProgress = interactive())
+#' analysis <- designB$analyze(result)
+#' designB$summary(analysis)
+#' }
+#' ## For full examples, try:
+#' ## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
 #'
 ASSISTDesignB <- R6Class("ASSISTDesignB",
                          inherit = ASSISTDesign,
@@ -594,6 +609,7 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
                                  ## Sigma = covariance matrix between subgroup,
                                  ## which is roughly stage independent
                                  trialParameters <- private$trialParameters
+                                 designParameters <- private$designParameters
                                  J <- designParameters$J
                                  alpha <- trialParameters$type1Error
                                  q <- cumsum(private$designParameters$prevalence)
@@ -677,15 +693,7 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
                                                           sapply(seq_len(J), function(i) paste0("G", i)))
                                  trialHistory
                              },
-                             analyze = function (trialHistory = NULL, numberOfSimulations = 5000, rngSeed = 12345,
-                                                 showProgress = TRUE) {
-                                 if (is.null(trialHistory)) {
-                                     cat(sprintf("Running %d simulations to compute operating characterisistics\n",
-                                                 numberOfSimulations))
-                                     trialHistory <- explore(numberOfSimulations = numberOfSimulations,
-                                                             rngSeed = rngSeed,
-                                                             showProgress = showProgress)
-                                 }
+                             analyze = function (trialHistory) {
                                  J <- private$designParameters$J
                                  numberOfSimulations <- nrow(trialHistory)
                                  reject <- (trialHistory$decision == 1)
@@ -729,14 +737,14 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design using
-#'         the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+#'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
-#'         the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+#'   \item{\code{analyze(trialHistory)}}{Analyze
+#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
-#'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
+#' \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
 #' }
 #'
@@ -744,6 +752,22 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
 #' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
+#' @examples
+#' data(LLL.SETTINGS)
+#' prevalence <- LLL.SETTINGS$prevalences$table1
+#' scenario <- LLL.SETTINGS$scenarios$S0
+#' designParameters <- list(prevalence = prevalence,
+#'                        mean = scenario$mean,
+#'                        sd = scenario$sd)
+#' ## A realistic design uses 5000 simulations or more!
+#' designC <- ASSISTDesignC$new(trialParameters = LLL.SETTINGS$trialParameters,
+#'                             designParameters = designParameters)
+#' print(designC)
+#' result <- designC$explore(numberOfSimulations = 100, showProgress = interactive())
+#' analysis <- designC$analyze(result)
+#' designC$summary(analysis)
+#' ## For full examples, try:
+#' ## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
 #'
 ASSISTDesignC <- R6Class("ASSISTDesignC",
                          inherit = ASSISTDesignB,
@@ -756,7 +780,7 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
                                  alpha <- trialParameters$type1Error
                                  list(cAlpha = qnorm(1 - alpha))
                              },
-                             explore = function (numberOfSimulations = 100, rngSeed = 12345,
+                             explore = function (numberOfSimulations = 5000, rngSeed = 12345,
                                                  trueParameters = self$getDesignParameters(),
                                                  showProgress = TRUE) {
                                  ## Save rng state
@@ -811,15 +835,7 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
                                                           sapply(seq_len(J), function(i) paste0("G", i)))
                                  trialHistory
                              },
-                             analyze = function (trialHistory = NULL, numberOfSimulations = 5000, rngSeed = 12345,
-                                                 showProgress = TRUE) {
-                                 if (is.null(trialHistory)) {
-                                     cat(sprintf("Running %d simulations to compute operating characterisistics\n",
-                                                 numberOfSimulations))
-                                     trialHistory <- explore(numberOfSimulations = numberOfSimulations,
-                                                             rngSeed = rngSeed,
-                                                             showProgress = showProgress)
-                                 }
+                             analyze = function (trialHistory) {
                                  J <- private$designParameters$J
                                  numberOfSimulations <- nrow(trialHistory)
                                  reject <- (trialHistory$decision == 1)
@@ -849,7 +865,7 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 12345, showProgress = TRUE)}}{Create
+#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
 #'         a new \code{ASSISTDesign} instance object using the parameters specified. }
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
@@ -857,12 +873,12 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #'   \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
 #'         by performing simulations using the parameters provided}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 100, rngSeed = 12345, trueParameters = self$getDesignParameters(). showProgress = TRUE)}}{Explore the design using
-#'         the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(). showProgress = TRUE)}}{Explore the design
+#'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory = NULL, numberOfSimulations = 25, rngSeed = 12345, showProgress = TRUE)}}{Analyze
-#'         the design given. Use the \code{trialHistory} if given, else call \code{explore} to
+#'   \item{\code{analyze(trialHistory)}}{Analyze
+#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -872,12 +888,48 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #' Treatments \url{http://dx.doi.org/10.106/j.cct.2014.09.001}
 #' @export
 #' @format An \code{\link{R6Class}} generator object
+#' @examples
+#' trialParameters <- list(N = c(200, 340, 476), type1Error = 0.025,
+#'                         eps = 1/2, type2Error = 0.1)
+#' designParameters <- list(
+#'    nul0 = list(prevalence = rep(1/6, 6), mean = matrix(0, 2, 6),
+#'                sd = matrix(1, 2, 6)),
+#'    alt1 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6),
+#'                c(0.5, 0.4, 0.3, 0, 0, 0)),
+#'                sd = matrix(1, 2, 6)),
+#'    alt2 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6),
+#'                c(0.5, 0.5, 0, 0, 0, 0)),
+#'                sd = matrix(1,2, 6)),
+#'    alt3 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6), rep(0.36, 6)),
+#'                sd = matrix(1,2, 6)),
+#'    alt4 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6), rep(0.30, 6)),
+#'                sd = matrix(1,2, 6)),
+#'    alt5 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6),
+#'                c(0.4, 0.3, 0.2, 0, 0, 0)),
+#'                sd = matrix(1,2, 6)),
+#'    alt6 = list(prevalence = rep(1/6, 6), mean = rbind(rep(0, 6),
+#'                c(0.5, 0.5, 0.3, 0.3, 0.1, 0.1)),
+#'                sd = matrix(1,2, 6)))
+#'
+#'\dontrun{
+#' ## A realistic design uses 5000 simulations or more!
+#' defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
+#'                              numberOfSimulations = 25,
+#'                              designParameters = designParameters$nul0,
+#'                              showProgress = FALSE)
+#' print(defuse3)
+#' result <- defuse3$explore(showProgress = interactive())
+#' analysis <- defuse3$analyze(result)
+#' print(defuse3$summary(analysis))
+#' }
+#' ## For full examples, try:
+#' ## browseURL(system.file("full_doc/defuse3.html", package="ASSISTant"))
 #'
 DEFUSE3Design <- R6Class("DEFUSE3Design",
                          inherit = ASSISTDesign,
                          public = list(
                              initialize = function(designParameters, trialParameters, generateData = NULL,
-                                                   numberOfSimulations = 5000, rngSeed = 12345,
+                                                   numberOfSimulations = 5000, rngSeed = 54321,
                                                    showProgress = TRUE,
                                                    trueParameters = NULL) {
                                  super$initialize(designParameters, trialParameters, generateData)
