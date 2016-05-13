@@ -24,12 +24,12 @@ adaptive group sequential clinical trial with three stages.
   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
         \code{boundaries}}
-  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the
+  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the
         design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-        Show progress if so desired. Returns a data frame of results}
-  \item{\code{analyze(trialHistory)}}{Analyze
-        the design given the \code{trialHistory} which is the result of a call to \code{explore} to
+        Record statistics and show progress if so desired. Returns a list of results}
+  \item{\code{analyze(trialExploration)}}{Analyze
+        the design given the \code{trialExploration} which is the result of a call to \code{explore} to
         simulate the design. Return a list of summary quantities}
   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
         result from the \code{analyze} call}

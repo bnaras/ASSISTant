@@ -26,10 +26,10 @@ account as well.
   \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
         by performing simulations using the parameters provided}
   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(). showProgress = TRUE)}}{Explore the design
+  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the design
         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-        Show progress if so desired. Returns a data frame of results}
+        Record statistics and show progress if so desired. Returns a data frame of results}
   \item{\code{analyze(trialHistory)}}{Analyze
         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
         simulate the design. Return a list of summary quantities}

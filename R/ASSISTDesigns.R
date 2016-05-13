@@ -19,12 +19,12 @@
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 #'         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 #'         \code{boundaries}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the
 #'         design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory)}}{Analyze
-#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
+#'         Record statistics and show progress if so desired. Returns a list of results}
+#'   \item{\code{analyze(trialExploration)}}{Analyze
+#'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -270,6 +270,39 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                 mean = rep(0, numLooks), algorithm = Miwa()) - alpha
                                 }
                                 uniroot(f = crossingProb, lower= b - 1, upper = b + 1, maxiter = 20)$root
+                            },
+                            getStat = function(d, trialHistoryRow, sigma = 1) {
+                                ## d is the data so far in the trial
+                                ## stage is the stage at which the trial stopped (1, 2, 3)
+                                N <- private$trialParameters$N
+                                J <- private$designParameters$J
+                                stage <- trialHistoryRow$stage ## The stage at which the trial ended
+
+                                result <- rep(NA, ncol(trialHistoryRow) - 8)
+                                names(result) <- names(trialHistoryRow)[8 + seq(length(result))]
+                                N0 <- 0
+
+                                for (l in seq_len(stage)) {
+                                    Dl <- d[seq(from = N0 + 1, to = N[l]), ]
+                                    for (g in seq_len(J)) {
+                                        score <- Dl[Dl$trt == 0 & Dl$subGroup == g, ]$score
+                                        scoreLen <- length(score)
+                                        result[sprintf("nc_%d_%d", stage, g)] <- scoreLen
+                                        if (scoreLen > 0) {
+                                            result[sprintf("muc_%d_%d", stage, g)] <- mean(score)
+                                            result[sprintf("sdc_%d_%d", stage, g)] <- sd(score)
+                                        }
+                                        score <- Dl[Dl$trt == 1 & Dl$subGroup == g, ]$score
+                                        scoreLen <- length(score)
+                                        result[sprintf("nt_%d_%d", stage, g)] <- scoreLen
+                                        if (scoreLen > 0) {
+                                            result[sprintf("mut_%d_%d", stage, g)] <- mean(score)
+                                            result[sprintf("sdt_%d_%d", stage, g)] <- sd(score)
+                                        }
+                                    }
+                                    N0 <- N[l]
+                                }
+                                result
                             }
                         ),
                         public = list(
@@ -361,6 +394,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                             },
                             explore = function (numberOfSimulations = 5000, rngSeed = 12345,
                                                 trueParameters = self$getDesignParameters(),
+                                                recordStats = TRUE,
                                                 showProgress = TRUE) {
                                 ## Save rng state
                                 oldRngState <- if (exists(".Random.seed", envir = .GlobalEnv)) {
@@ -371,24 +405,44 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 ## set our seed
                                 set.seed(seed = rngSeed, normal.kind = NULL)
 
-                                naVec <- rep(NA, numberOfSimulations)
-                                zeroVec <- integer(numberOfSimulations)
-                                trialHistory <- data.frame(stage = naVec, decision.ITT = naVec,
-                                                           decision.subgp = naVec, select = naVec,
-                                                           statistic = naVec, lost = zeroVec,
-                                                           ITTfutStage = zeroVec,
-                                                           ITTfutSubgp = zeroVec)
-
-                                if (showProgress) {
-                                    pb <- txtProgressBar(min = 0, max = numberOfSimulations, style = 3)
-                                }
+                                ## SOME CHECKS needed here when trueParameters is provided
+                                ## for conformity
                                 trialParameters <- private$trialParameters
+                                J <- length(trueParameters$prevalence)
                                 if (is.null(trueParameters$J)) {
-                                    trueParameters$J <- length(trueParameters$prevalence)
+                                    trueParameters$J <- J
                                 }
 
                                 glrBoundary <- private$boundaries
                                 prevalence <- trueParameters$prevalence
+
+                                seqJ <- seq_len(J)
+                                naVec <- rep(NA, numberOfSimulations)
+                                zeroVec <- integer(numberOfSimulations)
+                                statNames <- c(sapply(seq_len(3),
+                                                      function(stage)
+                                                          c(sapply(seqJ, function(group) sprintf("nc_%d_%d", stage, group)),
+                                                            sapply(seqJ, function(group) sprintf("nt_%d_%d", stage, group)),
+                                                            sapply(seqJ, function(group) sprintf("muc_%d_%d", stage, group)),
+                                                            sapply(seqJ, function(group) sprintf("mut_%d_%d", stage, group)),
+                                                            sapply(seqJ, function(group) sprintf("sdc_%d_%d", stage, group)),
+                                                            sapply(seqJ, function(group) sprintf("sdt_%d_%d", stage, group)))
+                                                      ))
+                                statSize <- length(statNames)
+                                stats <- sapply(seq_len(statSize), function(x) naVec)
+                                colnames(stats) <- statNames
+
+                                trialHistory <- data.frame(stage = naVec, decision.ITT = naVec,
+                                                           decision.subgp = naVec, select = naVec,
+                                                           statistic = naVec, lost = zeroVec,
+                                                           ITTfutStage = zeroVec,
+                                                           ITTfutSubgp = zeroVec,
+                                                           stats)
+                                statIndices <- (ncol(trialHistory) - statSize) + seq_len(statSize)
+
+                                if (showProgress) {
+                                    pb <- txtProgressBar(min = 0, max = numberOfSimulations, style = 3)
+                                }
 
                                 for (i in seq_len(numberOfSimulations)) {
                                     dataSoFar <- data.frame(subGroup = integer(0), trt = integer(0),
@@ -433,6 +487,11 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                                   decision.subgp = interim$decision,
                                                                   select = subgp, statistic = interim$wcx)
                                     }
+
+                                    if (recordStats) {
+                                        trialHistory[i, statIndices] <- private$getStat(dataSoFar, trialHistory[i, ])
+                                    }
+
                                     if (showProgress) {
                                         setTxtProgressBar(pb, i)
                                     }
@@ -446,10 +505,14 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 } else {
                                     assign(x = ".Random.seed", value = oldRngState, envir = .GlobalEnv)
                                 }
-                                trialHistory
+                                list(trialHistory = trialHistory, trueParameters = trueParameters)
                             },
-                            analyze = function (trialHistory) {
+                            analyze = function (trialExploration) {
+                                trialHistory <- trialExploration$trialHistory
+                                trueParameters <- trialExploration$trueParameters
                                 numberOfSimulations <- nrow(trialHistory)
+                                trialParameters <- private$trialParameters
+
                                 reject.ITT <- (trialHistory$decision.ITT == 1)
                                 reject.subgp <- (trialHistory$decision.subgp == 1)
                                 reject.subgp[is.na(reject.subgp)] <- FALSE
@@ -459,7 +522,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 earlyStopEff <- (reject & earlyStop)
                                 earlyStopFut <- (!reject & earlyStop)
                                 popReject <- table(trialHistory$select[reject]) / numberOfSimulations
-                                exitRandSS <- private$trialParameters$N[trialHistory$stage]
+                                exitRandSS <- trialParameters$N[trialHistory$stage]
                                 exitAnalyzeSS <- exitRandSS - trialHistory$lost
                                 stageAtExitProportion <- table(trialHistory$stage) / numberOfSimulations
 
@@ -470,7 +533,22 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 sdLossFutility <- tapply(trialHistory$lost,
                                                          list(trialHistory$ITTfutStage,trialHistory$ITTfutSubgp),
                                                          sd)
+                                designParameters <- private$designParameters
+                                J <- designParameters$J
 
+                                getStats <- function(i, stat = "mu", arm = "c") {
+                                    vNames <- c(sapply(seq_len(3),
+                                                       function(stage)
+                                                           sapply(seq_len(J),
+                                                                  function(g)
+                                                                      sprintf("%s%s_%d_%d",
+                                                                              stat, arm,
+                                                                              stage, g)
+                                                                  )
+                                                       )
+                                                )
+                                    trialHistory[i, vNames]
+                                }
                                 list(numberOfSimulations = numberOfSimulations,
                                      reject.ITT = reject.ITT,
                                      reject.subgp = reject.subgp,
@@ -539,8 +617,8 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory)}}{Analyze
-#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
+#'   \item{\code{analyze(trialExploration)}}{Analyze
+#'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #'   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -689,10 +767,11 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
                                  }
                                  names(trialHistory) <- c("decision", "select", "statistic",
                                                           sapply(seq_len(J), function(i) paste0("G", i)))
-                                 trialHistory
+                                 list(trialHistory = trialHistory, trueParameters = trueParameters)
                              },
-                             analyze = function (trialHistory) {
+                             analyze = function (trialExploration) {
                                  J <- private$designParameters$J
+                                 trialHistory <- trialExploration$trialHistory
                                  numberOfSimulations <- nrow(trialHistory)
                                  reject <- (trialHistory$decision == 1)
                                  rejectGroupTable <- table(trialHistory$select[reject])
@@ -739,8 +818,8 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
 #'         Show progress if so desired. Returns a data frame of results}
-#'   \item{\code{analyze(trialHistory)}}{Analyze
-#'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
+#'   \item{\code{analyze(trialExploration)}}{Analyze
+#'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
 #' \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
 #'         result from the \code{analyze} call}
@@ -832,10 +911,11 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
                                  }
                                  names(trialHistory) <- c("decision", "statistic",
                                                           sapply(seq_len(J), function(i) paste0("G", i)))
-                                 trialHistory
+                                 list(trialHistory = trialHistory, trueParameters = trueParameters)
                              },
-                             analyze = function (trialHistory) {
+                             analyze = function (trialExploration) {
                                  J <- private$designParameters$J
+                                 trialHistory = trialExploration$trialHistory
                                  numberOfSimulations <- nrow(trialHistory)
                                  reject <- (trialHistory$decision == 1)
                                  list(reject = reject)
@@ -872,10 +952,10 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #'   \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
 #'         by performing simulations using the parameters provided}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(). showProgress = TRUE)}}{Explore the design
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the design
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress if so desired. Returns a data frame of results}
+#'         Record statistics and show progress if so desired. Returns a data frame of results}
 #'   \item{\code{analyze(trialHistory)}}{Analyze
 #'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -943,7 +1023,8 @@ DEFUSE3Design <- R6Class("DEFUSE3Design",
                                  ## Run simulations to estimate expect max sample sizes
                                  result <- self$explore(numberOfSimulations = numberOfSimulations,
                                                         rngSeed = rngSeed,
-                                                        showProgress = showProgress)
+                                                        recordStats = FALSE,
+                                                        showProgress = showProgress)$trialHistory
                                  simDN <- matrix(NA, numberOfSimulations, 3)
                                  q <- cumsum(designParameters$prevalence)
                                  for (i in seq_len(numberOfSimulations)) {

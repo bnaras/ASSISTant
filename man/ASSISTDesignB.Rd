@@ -28,8 +28,8 @@ and what quantities are computed in a trial run.
         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
         Show progress if so desired. Returns a data frame of results}
-  \item{\code{analyze(trialHistory)}}{Analyze
-        the design given the \code{trialHistory} which is the result of a call to \code{explore} to
+  \item{\code{analyze(trialExploration)}}{Analyze
+        the design given the \code{trialExploration} which is the result of a call to \code{explore} to
         simulate the design. Return a list of summary quantities}
   \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
         result from the \code{analyze} call}
