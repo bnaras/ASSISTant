@@ -76,7 +76,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 if (!scalarInRange(trialParameters$type1Error, low=0.0001, 0.2)) {
                                     stop("Improper type 1 error")
                                 }
-                                if (!scalarInRange(trialParameters$type2Error, low=0.0001, 0.2)) {
+                                if (!scalarInRange(trialParameters$type2Error, low=0.0001, 0.3)) {
                                     stop("Improper type 2 error")
                                 }
                                 if (!scalarInRange(trialParameters$eps, low=1e-5, high = 1 - 1e-5)) {
@@ -130,6 +130,9 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                             },
                             performInterimLook = function (data, stage) {
                                 d <- split(data$score, data$trt)
+                                nc <- length(d$`0`) ## control
+                                nt <- length(d$`1`) ## treatment
+                                Nl = sqrt(nt * nc / (nt +  nc))
                                 wcx <- private$wilcoxon(d$`1`, d$`0`)
                                 bdy <- private$boundaries
                                 if (stage < 3) {
@@ -151,7 +154,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                         decision <- -1 ## accept
                                     }
                                 }
-                                list(decision = decision, wcx = wcx)
+                                list(decision = decision, wcx = wcx, Nl = Nl)
                             },
                             den.vs = function(v, i, mu.prime, Sigma.prime, fut ) {
                                 ## Density function used in integration
@@ -278,8 +281,11 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 J <- private$designParameters$J
                                 stage <- trialHistoryRow$stage ## The stage at which the trial ended
 
-                                result <- rep(NA, ncol(trialHistoryRow) - 8)
+                                ## result <- rep(NA, ncol(trialHistoryRow) - 8)
+                                ## names(result) <- names(trialHistoryRow)[8 + seq(length(result))]
+                                result <- rep(NA, 3 * (6 * J))
                                 names(result) <- names(trialHistoryRow)[8 + seq(length(result))]
+
                                 N0 <- 0
 
                                 for (l in seq_len(stage)) {
@@ -437,7 +443,8 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                            statistic = naVec, lost = zeroVec,
                                                            ITTfutStage = zeroVec,
                                                            ITTfutSubgp = zeroVec,
-                                                           stats)
+                                                           stats,
+                                                           bounds = naVec)
                                 statIndices <- (ncol(trialHistory) - statSize) + seq_len(statSize)
 
                                 if (showProgress) {
@@ -490,6 +497,16 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 
                                     if (recordStats) {
                                         trialHistory[i, statIndices] <- private$getStat(dataSoFar, trialHistory[i, ])
+                                        ##
+                                        ## sigmahat is fixed at 1 for now
+                                        sigmahat <- 1
+                                        if (j==3){
+                                            cut <- glrBoundary["c"] # c
+                                        } else {
+                                            cut <- glrBoundary["b"]
+                                        }
+
+                                        trialHistory$bounds[i] <- (interim$wcx - cut) * sigmahat / interim$Nl
                                     }
 
                                     if (showProgress) {
@@ -535,6 +552,8 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                          sd)
                                 designParameters <- private$designParameters
                                 J <- designParameters$J
+                                trueTheta <- cumsum(designParameters$mean[2, ]) / seq_len(J)
+                                trueDelta <- designParameters$mean[2, ]
 
                                 getStats <- function(i, stat = "mu", arm = "c") {
                                     vNames <- c(sapply(seq_len(3),
@@ -549,6 +568,21 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                 )
                                     trialHistory[i, vNames]
                                 }
+
+                                ## CI Report
+                                coverage <- power <- numeric(6)
+                                bounds <- trialHistory[, "bounds"]
+                                selected <- trialHistory[, "select"]
+                                ##reject <- (trialHistory[, "decision.ITT"] + 1) / 2 ## Map from (-1, 1) to (0, 1)
+                                coverage <- sapply(seq_len(J), function(j) {
+                                    mean( bounds[selected == j] <= trueTheta[j] )
+                                })
+
+                                noOfTimesGroupSelected <- sapply(seq_len(J), function(j) sum( selected == j ) )
+                                noOfTimesGroupRejected <- sapply(seq_len(J), function(j) sum( reject[selected == j ]) )
+                                overallCoverage <- mean( bounds <= trueTheta[selected] )
+                                rejectionCoverage <- mean( bounds[reject == 1] <= trueTheta[selected[reject == 1]] )
+
                                 list(numberOfSimulations = numberOfSimulations,
                                      reject.ITT = reject.ITT,
                                      reject.subgp = reject.subgp,
@@ -562,7 +596,13 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                      stageAtExitProportion = stageAtExitProportion,
                                      futilityTable = futilityTable,
                                      meanLossFutility = meanLossFutility,
-                                     sdLossFutility = sdLossFutility
+                                     sdLossFutility = sdLossFutility,
+                                     coverage = coverage,
+                                     overallCoverage = overallCoverage,
+                                     rejectionCoverage = rejectionCoverage,
+                                     rejectionRate = mean(reject),
+                                     noOfTimesGroupSelected = noOfTimesGroupSelected,
+                                     noOfTimesGroupRejected = noOfTimesGroupRejected
                                      )
                             },
                             summary = function(analysis) {
@@ -587,6 +627,17 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                 print(analysis$meanLossFutility)
                                 cat("\nSD loss by futility stage and subgroup\n")
                                 print(analysis$sdLossFutility)
+                                cat("\nCI Statistics:")
+                                cat('\nOverall coverage:', analysis$overallCoverage)
+                                cat('\nCoverage for rejections:', analysis$rejectionCoverage)
+                                cat('\nRejection rate:', analysis$rejectionRate, "\n")
+                                cat('\nNumber of times Group j is selected')
+                                print(analysis$noOfTimesGroupSelected)
+                                cat('\nNumber of times Group j is rejected')
+                                print(analysis$noOfTimesGroupRejected)
+                                cat('\nP(theta_test is in the confidence interval)\n')
+                                print(analysis$coverage)
+                                invisible()
                             }
                         ))
 
