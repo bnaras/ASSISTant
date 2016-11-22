@@ -6,7 +6,7 @@
 \title{A fixed sample RCT design to compare against the adaptive clinical trial design of Lai, Lavori and Liao.}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-ASSISTDesignC
+# design <- ASSISTDesignC$new(trialParameters, designParameters, generateData)
 }
 \description{
 \code{ASSISTDesignC} objects are used to design a trial with certain

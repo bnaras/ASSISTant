@@ -11,7 +11,7 @@
 
 <meta name="author" content="Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan" />
 
-<meta name="date" content="2016-08-17" />
+<meta name="date" content="2016-11-08" />
 
 <title>Design of the DEFUSE3 Trial</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Design of the DEFUSE3 Trial</h1>
 <h4 class="author"><em>Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan</em></h4>
-<h4 class="date"><em>2016-08-17</em></h4>
+<h4 class="date"><em>2016-11-08</em></h4>
 
 </div>
 
@@ -177,8 +177,7 @@ print(defuse3)</code></pre>
 ##  Named num [1:3] -1.88 2.63 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -192,7 +191,7 @@ print(defuse3)</code></pre>
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f8da2ba1200&gt;</code></pre>
+## &lt;environment: 0x7f902a7acf10&gt;</code></pre>
 <pre class="r"><code>result &lt;- defuse3$explore(numberOfSimulations = 5000, showProgress = FALSE)
 analysis &lt;- defuse3$analyze(result)
 print(defuse3$summary(analysis))</code></pre>
