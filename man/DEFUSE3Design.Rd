@@ -6,7 +6,7 @@
 \title{The DEFUSE3 design}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-DEFUSE3Design
+# design <- DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)
 }
 \description{
 \code{DEFUSE3Design} is a slight variant of the the adaptive

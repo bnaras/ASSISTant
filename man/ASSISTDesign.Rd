@@ -6,7 +6,7 @@
 \title{A class to encapsulate the adaptive clinical trial design of Lai, Lavori and Liao}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-ASSISTDesign
+# design <- ASSISTDesign$new(trialParameters, designParameters)
 }
 \description{
 \code{ASSISTDesign} objects are used to design, simulate and analyze

@@ -43,10 +43,13 @@ data(LLL.SETTINGS)
 str(LLL.SETTINGS)
 ```
 
-The `LLL.SETTINGS` list contains all the scenarios described in the
-paper.
+The `LLL.SETTINGS` list contains all the scenarios used for the null
+and alternative cases in Lai, Lavori and Liao [-@Lai2014191].
 
 ## Table 1 Results
+
+The results shown here should closely approximate those in Table 1 of
+Lai, Lavori and Liao [-@Lai2014191].
 
 ### Scenario S0
 

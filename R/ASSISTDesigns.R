@@ -8,6 +8,8 @@
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
+#' @usage # design <- ASSISTDesign$new(trialParameters, designParameters)
+#'
 #' @section Methods:
 #'
 #' \describe{
@@ -312,9 +314,7 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                             }
                         ),
                         public = list(
-                            generateData = function(prevalence = rep(1/6, 6), N,
-                                                    mean = matrix(0, 2, 6),
-                                                    sd = matrix(1, 2, 6)) {
+                            generateData = function(prevalence, N, mean, sd) {
                                 if (N == 0) {
                                     data.frame(subGroup = integer(0), trt = integer(0),
                                                score = numeric(0))
@@ -655,6 +655,8 @@ ASSISTDesign <- R6Class("ASSISTDesign",
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
+#' @usage # design <- ASSISTDesignB$new(trialParameters, designParameters, generateData)
+#'
 #' @section Methods:
 #'
 #' \describe{
@@ -856,6 +858,7 @@ ASSISTDesignB <- R6Class("ASSISTDesignB",
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
+#' @usage # design <- ASSISTDesignC$new(trialParameters, designParameters, generateData)
 #' @section Methods:
 #'
 #' \describe{
@@ -992,6 +995,8 @@ ASSISTDesignC <- R6Class("ASSISTDesignC",
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
+#' @usage # design <- DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)
+#'
 #' @section Methods:
 #'
 #' \describe{

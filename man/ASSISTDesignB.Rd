@@ -6,7 +6,7 @@
 \title{A fixed sample design to compare against the adaptive clinical trial design of Lai, Lavori and Liao.}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-ASSISTDesignB
+# design <- ASSISTDesignB$new(trialParameters, designParameters, generateData)
 }
 \description{
 \code{ASSISTDesignB} objects are used to design a trial with certain

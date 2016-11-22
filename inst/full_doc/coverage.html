@@ -11,7 +11,7 @@
 
 <meta name="author" content="Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan" />
 
-<meta name="date" content="2016-08-18" />
+<meta name="date" content="2016-11-08" />
 
 <title>Confidence Interval Simulations</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Confidence Interval Simulations</h1>
 <h4 class="author"><em>Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan</em></h4>
-<h4 class="date"><em>2016-08-18</em></h4>
+<h4 class="date"><em>2016-11-08</em></h4>
 
 </div>
 
@@ -213,8 +213,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -228,7 +227,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e014a00&gt;
+## &lt;environment: 0x7fc08cac15f0&gt;
 ## P(Reject H0_ITT) = 0.010600; P(Reject H0_subgp) = 0.014400; P(Reject H0) = 0.025000
 ## P(Early stop for efficacy [futility]) = 0.012800 [0.559000]
 ## Mean [SD] Randomized N = 442.300000 [105.531689]
@@ -300,8 +299,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -315,7 +313,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e95c0e8&gt;
+## &lt;environment: 0x7fc089f96660&gt;
 ## P(Reject H0_ITT) = 0.403800; P(Reject H0_subgp) = 0.490800; P(Reject H0) = 0.894600
 ## P(Early stop for efficacy [futility]) = 0.377800 [0.003600]
 ## Mean [SD] Randomized N = 471.580000 [109.447245]
@@ -387,8 +385,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -402,7 +399,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f965147b0a0&gt;
+## &lt;environment: 0x7fc08f795bc8&gt;
 ## P(Reject H0_ITT) = 0.097400; P(Reject H0_subgp) = 0.513200; P(Reject H0) = 0.610600
 ## P(Early stop for efficacy [futility]) = 0.241600 [0.036800]
 ## Mean [SD] Randomized N = 500.680000 [85.058713]
@@ -474,8 +471,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -489,7 +485,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ec29660&gt;
+## &lt;environment: 0x7fc08f6778a8&gt;
 ## P(Reject H0_ITT) = 0.810200; P(Reject H0_subgp) = 0.048600; P(Reject H0) = 0.858800
 ## P(Early stop for efficacy [futility]) = 0.639800 [0.004600]
 ## Mean [SD] Randomized N = 397.840000 [127.767755]
@@ -561,8 +557,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -576,7 +571,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964af7ca30&gt;
+## &lt;environment: 0x7fc08e053aa8&gt;
 ## P(Reject H0_ITT) = 0.221200; P(Reject H0_subgp) = 0.526200; P(Reject H0) = 0.747400
 ## P(Early stop for efficacy [futility]) = 0.295200 [0.012400]
 ## Mean [SD] Randomized N = 491.650000 [94.934609]
@@ -648,8 +643,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -663,7 +657,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ec02a00&gt;
+## &lt;environment: 0x7fc08e385808&gt;
 ## P(Reject H0_ITT) = 0.797000; P(Reject H0_subgp) = 0.152400; P(Reject H0) = 0.949400
 ## P(Early stop for efficacy [futility]) = 0.638000 [0.000600]
 ## Mean [SD] Randomized N = 400.930000 [126.987638]
@@ -735,8 +729,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -750,7 +743,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f9649ca8df8&gt;
+## &lt;environment: 0x7fc08f6740b0&gt;
 ## P(Reject H0_ITT) = 0.009400; P(Reject H0_subgp) = 0.984800; P(Reject H0) = 0.994200
 ## P(Early stop for efficacy [futility]) = 0.811800 [0.001200]
 ## Mean [SD] Randomized N = 392.620000 [97.310994]
@@ -822,8 +815,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -837,7 +829,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9a81c8&gt;
+## &lt;environment: 0x7fc08d030ea0&gt;
 ## P(Reject H0_ITT) = 0.013000; P(Reject H0_subgp) = 0.017600; P(Reject H0) = 0.030600
 ## P(Early stop for efficacy [futility]) = 0.014400 [0.519000]
 ## Mean [SD] Randomized N = 451.330000 [103.270829]
@@ -909,8 +901,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -924,7 +915,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964eb973f8&gt;
+## &lt;environment: 0x7fc08f6752a8&gt;
 ## P(Reject H0_ITT) = 0.810200; P(Reject H0_subgp) = 0.048600; P(Reject H0) = 0.858800
 ## P(Early stop for efficacy [futility]) = 0.639800 [0.004600]
 ## Mean [SD] Randomized N = 397.840000 [127.767755]
@@ -996,8 +987,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1011,7 +1001,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964aed36b0&gt;
+## &lt;environment: 0x7fc08e379318&gt;
 ## P(Reject H0_ITT) = 0.009200; P(Reject H0_subgp) = 0.985400; P(Reject H0) = 0.994600
 ## P(Early stop for efficacy [futility]) = 0.830200 [0.000400]
 ## Mean [SD] Randomized N = 376.150000 [103.120339]
@@ -1083,8 +1073,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.64 2.61
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1098,7 +1087,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964a5426b0&gt;
+## &lt;environment: 0x7fc08f67cd78&gt;
 ## P(Reject H0_ITT) = 0.008200; P(Reject H0_subgp) = 0.009600; P(Reject H0) = 0.017800
 ## P(Early stop for efficacy [futility]) = 0.009600 [0.611200]
 ## Mean [SD] Randomized N = 434.230000 [103.730223]
@@ -1170,8 +1159,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1185,7 +1173,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9a2878&gt;
+## &lt;environment: 0x7fc08e37e270&gt;
 ## P(Reject H0_ITT) = 0.019800; P(Reject H0_subgp) = 0.030000; P(Reject H0) = 0.049800
 ## P(Early stop for efficacy [futility]) = 0.023400 [0.462000]
 ## Mean [SD] Randomized N = 459.850000 [102.954346]
@@ -1257,8 +1245,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1272,7 +1259,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964a60e708&gt;
+## &lt;environment: 0x7fc08f79da38&gt;
 ## P(Reject H0_ITT) = 0.523400; P(Reject H0_subgp) = 0.414600; P(Reject H0) = 0.938000
 ## P(Early stop for efficacy [futility]) = 0.455400 [0.001400]
 ## Mean [SD] Randomized N = 450.130000 [120.059843]
@@ -1344,8 +1331,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1359,7 +1345,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964aefdcd0&gt;
+## &lt;environment: 0x7fc08e38d840&gt;
 ## P(Reject H0_ITT) = 0.154200; P(Reject H0_subgp) = 0.533000; P(Reject H0) = 0.687200
 ## P(Early stop for efficacy [futility]) = 0.278200 [0.026200]
 ## Mean [SD] Randomized N = 493.330000 [92.702372]
@@ -1431,8 +1417,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1446,7 +1431,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ec036d0&gt;
+## &lt;environment: 0x7fc08f65f518&gt;
 ## P(Reject H0_ITT) = 0.884200; P(Reject H0_subgp) = 0.036400; P(Reject H0) = 0.920600
 ## P(Early stop for efficacy [futility]) = 0.739400 [0.002000]
 ## Mean [SD] Randomized N = 366.760000 [124.584135]
@@ -1518,8 +1503,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1533,7 +1517,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9a89c8&gt;
+## &lt;environment: 0x7fc08f6b38a8&gt;
 ## P(Reject H0_ITT) = 0.310600; P(Reject H0_subgp) = 0.506400; P(Reject H0) = 0.817000
 ## P(Early stop for efficacy [futility]) = 0.342000 [0.007200]
 ## Mean [SD] Randomized N = 478.990000 [105.831564]
@@ -1605,8 +1589,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1620,7 +1603,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964af7b230&gt;
+## &lt;environment: 0x7fc08e30c5f0&gt;
 ## P(Reject H0_ITT) = 0.883200; P(Reject H0_subgp) = 0.096200; P(Reject H0) = 0.979400
 ## P(Early stop for efficacy [futility]) = 0.737600 [0.000600]
 ## Mean [SD] Randomized N = 367.990000 [124.743625]
@@ -1692,8 +1675,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1707,7 +1689,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f975830&gt;
+## &lt;environment: 0x7fc089c5c2d8&gt;
 ## P(Reject H0_ITT) = 0.018800; P(Reject H0_subgp) = 0.977400; P(Reject H0) = 0.996200
 ## P(Early stop for efficacy [futility]) = 0.760400 [0.000400]
 ## Mean [SD] Randomized N = 396.460000 [106.229588]
@@ -1779,8 +1761,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1794,7 +1775,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f96b638&gt;
+## &lt;environment: 0x7fc08f67d428&gt;
 ## P(Reject H0_ITT) = 0.026800; P(Reject H0_subgp) = 0.032600; P(Reject H0) = 0.059400
 ## P(Early stop for efficacy [futility]) = 0.025800 [0.424400]
 ## Mean [SD] Randomized N = 465.730000 [102.777331]
@@ -1866,8 +1847,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1881,7 +1861,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964a6cc190&gt;
+## &lt;environment: 0x7fc08f662028&gt;
 ## P(Reject H0_ITT) = 0.884200; P(Reject H0_subgp) = 0.036400; P(Reject H0) = 0.920600
 ## P(Early stop for efficacy [futility]) = 0.739400 [0.002000]
 ## Mean [SD] Randomized N = 366.760000 [124.584135]
@@ -1953,8 +1933,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -1968,7 +1947,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e8d2778&gt;
+## &lt;environment: 0x7fc08f6b7ee8&gt;
 ## P(Reject H0_ITT) = 0.020400; P(Reject H0_subgp) = 0.976400; P(Reject H0) = 0.996800
 ## P(Early stop for efficacy [futility]) = 0.763800 [0.000200]
 ## Mean [SD] Randomized N = 382.750000 [113.633270]
@@ -2040,8 +2019,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.85 2.36 2.3
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2055,7 +2033,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9b4670&gt;
+## &lt;environment: 0x7fc08f683d78&gt;
 ## P(Reject H0_ITT) = 0.017000; P(Reject H0_subgp) = 0.024600; P(Reject H0) = 0.041600
 ## P(Early stop for efficacy [futility]) = 0.019800 [0.493600]
 ## Mean [SD] Randomized N = 453.940000 [104.396629]
@@ -2127,8 +2105,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2142,7 +2119,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9b8590&gt;
+## &lt;environment: 0x7fc08f6c6630&gt;
 ## P(Reject H0_ITT) = 0.050400; P(Reject H0_subgp) = 0.057800; P(Reject H0) = 0.108200
 ## P(Early stop for efficacy [futility]) = 0.050800 [0.346400]
 ## Mean [SD] Randomized N = 471.940000 [105.649746]
@@ -2214,8 +2191,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2229,7 +2205,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9ac3c8&gt;
+## &lt;environment: 0x7fc089d57f20&gt;
 ## P(Reject H0_ITT) = 0.654200; P(Reject H0_subgp) = 0.316400; P(Reject H0) = 0.970600
 ## P(Early stop for efficacy [futility]) = 0.546800 [0.000600]
 ## Mean [SD] Randomized N = 421.330000 [129.289885]
@@ -2301,8 +2277,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2316,7 +2291,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964cdf5440&gt;
+## &lt;environment: 0x7fc089e83ee8&gt;
 ## P(Reject H0_ITT) = 0.255800; P(Reject H0_subgp) = 0.522800; P(Reject H0) = 0.778600
 ## P(Early stop for efficacy [futility]) = 0.320800 [0.012600]
 ## Mean [SD] Randomized N = 481.690000 [105.225750]
@@ -2388,8 +2363,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2403,7 +2377,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9a5908&gt;
+## &lt;environment: 0x7fc08e37c740&gt;
 ## P(Reject H0_ITT) = 0.939200; P(Reject H0_subgp) = 0.025000; P(Reject H0) = 0.964200
 ## P(Early stop for efficacy [futility]) = 0.834400 [0.001400]
 ## Mean [SD] Randomized N = 334.150000 [113.722751]
@@ -2475,8 +2449,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2490,7 +2463,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ec265f0&gt;
+## &lt;environment: 0x7fc08f6baaa0&gt;
 ## P(Reject H0_ITT) = 0.452400; P(Reject H0_subgp) = 0.435400; P(Reject H0) = 0.887800
 ## P(Early stop for efficacy [futility]) = 0.419400 [0.003000]
 ## Mean [SD] Randomized N = 458.260000 [117.735062]
@@ -2562,8 +2535,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2577,7 +2549,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ebfc270&gt;
+## &lt;environment: 0x7fc08e376200&gt;
 ## P(Reject H0_ITT) = 0.938800; P(Reject H0_subgp) = 0.052600; P(Reject H0) = 0.991400
 ## P(Early stop for efficacy [futility]) = 0.832200 [0.000000]
 ## Mean [SD] Randomized N = 337.930000 [114.067600]
@@ -2649,8 +2621,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2664,7 +2635,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964cb2e9c0&gt;
+## &lt;environment: 0x7fc0923e84d8&gt;
 ## P(Reject H0_ITT) = 0.040800; P(Reject H0_subgp) = 0.957800; P(Reject H0) = 0.998600
 ## P(Early stop for efficacy [futility]) = 0.691200 [0.000000]
 ## Mean [SD] Randomized N = 399.010000 [118.517210]
@@ -2736,8 +2707,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2751,7 +2721,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e9a0bc0&gt;
+## &lt;environment: 0x7fc08e383d48&gt;
 ## P(Reject H0_ITT) = 0.047600; P(Reject H0_subgp) = 0.064600; P(Reject H0) = 0.112200
 ## P(Early stop for efficacy [futility]) = 0.042400 [0.318800]
 ## Mean [SD] Randomized N = 479.800000 [102.029613]
@@ -2823,8 +2793,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2838,7 +2807,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964af4ca30&gt;
+## &lt;environment: 0x7fc08c464628&gt;
 ## P(Reject H0_ITT) = 0.939200; P(Reject H0_subgp) = 0.025000; P(Reject H0) = 0.964200
 ## P(Early stop for efficacy [futility]) = 0.834400 [0.001400]
 ## Mean [SD] Randomized N = 334.150000 [113.722751]
@@ -2910,8 +2879,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -2925,7 +2893,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9bb668&gt;
+## &lt;environment: 0x7fc08f6af958&gt;
 ## P(Reject H0_ITT) = 0.044600; P(Reject H0_subgp) = 0.954200; P(Reject H0) = 0.998800
 ## P(Early stop for efficacy [futility]) = 0.700000 [0.000000]
 ## Mean [SD] Randomized N = 388.570000 [122.828631]
@@ -2997,8 +2965,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.5 2.04 1.92
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3012,7 +2979,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ec0ac68&gt;
+## &lt;environment: 0x7fc08f6b2f20&gt;
 ## P(Reject H0_ITT) = 0.034400; P(Reject H0_subgp) = 0.051400; P(Reject H0) = 0.085800
 ## P(Early stop for efficacy [futility]) = 0.041600 [0.376400]
 ## Mean [SD] Randomized N = 470.050000 [103.815476]
@@ -3084,8 +3051,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3099,7 +3065,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9af230&gt;
+## &lt;environment: 0x7fc08f65f028&gt;
 ## P(Reject H0_ITT) = 0.105000; P(Reject H0_subgp) = 0.129400; P(Reject H0) = 0.234400
 ## P(Early stop for efficacy [futility]) = 0.098400 [0.218400]
 ## Mean [SD] Randomized N = 483.100000 [106.656763]
@@ -3171,8 +3137,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3186,7 +3151,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9b7308&gt;
+## &lt;environment: 0x7fc08f6b5bb8&gt;
 ## P(Reject H0_ITT) = 0.811800; P(Reject H0_subgp) = 0.178600; P(Reject H0) = 0.990400
 ## P(Early stop for efficacy [futility]) = 0.679600 [0.000200]
 ## Mean [SD] Randomized N = 380.800000 [130.091294]
@@ -3258,8 +3223,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3273,7 +3237,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e8f38e8&gt;
+## &lt;environment: 0x7fc08e37c430&gt;
 ## P(Reject H0_ITT) = 0.420200; P(Reject H0_subgp) = 0.458600; P(Reject H0) = 0.878800
 ## P(Early stop for efficacy [futility]) = 0.406400 [0.007000]
 ## Mean [SD] Randomized N = 458.680000 [118.972638]
@@ -3345,8 +3309,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3360,7 +3323,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9adbc0&gt;
+## &lt;environment: 0x7fc08f796b90&gt;
 ## P(Reject H0_ITT) = 0.976600; P(Reject H0_subgp) = 0.012600; P(Reject H0) = 0.989200
 ## P(Early stop for efficacy [futility]) = 0.911000 [0.001000]
 ## Mean [SD] Randomized N = 303.280000 [95.472848]
@@ -3432,8 +3395,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3447,7 +3409,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f9651d44340&gt;
+## &lt;environment: 0x7fc08c33bc38&gt;
 ## P(Reject H0_ITT) = 0.639600; P(Reject H0_subgp) = 0.308800; P(Reject H0) = 0.948400
 ## P(Early stop for efficacy [futility]) = 0.533800 [0.001400]
 ## Mean [SD] Randomized N = 423.220000 [129.989273]
@@ -3519,8 +3481,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3534,7 +3495,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f965558&gt;
+## &lt;environment: 0x7fc08f65c3c8&gt;
 ## P(Reject H0_ITT) = 0.978600; P(Reject H0_subgp) = 0.020000; P(Reject H0) = 0.998600
 ## P(Early stop for efficacy [futility]) = 0.904600 [0.000000]
 ## Mean [SD] Randomized N = 304.780000 [97.524632]
@@ -3606,8 +3567,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3621,7 +3581,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ebffdf0&gt;
+## &lt;environment: 0x7fc08f675158&gt;
 ## P(Reject H0_ITT) = 0.102800; P(Reject H0_subgp) = 0.896600; P(Reject H0) = 0.999400
 ## P(Early stop for efficacy [futility]) = 0.587600 [0.000200]
 ## Mean [SD] Randomized N = 415.510000 [126.432341]
@@ -3693,8 +3653,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3708,7 +3667,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f80c958&gt;
+## &lt;environment: 0x7fc08e389190&gt;
 ## P(Reject H0_ITT) = 0.128600; P(Reject H0_subgp) = 0.135400; P(Reject H0) = 0.264000
 ## P(Early stop for efficacy [futility]) = 0.110800 [0.189000]
 ## Mean [SD] Randomized N = 485.920000 [106.023591]
@@ -3780,8 +3739,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3795,7 +3753,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964ebff990&gt;
+## &lt;environment: 0x7fc08f6b8f58&gt;
 ## P(Reject H0_ITT) = 0.976600; P(Reject H0_subgp) = 0.012600; P(Reject H0) = 0.989200
 ## P(Early stop for efficacy [futility]) = 0.911000 [0.001000]
 ## Mean [SD] Randomized N = 303.280000 [95.472848]
@@ -3867,8 +3825,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3882,7 +3839,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964e8f0e98&gt;
+## &lt;environment: 0x7fc08f6ba758&gt;
 ## P(Reject H0_ITT) = 0.100400; P(Reject H0_subgp) = 0.899400; P(Reject H0) = 0.999800
 ## P(Early stop for efficacy [futility]) = 0.598800 [0.000000]
 ## Mean [SD] Randomized N = 406.060000 [130.811692]
@@ -3954,8 +3911,7 @@ for (setting in names(settings)) {
 ##  Named num [1:3] -1.26 1.67 1.45
 ##  - attr(*, &quot;names&quot;)= chr [1:3] &quot;btilde&quot; &quot;b&quot; &quot;c&quot;
 ## Data Generating function:
-## function (prevalence = rep(1/6, 6), N, mean = matrix(0, 2, 6), 
-##     sd = matrix(1, 2, 6)) 
+## function (prevalence, N, mean, sd) 
 ## {
 ##     if (N == 0) {
 ##         data.frame(subGroup = integer(0), trt = integer(0), score = numeric(0))
@@ -3969,7 +3925,7 @@ for (setting in names(settings)) {
 ##         data.frame(subGroup = subGroup, trt = trt, score = rankin)
 ##     }
 ## }
-## &lt;environment: 0x7f964f9b48a0&gt;
+## &lt;environment: 0x7fc08e1b30e8&gt;
 ## P(Reject H0_ITT) = 0.088000; P(Reject H0_subgp) = 0.102800; P(Reject H0) = 0.190800
 ## P(Early stop for efficacy [futility]) = 0.079400 [0.246200]
 ## Mean [SD] Randomized N = 481.960000 [106.483924]
