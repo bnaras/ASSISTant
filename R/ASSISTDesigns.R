@@ -274,7 +274,9 @@ ASSISTDesign <- R6Class("ASSISTDesign",
                                                 upper = c(rep(b, numLooks - 1), Inf), sigma = cov.J,
                                                 mean = rep(0, numLooks), algorithm = Miwa()) - alpha
                                 }
-                                uniroot(f = crossingProb, lower= b - 1, upper = b + 1, maxiter = 20)$root
+                                ## Add a check for root solution
+                                uniroot(f = crossingProb, lower = min(0, b - 2),
+                                        upper = max(b + 2, 4), maxiter = 20)$root
                             },
                             getStat = function(d, trialHistoryRow, sigma = 1) {
                                 ## d is the data so far in the trial
