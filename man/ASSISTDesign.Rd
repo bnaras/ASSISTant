@@ -16,25 +16,26 @@ adaptive group sequential clinical trial with three stages.
 
 
 \describe{
-  \item{\code{ASSISTDesign$new(designParameters, trialParameters, generateData)}}{Create a new
-        \code{ASSISTDesign} instance object using the parameters specified}
-  \item{\code{getDesignParameters},\code{getTrialParameters},
-        \code{getBoundaries}}{Accessor methods for (obvious) object fields}
-  \item{\code{print()}}{Print the object in a human readable form}
-  \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
-        \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
-        \code{boundaries}}
-  \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the
-        design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
-        as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-        Record statistics and show progress if so desired. Returns a list of results}
-  \item{\code{analyze(trialExploration)}}{Analyze
-        the design given the \code{trialExploration} which is the result of a call to \code{explore} to
-        simulate the design. Return a list of summary quantities}
-  \item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
-        result from the \code{analyze} call}
+\item{\code{ASSISTDesign$new(designParameters, trialParameters, generateData)}}{Create a new
+\code{ASSISTDesign} instance object using the parameters specified}
+\item{\code{getDesignParameters},\code{getTrialParameters},
+\code{getBoundaries}}{Accessor methods for (obvious) object fields}
+\item{\code{print()}}{Print the object in a human readable form}
+\item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
+\eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
+\code{boundaries}}
+\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the
+design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
+as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
+Record statistics and show progress if so desired. Returns a list of results}
+\item{\code{analyze(trialExploration)}}{Analyze
+the design given the \code{trialExploration} which is the result of a call to \code{explore} to
+simulate the design. Return a list of summary quantities}
+\item{\code{summary(analysis)}}{Print the operating characteristics of the design, using the analysis
+result from the \code{analyze} call}
 }
 }
+
 \examples{
 \dontrun{
 data(LLL.SETTINGS)
@@ -64,4 +65,3 @@ Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/art
 \code{LLL.SETTINGS} for an explanation of trial parameters
 }
 \keyword{datasets}
-
