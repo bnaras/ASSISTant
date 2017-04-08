@@ -1,0 +1,595 @@
+## Global variable, NUM_STAGES = 3
+NUM_STAGES <- 3L
+
+#' Compute the standardized Wilcoxon test statistic for two samples
+#'
+#' We compute the standardized Wilcoxon test statistic with mean 0 and
+#' and standard deviation 1 for samples \eqn{x} and \eqn{y}.  The R function
+#' [stats::wilcox.test()] returns the statistic
+#'
+#' \deqn{
+#' U = \sum_i R_i - \frac{m(m + 1)}{2}
+#' }{
+#' U = (sum over i) R_i - m(m + 1) / 2
+#' }
+#'
+#' where \eqn{R_i} are the ranks of the first sample \eqn{x} of size
+#' \eqn{m}. We compute
+#'
+#' \deqn{
+#' \frac{(U - mn(1/2 + \theta))}{\sqrt{mn(m + n + 1) / 12}}
+#' }{
+#' (U - mn(1/2 + theta)) / (mn(m + n + 1) / 12)^(1/2)
+#' }
+#'
+#' where \eqn{\theta} is the alternative hypothesis shift on the
+#'     probability scale, i.e. \eqn{P(X > Y) = 1/2 + \theta}.
+#'
+#' @param x a sample numeric vector
+#' @param y a sample numeric vector
+#' @param theta a value > 0 but < 1/2.
+#' @return the standardized Wilcoxon statistic
+#' @export
+#' @md
+wilcoxon <- function(x, y, theta = 0) {
+    nx <- length(x)
+    ny <- length(y)
+    (wilcox.test(x, y, exact = FALSE)$statistic - nx * ny * (1/2 + theta)) /
+        sqrt(nx * ny * (nx + ny + 1) / 12)
+}
+
+#' Compute the sample size for any group at a stage assuming a nested
+#' structure as in the paper.
+#'
+#' In the three stage design under consideration, the groups are
+#' nested with assumed prevalences and fixed total sample size at each
+#' stage. This function returns the sample size for a specified group
+#' at a given stage, where the futility stage for the overall group
+#' test may be specified along with the chosen subgroup.
+#'
+#' @param prevalence the vector of prevalence, will be normalized if
+#'     not already so. The length of this vector implicitly indicates
+#'     the number of groups J.
+#' @param N an integer vector of length 3 indicating total sample size
+#'     at each of the three stages
+#' @param stage the stage of the trial
+#' @param group the group whose sample size is desired
+#' @param HJFutilityStage is the stage at which overall futility
+#'     occured. Default `NA` indicating it did not occur. Also
+#'     ignored if stage is 1.
+#' @param chosenGroup the selected group if HJFutilityAtStage is not
+#'     `NA`. Ignored if stage is 1.
+#' @return the sample size for group
+#'
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+groupSampleSize <- function(prevalence, N, stage, group, HJFutileAtStage = NA, chosenGroup = NA) {
+    if (!integerInRange(trialParameters$N, low = 1) || length(N) != NUM_STAGES) {
+        stop("Improper values for sample size N")
+    }
+    if (!identical(order(N), seq_along(N))) {
+        stop("Sample size vector N is not monotone increasing sequence")
+    }
+
+    J <- length(prevalences)
+
+    if (!scalarInRange(J, low = 2, high = 10)) {
+        stop("Improper number of subgroups; need at least 2; max 10")
+    }
+
+    if (any(prevalence <= 0)) {
+        stop("Improper prevalence specified")
+    }
+    prevalences <- prevalence / sum(prevalence)
+    q <- cumsum(prevalence)
+
+    if (stage == 1 || is.na(HJFutileAtStage) || stage == HJFutileAtStage) {
+        ## catches stage = 1 and all cases where stage == HJFutileAtStage
+        N[stage] * q[group]
+    } else {
+        ## stage > 1 && stage > HJFutileAtStage
+        stopifnot(stage <= 3 && 1 <= HJFutileAtStage && HJFutileAtStage < stage)
+        if (stage == 2) {
+            ## HJFutileAtStage = 1 for sure
+            if (group <= chosenGroup) {
+                qq <- prevalence[seq_len(chosenGroup)]
+                qq <- cumsum(qq / sum(qq))
+                s1 <- N[1] * q[chosenGroup]
+                (N[2] - s1) * qq[group] + N[1] * q[group]
+            } else {
+                N[1] * q[group] + (N[2] - N[1] * q[chosenGroup])
+            }
+        } else {
+            ## stage == 3 here
+            if (HJFutileAtStage == 2) {
+                if (group <= chosenGroup) {
+                    qq <- prevalence[seq_len(chosenGroup)]
+                    qq <- cumsum(qq / sum(qq))
+                    s2 <- N[2] * q[chosenGroup]
+                    (N[3] - s2) * qq[group] + N[2] * q[group]
+                } else {
+                    N[2] * q[group] + (N[3] - N[2]* q[chosenGroup])
+                }
+            } else {
+                ## HJFutileAtStage = 1
+                if (group <= chosenGroup) {
+                    qq <- prevalence[seq_len(chosenGroup)]
+                    qq <- cumsum(qq / sum(qq))
+                    s1 <- N[1] * q[chosenGroup]
+                    (N[3] - s1) * qq[group] + N[1] * q[group]
+                } else {
+                    N[1] * q[group] + (N[3] - N[1] * q[chosenGroup])
+                }
+            }
+        }
+    }
+}
+
+#' Conditional probability of \eqn{i}-th subgroup statistic being
+#' chosen given the appropriate mean, covariance matrix and futility
+#' boundary \eqn{\tilde{b}}{btilde} at \eqn{v}.
+#'
+#' The computation involves a \eqn{J-1} multivariate normal integral
+#' of the conditional density of the \eqn{i}-th subgroup statistic
+#' given that it was maximal among all subgroups:
+#'
+#'\deqn{
+#' \phi_i(v)(\int_0^v\int_0^v\ldots
+#' \int_0^{\tilde{b}} \phi_v(z_{-i})dz_{-i})
+#' }
+#'
+#' where \eqn{z_{-i}} denotes all subgroups other than \eqn{i}.
+#'
+#' @param v the value of the statistic
+#' @param i the subgroup
+#' @param mu.prime the conditional mean vector of the distribution of
+#'     length \eqn{J - 1}; needs to be multipled by the conditional
+#'     value, the parameter `v`.
+#' @param Sigma.prime the conditional covariance matrix of dimension
+#'     \eqn{J-1} by \eqn{J-1}
+#' @param fut the futility boundary, which is \eqn{\tilde{b}}{btilde}
+#'     for stages 1 and 2, but \eqn{c} for stage 3
+#' @return the conditional probability
+#'
+#' @rdname ASSISTant-internal
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+den.vs <- function(v, i, mu.prime, Sigma.prime, fut ) {
+    ## Density function used in integration
+    mu.prime <- mu.prime * v
+    pmvnorm(upper = c(rep(v, nrow(mu.prime) - 1), fut), mean = mu.prime[, i],
+            sigma = Sigma.prime[[i]], algorithm = Miwa()) * dnorm(v)
+}
+
+#' Compute the futility boundary (modified Haybittle-Peto) for the
+#' first two stages
+#'
+#' The futility boundary \eqn{\tilde{b}}{btilde} is computed by
+#' solving (under the alternative)
+#'
+#' \deqn{
+#' P(\tilde{Z}_J^1\le\tilde{b} or \tilde{Z}_J^2\le\tilde{b}) = \epsilon\beta }
+#'
+#' where the superscripts denote the stage and \eqn{\epsilon} is the
+#' fraction of the type I error (\eqn{\alpha}) spent and \eqn{\beta}
+#' is the type II error. We make use of the joint normal density of
+#' \eqn{Z_{J}} (the overall group) at each of the three stages and the
+#' fact that the \eqn{\tilde{Z_J}} is merely a translation of
+#' \eqn{Z_J}. So here the calculation is based on a mean of zero and
+#' has to be translated during use!
+#'
+#' @param beta the type II error
+#' @param cov.J the 3 x 3 covariance matrix
+#'
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+mHP.btilde <- function (beta, cov.J) {
+    sigma <- cov.J[-NUM_STAGES, -NUM_STAGES]
+    btilde <- uniroot(f = function(btilde) {
+        1 - pmvnorm(lower = rep(btilde, NUM_STAGES - 1),
+                    upper = upper <- rep(Inf, NUM_STAGES - 1),
+                    sigma = sigma,
+                    algorithm = Miwa()) -
+            beta },
+        lower = qnorm(beta) - 1,
+        upper = qnorm(beta^(1 / (NUM_STAGES - 1))) + 1)
+    btilde$root
+}
+
+#' Compute the efficacy boundary (modified Haybittle-Peto) for the
+#' first two stages
+#'
+#' @param prevalence the vector of prevalences between 0 and 1 summing
+#'     to 1. \eqn{J}, the number of groups, is implicitly the length
+#'     of this vector and should be at least 2.
+#' @param N a three-vector of total sample size at each stage
+#' @param cov.J the 3 x 3 covariance matrix for Z_J at each of the
+#'     three stages
+#' @param mu.prime a list of \eqn{J} mean vectors, each of length
+#'     \eqn{J-1} representing the conditional means of all the other
+#'     \eqn{Z_j} given \eqn{Z_i}. This mean does not account for the
+#'     conditioned value of \eqn{Z_i} and so has to be multiplied by
+#'     that during use!
+#' @param Sigma.prime a list of \eqn{J} covariance matrices, each
+#'     \eqn{J-1} by \eqn{J-1} representing the conditional covariances
+#'     all the other \eqn{Z_j} given \eqn{Z_i}
+#' @param alpha the amount of type I error to spend
+#' @param btilde the futility boundary
+#' @param theta the effect size on the probability scale
+#'
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+mHP.b <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, theta) {
+    J <- length(prevalence)
+    q <- cumsum(prevalence / sum(prevalence))
+
+    crossingProb <- function(b) {
+        ##
+        ## Function to compute conditional probability of rejecting
+        ## the subgroup hypothesis for group i at stage (should be 1
+        ## or 2), given that the trial was futile at stage.accept.J.
+        ##
+        f <- function(stage, stage.accept.J, i) {
+            ## Translate btilde appropriately from the theta
+            ## (probability) scale to the standard scale; see writeup.
+            btilde <- btilde + theta * sqrt(3 * N[stage.accept.J])
+            ## Adjust the sample size to account for the loss, once
+            ## HJ is accepted
+            ssi <- replace(N, stage.accept.J, N[stage.accept.J] * q[i])
+            if (stage == stage.accept.J) {
+                ## Rejection of subgroup at same stage as futility stage
+                ## So this is just an integral of the conditional joint
+                ## distribution
+                ##
+                integrate(
+                    function(x) {
+                        sapply(x, function(x) den.vs(x, i, mu.prime,
+                                                     Sigma.prime, fut = btilde))
+                    },
+                    lower = b, upper = Inf)$value
+            } else {
+                ## Rejection of subgroup at the subsequent stage,
+                ## that is, stage === stage.accept.J + 1
+                ## For efficiency, we don't do explicit checking of such
+                ## conditions, but the invocation below is implicitly expected
+                ## to respect this fact.
+                ##
+                ## So here we have to integrate the product of the
+                ## conditional joint distribution and the probability
+                ## of the i-th group statistic exceeding the at the
+                ## next stage.
+                ##
+                sigma <- sqrt(ssi[stage - 1] / ssi[stage])
+                integrand <- function(u) {
+                    den.vs(u, i, mu.prime, Sigma.prime, fut = btilde) *
+                        pnorm(b, mean = u * sigma, sd = sqrt(1 - sigma^2),
+                              lower.tail = FALSE)
+                }
+                integrate(
+                    function(u) sapply(u, integrand),
+                    lower = -Inf, upper = b)$value
+            }
+        }
+        ## Type I error at interim stages 1 and 2 =
+        ## P(accept H_J at stage 1, reject H_I at stage 1) +
+        ## P(accept H_J at stage 1, reject H_I at stage 2) +
+        ## P(accept H_J at stage 2, reject H_I at stage 2)
+        ##          for I in 1:(J-1) +
+        ## P(reject H_J at stage 1 or 2)
+        ##
+        sum(sapply(
+            seq_len(J - 1), function(i)  f(1, 1, i) + f(2, 1, i) + f(2, 2, i))) +
+            ##
+            1 - pmvnorm(lower = -Inf, upper = b, mean = rep(0, NUM_STAGES - 1),
+                        sigma = cov.J[-NUM_STAGES, -NUM_STAGES], algorithm = Miwa()) -
+            ##
+            alpha
+    }
+    uniroot(f = crossingProb, lower = 1.0, upper = 4.0)$root
+}
+
+
+#' Compute the efficacy boundary (modified Haybittle-Peto) for the
+#' final (third) stage
+#'
+#' @param prevalence the vector of prevalences between 0 and 1 summing
+#'     to 1. \eqn{J}, the number of groups, is implicitly the length
+#'     of this vector and should be at least 2.
+#' @param N a three-vector of total sample size at each stage
+#' @param cov.J the 3 x 3 covariance matrix for Z_J at each of the
+#'     three stages
+#' @param mu.prime a list of \eqn{J} mean vectors, each of length
+#'     \eqn{J-1} representing the conditional means of all the other
+#'     \eqn{Z_j} given \eqn{Z_i}. This mean does not account for the
+#'     conditioned value of \eqn{Z_i} and so has to be multiplied by
+#'     that during use!
+#' @param Sigma.prime a list of \eqn{J} covariance matrices, each
+#'     \eqn{J-1} by \eqn{J-1} representing the conditional covariances
+#'     all the other \eqn{Z_j} given \eqn{Z_i}
+#' @param alpha the amount of type I error to spend
+#' @param btilde the futility boundary
+#' @param b the efficacy boundary for the first two stages
+#' @param theta the effect size on the probability scale
+#'
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b, theta) {
+    ## Function for computing final boundary c
+    J <- length(prevalence)
+    q <- cumsum(prevalence / sum(prevalence))
+
+    crossingProb <- function(c) {
+        ##
+        ## Function for bounding the probability of rejecting either
+        ## H_J or H_I at the third stage.
+        ##
+        f <- function(stage.accept.J, i) {
+            ## i is sub-population selected
+            ##
+            ## Translate btilde appropriately from the theta
+            ## (probability) scale to the standard scale; see writeup.
+            ##
+            btilde <- btilde + theta * sqrt(3 * N[stage.accept.J])
+            ## Adjust the sample size to account for the loss, once
+            ## HJ is accepted
+            ssi <- replace(N, stage.accept.J, N[stage.accept.J] * q[i])
+
+            if (stage.accept.J == 3 ) {
+                ## Rejection of subgroup at same stage as futility
+                ## stage, that is, stage = 3.  So this is just an
+                ## integral of the conditional joint distribution,
+                ## except that at the third stage, the critical
+                ## boundary is c.
+                ##
+                integrate(
+                    function(x) {
+                        sapply(x, function(x)
+                            den.vs(x, i, mu.prime, Sigma.prime, fut = c))
+                    },
+                    lower = c,
+                    upper = Inf)$value
+            } else if (stage.accept.J == 2 ) {
+                ## Rejection of subgroup at the subsequent stage,
+                ## that is, H_J was futile at stage 2, and H_I is rejected
+                ## at stage 3.
+                ##
+                ## So here we have to integrate the product of the
+                ## conditional joint distribution at stage 2 and the
+                ## probability of the i-th group statistic exceeding
+                ## the critical value stage 3. The latter is a
+                ## one-dimensional integral in this case, with
+                ## appropriate standard deviation. Note that the
+                ## critical boundary is c in the last stage!
+                ##
+                sigma <- sqrt(ssi[2] / ssi[3])
+                integrand <- function(u) {
+                    den.vs(u, i, mu.prime, Sigma.prime, btilde) *
+                        pnorm(c, mean = u * sigma, sd = sqrt(1 - sigma^2), lower.tail = FALSE)
+                }
+                integrate(function(u) sapply(u, integrand),
+                          lower = -Inf,
+                          upper = b)$value
+            } else {
+                ## Rejection of subgroup at the third stage, while
+                ## H_J was futile at stage 1, and H_I is rejected
+                ## at stage 3.
+                ##
+                ## So here we have to integrate the product of the
+                ## conditional joint distribution at stage 1 and the
+                ## probability of the i-th group statistic exceeding
+                ## the critical value at stage 3, but not stage 2. The
+                ## latter probability is a 2-dimensional integral with
+                ## an appropriate covariance structure. Once again,
+                ## note that the critical boundary at stage 3 is c.
+                ##
+                v23 <- sqrt(c(ssi[1] / ssi[2], ssi[1] / ssi[3]))
+                sigma23 <- matrix(sqrt(ssi[2] / ssi[3]), 2, 2)
+                diag(sigma23) <- 1
+                sigma <- sigma23 - v23 %*% t(v23)
+                integrand <- function(u) {
+                    den.vs(u, i, mu.prime, Sigma.prime, btilde) *
+                        pmvnorm(lower = c(-Inf, c),
+                                upper = c(b, Inf),
+                                mean = u * v23,
+                                sigma = sigma,
+                                algorithm = Miwa())
+                }
+                integrate(function(u) sapply(u, integrand),
+                          lower = -Inf,
+                          upper = b)$value
+            }
+        }
+        ##
+        ## Type I error at final stage =
+        ## P(accept H_J at stage 1, reject H_I at stage 3) +
+        ## P(accept H_J at stage 2, reject H_I at stage 3) +
+        ## P(accept H_J at stage 3, reject H_I at stage 3) or
+        ##             for I in 1:(J-1) +
+        ## P(reject H_J at stage 3)
+        ##
+        sum(sapply(seq_len(J - 1), function(i) f(1, i) + f(2, i) + f(3, i))) +
+            ##
+            pmvnorm(lower = c(rep(-Inf, NUM_STAGES - 1), c),
+                    upper = c(rep(b, NUM_STAGES - 1), Inf), sigma = cov.J,
+                    mean = rep(0, NUM_STAGES),
+                    algorithm = Miwa()) -
+            ##
+            alpha
+    }
+    uniroot(f = crossingProb,
+            lower = min(0.0, b - 2.0),
+            upper = max(b + 2.0, 4.0))$root
+}
+
+#' Compute the three modified Haybittle-Peto boundaries
+#'
+#' @param prevalence the vector of prevalences between 0 and 1 summing
+#'     to 1. \eqn{J}, the number of groups, is implicitly the length
+#'     of this vector and should be at least 2.
+#' @param N a three-vector of total sample size at each stage
+#' @param alpha the type I error
+#' @param beta the type II error
+#' @param eps the fraction (between 0 and 1) of the type 1 error to
+#'     spend in the interim stages 1 and 2
+#' @param futilityOnly a logical value indicating only the futility
+#'     boundary is to be computed; default `FALSE`
+#' @return a named vector of three values containing
+#'     \eqn{\tilde{b}}{btilde}, b, c
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+computeMHPBoundaries <- function(prevalence, N, alpha, beta, eps, futilityOnly = FALSE) {
+    J <- length(prevalence)
+    q <- cumsum(prevalence / sum(prevalence))
+
+    theta <- (qnorm(1 - alpha) + qnorm(1 - beta)) / sqrt(3 * N[3])
+
+    ## Sigma = covariance matrix between subgroup,
+    ## which is roughly stage independent
+
+    Sigma <- matrix(0, J, J)
+    for (i in seq_len(J - 1)) {
+        for (j in (i + 1):J) {
+            Sigma[i, j] <- sqrt(q[i] / q[j])
+        }
+    }
+    Sigma <- Sigma + t(Sigma)
+    diag(Sigma) <- 1
+
+    mu.prime <- matrix(0, (J - 1), J)
+    Sigma.prime <- vector("list", J)
+    for (i in seq_len(J)) {
+        mu.prime[, i] <- Sigma[-i, i]
+        Sigma.prime[[i]] <- Sigma[-i, -i] - Sigma[-i, i] %*% t(Sigma[i, -i])
+    }
+
+
+    cov.J <- matrix(0, NUM_STAGES, NUM_STAGES)
+    for (i in seq_len(NUM_STAGES - 1)) {
+        for (j in (i + 1):NUM_STAGES) {
+            cov.J[i, j] <- sqrt((N[i]^2 * (N[j] + 1)) / (N[j]^2 * (N[i] + 1)))
+        }
+    }
+    cov.J <- cov.J + t(cov.J)
+    diag(cov.J) <- 1
+
+    btilde <- mHP.btilde(beta = beta * eps, cov.J = cov.J)
+    if (futilityOnly) {
+        b <- c <- NA
+    } else {
+        b <- mHP.b(prevalence = prevalence,
+                   N = N,
+                   cov.J = cov.J,
+                   mu.prime = mu.prime,
+                   Sigma.prime = Sigma.prime,
+                   alpha = alpha * eps,
+                   btilde = btilde,
+                   theta = theta)
+        c <- mHP.c(prevalence = prevalence,
+                   N = N,
+                   cov.J = cov.J,
+                   mu.prime = mu.prime,
+                   Sigma.prime = Sigma.prime,
+                   alpha = alpha * (1 - eps),
+                   btilde = btilde,
+                   b = b,
+                   theta = theta)
+    }
+    c(btilde = btilde, b = b, c = c)
+}
+
+#' Compute the three modified Haybittle-Peto boundaries and effect size
+#'
+#' @param prevalence the vector of prevalences between 0 and 1 summing
+#'     to 1. \eqn{J}, the number of groups, is implicitly the length
+#'     of this vector and should be at least 2.
+#' @param N a three-vector of total sample size at each stage
+#' @param alpha the type I error
+#' @param beta the type II error
+#' @param eps the fraction (between 0 and 1) of the type 1 error to
+#'     spend in the interim stages 1 and 2
+#' @return a named vector of four values containing
+#'     \eqn{\tilde{b}}{btilde}, b, c, and \eqn{\theta}{theta} the
+#'     effect size on the probability scale for the Wilcoxon statistic
+#' @export
+#'
+#' @references Adaptive Choice of Patient Subgroup for Comparing Two
+#'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
+#'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
+#'     191-200
+#'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' @md
+computeMHPBoundaryITT <- function(prevalence, alpha) {
+    J <- length(prevalence)
+    q <- cumsum(prevalence / sum(prevalence))
+
+    ## Sigma = covariance matrix between subgroup,
+    ## which is roughly stage independent
+
+    Sigma <- matrix(0, J, J)
+    for (i in seq_len(J - 1)) {
+        for (j in (i + 1):J) {
+            Sigma[i, j] <- sqrt(q[i] / q[j])
+        }
+    }
+    Sigma <- Sigma + t(Sigma)
+    diag(Sigma) <- 1
+
+    mu.prime <- matrix(0, (J - 1), J)
+    Sigma.prime <- vector("list", J)
+    for (i in seq_len(J)) {
+        mu.prime[, i] <- Sigma[-i, i]
+        Sigma.prime[[i]] <- Sigma[-i, -i] - Sigma[-i, i] %*% t(Sigma[i, -i])
+    }
+
+    ## Derive interim eff boundary b.I for subgp
+    crossingProb <- function(c) {
+        f <- function(i) {
+            ##i=sub-population selected
+            integrate(
+                function(x) {
+                    sapply(x, function(x)
+                        den.vs(x, i, mu.prime, Sigma.prime, fut = c))
+                },
+                lower = c,
+                upper = Inf)$value
+        }
+        sum(sapply(seq_len(J - 1), function(i) f(i))) +
+            pnorm(c, lower.tail = FALSE) - alpha
+    }
+    c(cAlpha = uniroot(f = crossingProb, lower = 1, upper = 4)$root)
+}
