@@ -1,5 +1,15 @@
-## Global variable, NUM_STAGES = 3
+## Global constant, the number of stages for this design
 NUM_STAGES <- 3L
+
+## Global constant, the names of columns in trial history relating to Ihat, the subgroup chosen
+IHAT_COL_NAMES = c("decision_Ihat", "wcx_Ihat", "wcx.fut_Ihat", "Nl_Ihat", "Ihat", "stage_Ihat", "lost")
+
+## Global constant, the name of the CI column
+CI_COL_NAME = c("bounds")
+
+## Global constant, the name of the column for stage at which the trial exits
+STAGE_COL_NAME = "exitStage"
+
 
 #' Compute the standardized Wilcoxon test statistic for two samples
 #'
@@ -592,4 +602,26 @@ computeMHPBoundaryITT <- function(prevalence, alpha) {
             pnorm(c, lower.tail = FALSE) - alpha
     }
     c(cAlpha = uniroot(f = crossingProb, lower = 1, upper = 4)$root)
+}
+
+
+#' Return a vector of column names for statistics for a given stage
+#'
+#' @param stage the trial stage (1 to 3 inclusive).
+#' @param J the number of subgroups
+#' @return a character vector of the column names
+#' @export
+#' @md
+colNamesForStage <- function(stage, J) {
+    seqJ <- seq_len(J)
+    c(paste(c("decision", "wcx", "wcx.fut", "Nl"), stage, sep = "_"),
+      sapply(seqJ, function(group) {
+          c(sprintf("wcx_%d_%d", stage, group),
+            sprintf("nc_%d_%d", stage, group),
+            sprintf("nt_%d_%d", stage, group),
+            sprintf("muc_%d_%d", stage, group),
+            sprintf("mut_%d_%d", stage, group),
+            sprintf("sdc_%d_%d", stage, group),
+            sprintf("sdt_%d_%d", stage, group))
+      }))
 }
