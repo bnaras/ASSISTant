@@ -24,10 +24,11 @@ instance object using the parameters specified. }
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 \item{\code{print()}}{Print the object in a human readable form}
 \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(),
+        showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
 using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-Show progress if so desired. Returns a data frame of results}
+Show progress and save raw data if so desired. Returns list of results}
 \item{\code{analyze(trialExploration)}}{Analyze
 the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 simulate the design. Return a list of summary quantities}

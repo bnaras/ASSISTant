@@ -24,10 +24,12 @@
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 #'         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 #'         \code{boundaries}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, effectiveParameters = self$getDesignParameters(),
+#'          recordStats = TRUE, showProgress = TRUE, fixedSampleSize = FALSE, saveRawData = FALSE)}}{Explore the
 #'         design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Record statistics and show progress if so desired. Returns a list of results}
+#'         Record statistics, raw data, and show progress if so desired. A fixed sample size can be specified to ensure that patients
+#'         lost after a futile overall look are not made up. Returns a list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -62,16 +64,12 @@
 ASSISTDesign <-
     R6Class(classname = "ASSISTDesign",
             private = list(
-                NUM_STAGES = 3L,
-                IHAT_COL_NAMES = c("decision_Ihat", "wcx_Ihat", "wcx.fut_Ihat", "Nl_Ihat", "Ihat", "stage_Ihat", "lost"),
-                CI_COL_NAME = c("bounds"),
-                STAGE_COL_NAME = c("exitStage"),
                 designParameters = NA,
                 trialParameters = NA,
                 boundaries = NA,
                 checkParameters = function(designParameters, trialParameters, generateData) {
-                    if (length(trialParameters$N) != private$NUM_STAGES) {
-                        stop(sprintf("Improper sample size vector; this design assumes %d stages", private$NUM_STAGES))
+                    if (length(trialParameters$N) != NUM_STAGES) {
+                        stop(sprintf("Improper sample size vector; this design assumes %d stages", NUM_STAGES))
                     }
                     if (!integerInRange(trialParameters$N, low = 1)) {
                         stop("Improper values for sample sizes")
@@ -128,7 +126,7 @@ ASSISTDesign <-
                                   })
                     which.max(wcx)
                 },
-                performInterimLook = function (data, stage, recordStats = FALSE) {
+                doInterimLook = function (data, stage, recordStats = FALSE) {
                     d <- split(data$score, data$trt)
                     nc <- length(d$`0`) ## control
                     nt <- length(d$`1`) ## treatment
@@ -136,7 +134,7 @@ ASSISTDesign <-
                     wcx <- wilcoxon(d$`1`, d$`0`)
                     wcx.fut <- NA
                     bdy <- private$boundaries
-                    if (stage < private$NUM_STAGES) { ## all but last stage
+                    if (stage < NUM_STAGES) { ## all but last stage
                         if (wcx >= bdy["b"]) { ## Reject
                             decision <- 1
                         } else {
@@ -164,20 +162,6 @@ ASSISTDesign <-
                     list(decision = decision, wcx = wcx, wcx.fut = wcx.fut,
                          Nl = Nl, stats = stats)
                 },
-                colNamesForStage =  function(stage) {
-                    J <- private$designParameters$J
-                    seqJ <- seq_len(J)
-                    c(paste(c("decision", "wcx", "wcx.fut", "Nl"), stage, sep = "_"),
-                      sapply(seqJ, function(group) {
-                          c(sprintf("wcx_%d_%d", stage, group),
-                            sprintf("nc_%d_%d", stage, group),
-                            sprintf("nt_%d_%d", stage, group),
-                            sprintf("muc_%d_%d", stage, group),
-                            sprintf("mut_%d_%d", stage, group),
-                            sprintf("sdc_%d_%d", stage, group),
-                            sprintf("sdt_%d_%d", stage, group))
-                      }))
-                },
                 getStat = function(d, stage, sigma = 1) {
                     ## THIS HAS TO BE ARTICULATED WITH the trial History columns
                     ## IN explore()!!
@@ -186,7 +170,7 @@ ASSISTDesign <-
                     ## means, sds and N for control and treatment, wilcoxon (= 7L) for each group
                     ## decision, wilcoxon, wilcoxon.futility NL (= 4L more) for selected subgroup IHat
                     ## trialHistory <- matrix(NA, nrow = numberOfSimulations,
-                    ##                       ncol = numStages * (4L + 7L * J) + 4L)
+                    ##                       ncol = NUM_STAGES * (4L + 7L * J) + 4L)
                     ##
                     ## d is the data so far in the trial
                     ## stage is the stage at which the trial stopped (1, 2, 3)
@@ -210,7 +194,7 @@ ASSISTDesign <-
                                                 }
                                             }))
                     ## Drop the first three columns because of above
-                    names(result) <- private$colNamesForStage(stage)[-(1:4)]
+                    names(result) <- colNamesForStage(stage, J)[-(1:4)]
                     result
                 }
             ),
@@ -269,7 +253,8 @@ ASSISTDesign <-
                                     trueParameters = self$getDesignParameters(),
                                     recordStats = TRUE,
                                     showProgress = TRUE,
-                                    fixedSampleSize = FALSE) {
+                                    fixedSampleSize = FALSE,
+                                    saveRawData = FALSE) {
                     ## Save rng state
                     oldRngState <- if (exists(".Random.seed", envir = .GlobalEnv)) {
                                        get(x = ".Random.seed", envir=.GlobalEnv)
@@ -290,9 +275,6 @@ ASSISTDesign <-
                     glrBoundary <- private$boundaries
                     prevalence <- trueParameters$prevalence
 
-                    ## Will keep statistics at every stage of the trial
-                    numStages <- private$NUM_STAGES
-
                     ## We record the entire trial history
                     ## number of columns for each stage is
                     ## decision, wilcoxon, Nl (= 3L)
@@ -300,11 +282,11 @@ ASSISTDesign <-
                     ## decision, wilcoxon, NL (= 3L more) for selected subgroup IHat
                     ## + 1 for confidence interval bounds
                     ##
-                    trialHistoryColumnNames <- c(unlist(lapply(seq_len(numStages),
-                                                               private$colNamesForStage)),
-                                                 private$IHAT_COL_NAMES,
-                                                 private$CI_COL_NAME,
-                                                 private$STAGE_COL_NAME)
+                    trialHistoryColumnNames <- c(unlist(lapply(seq_len(NUM_STAGES),
+                                                               colNamesForStage, J)),
+                                                 IHAT_COL_NAMES,
+                                                 CI_COL_NAME,
+                                                 STAGE_COL_NAME)
                     trialHistory <- matrix(NA, nrow = numberOfSimulations,
                                            ncol = length(trialHistoryColumnNames))
                     colnames(trialHistory) <- trialHistoryColumnNames
@@ -313,17 +295,20 @@ ASSISTDesign <-
                         pb <- txtProgressBar(min = 0, max = numberOfSimulations, style = 3)
                     }
 
+                    if (saveRawData) {
+                        rawData <- vector(mode = "list", length = numberOfSimulations)
+                    }
                     for (i in seq_len(numberOfSimulations)) {
                         ## Generate Empty dataset
-                        trialData <- self$generateData(prevalence = prevalence,
-                                                       N = 0,
-                                                       mean = trueParameters$mean,
-                                                       sd = trueParameters$sd)
+                        thisTrialData <- trialData <- self$generateData(prevalence = prevalence,
+                                                                        N = 0,
+                                                                        mean = trueParameters$mean,
+                                                                        sd = trueParameters$sd)
                         ## H_J is tested first
                         subGroup <- J
                         N <- c(0, trialParameters$N)
                         ## decisions always follow: 0 = continue, 1 = reject, -1 = accept
-                        for (stage in seq_len(numStages)) {
+                        for (stage in seq_len(NUM_STAGES)) {
                             ## Generate data for this stage
                             groupIndices <- seq_len(subGroup)
                             if (fixedSampleSize) {
@@ -340,11 +325,15 @@ ASSISTDesign <-
                                                                                       drop = FALSE])
                             ## Combine it with previous data
                             trialData <- rbind(trialData, thisStageData)
-                            ## performInterimLook is guaranteed to return a decision 1 or -1 at stage 3
-                            interimResult <- private$performInterimLook(data = trialData,
-                                                                        stage = stage,
-                                                                        recordStats = recordStats)
-                            resultNames <- private$colNamesForStage(stage)
+                            if (saveRawData) {
+                                thisTrialData <- rbind(thisTrialData, thisStageData)
+                            }
+
+                            ## doInterimLook is guaranteed to return a decision 1 or -1 at stage 3
+                            interimResult <- private$doInterimLook(data = trialData,
+                                                                   stage = stage,
+                                                                   recordStats = recordStats)
+                            resultNames <- colNamesForStage(stage, J)
                             if (recordStats) {
                                 trialHistory[i, resultNames[-(1:4)]] <- interimResult$stats
                             }
@@ -362,12 +351,12 @@ ASSISTDesign <-
                                     ## So we lose some patients when we restrict to subGroup!
                                     prevN <- nrow(trialData)
                                     trialData <- trialData[trialData$subGroup <= subGroup, ]
-                                    interimResult <- private$performInterimLook(data = trialData,
-                                                                                stage = stage,
-                                                                                recordStats = FALSE)
+                                    interimResult <- private$doInterimLook(data = trialData,
+                                                                           stage = stage,
+                                                                           recordStats = FALSE)
                                     ## Append this sub-result to the interim result already obtained
                                     ## so that both the overall and the subgroup results are retained
-                                    trialHistory[i, private$IHAT_COL_NAMES] <- c(unlist(interimResult[1:4], use.names = FALSE),
+                                    trialHistory[i, IHAT_COL_NAMES] <- c(unlist(interimResult[1:4], use.names = FALSE),
                                                                                  subGroup, stage, prevN - nrow(trialData))
                                     if (interimResult$decision != 0L) {
                                         ## H_{\hat{I}} was accepted or rejected
@@ -385,7 +374,7 @@ ASSISTDesign <-
                             }
                         }
                         ## Record stage at which trial stopped
-                        trialHistory[i, private$STAGE_COL_NAME] <- stage
+                        trialHistory[i, STAGE_COL_NAME] <- stage
                         ##
                         ## sigmahat is fixed at 1 for now
                         ##
@@ -395,10 +384,13 @@ ASSISTDesign <-
                         } else {
                             cut <- glrBoundary["b"]
                         }
-                        trialHistory[i, private$CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
+                        trialHistory[i, CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
 
                         if (showProgress) {
                             setTxtProgressBar(pb, i)
+                        }
+                        if (saveRawData) {
+                            rawData[[i]] <- thisTrialData
                         }
                     }
                     if (showProgress) {
@@ -410,7 +402,120 @@ ASSISTDesign <-
                     } else {
                         assign(x = ".Random.seed", value = oldRngState, envir = .GlobalEnv)
                     }
-                    list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    if (saveRawData) {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters,
+                             rawData = rawData)
+                    } else {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    }
+                },
+                performInterimLook = function (trialData, stage, recordStats = FALSE, fixedSampleSize = FALSE) {
+                    ## Functionally equivalent to private$doInterimLook, but
+                    ## more error checking is done on data and stage
+                    expectedDFNames <- c("subGroup", "trt", "score")
+                    if (any(is.na(match(expectedDFNames, names(trialData))))) {
+                        stop("Data is missing one or more of columns 'subGroup', 'trt', 'score'")
+                    }
+                    if (!(scalarIntegerInRange(stage, low = 1, high = 3))) {
+                        stop("Stage has to be between 1 and 3 (inclusive)")
+                    }
+                    n <- nrow(trialData)
+                    N <- c(0, private$trialParameters$N)
+                    ## if (nrow(trialData) != N[stage]) {
+                    ##     stop("Data size does not match design sample size!")
+                    ## }
+
+                    ## We have to perform interim looks at all previous stages as well..
+                    ## Remember that the data is cumulative, includes _ALL_ subjects
+                    subGroup <- J <- private$designParameters$J
+
+                    trialHistoryColumnNames <- c(unlist(lapply(seq_len(stage),
+                                                               colNamesForStage, J)),
+                                                 IHAT_COL_NAMES,
+                                                 CI_COL_NAME,
+                                                 STAGE_COL_NAME)
+                    trialHistory <- matrix(NA, nrow = 1,
+                                           ncol = length(trialHistoryColumnNames))
+                    colnames(trialHistory) <- trialHistoryColumnNames
+
+                    ##
+                    ## sigmahat is fixed at 1 for now
+                    ##
+                    sigmahat <- 1
+
+                    ## Initialize
+                    stageData <- trialData[0, ]
+                    dataPtr <- 0
+                    for (st in seq_len(stage)) {
+                        if (fixedSampleSize) {
+                            sampleSizeForThisStage <- N[stage + 1] - N[stage]
+                        } else {
+                            sampleSizeForThisStage <- N[stage + 1] - nrow(stageData)
+                        }
+
+                        stageData <- rbind(stageData ,
+                                           trialData[(dataPtr + 1):(dataPtr + sampleSizeForThisStage), ])
+                        dataPtr <- dataPtr + sampleSizeForThisStage
+                        interimResult <- private$doInterimLook(stageData, stage, recordStats)
+                        resultNames <- colNamesForStage(st, J)
+                        if (recordStats) {
+                            trialHistory[1, resultNames[-(1:4)]] <- interimResult$stats
+                        }
+                        trialHistory[1, resultNames[1:4] ] <- unlist(interimResult[1:4], use.names = FALSE)
+
+                        if (interimResult$decision == 1L) {
+                            ## H_{subGroup} was rejected
+                            ## so trial stops
+                            trialHistory[1, STAGE_COL_NAME] <- st
+                            if (st == 3) {
+                                cut <- glrBoundary["c"] # c
+                            } else {
+                                cut <- glrBoundary["b"]
+                            }
+                            trialHistory[1, CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
+                            break
+                        } else if (interimResult$decision == -1L) {
+                            if (subGroup == J) {
+                                ## Select a subgroup and perform an interim look using that subgroup
+                                subGroup <- private$selectSubgroup(stageData)
+                                ## Restrict the data from now on to those in the subGroup
+                                ## So we lose some patients when we restrict to subGroup!
+                                prevN <- nrow(stageData)
+                                stageData <- stageData[stageData$subGroup <= subGroup, ]
+                                interimResult <- private$doInterimLook(data = stageData,
+                                                                       stage = st,
+                                                                       recordStats = FALSE)
+                                ## Append this sub-result to the interim result already obtained
+                                ## so that both the overall and the subgroup results are retained
+                                trialHistory[1, IHAT_COL_NAMES] <- c(unlist(interimResult[1:4], use.names = FALSE),
+                                                                              subGroup, st, prevN - nrow(stageData))
+                                if (interimResult$decision != 0L) {
+                                    ## H_{\hat{I}} was accepted or rejected
+                                    ## so trial stops
+                                    trialHistory[1, STAGE_COL_NAME] <- st
+                                    if (st == 3) {
+                                        cut <- glrBoundary["c"] # c
+                                    } else {
+                                        cut <- glrBoundary["b"]
+                                    }
+                                    trialHistory[1, CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
+                                    break
+                                }
+                            } else {
+                                ## Trial was futile for H_{\hat{I}}
+                                ## So stop
+                                trialHistory[1, STAGE_COL_NAME] <- st
+                                if (st == 3) {
+                                    cut <- glrBoundary["c"] # c
+                                } else {
+                                    cut <- glrBoundary["b"]
+                                }
+                                trialHistory[1, CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
+                                break
+                            }
+                        }
+                    }
+                    trialHistory
                 },
                 analyze = function (trialExploration) {
                     trialHistory <- as.data.frame(trialExploration$trialHistory)
@@ -536,109 +641,6 @@ ASSISTDesign <-
                          coverage = coverage,
                          overallAndRejectionCoverage = overallAndRejectionCoverage)
                 },
-                doInterimLook = function (data, stage) {
-                    if (! (stage == 1 || stage == 2 || stage == 3)) {
-                        stop("Error: stage must be 1, 2, or 3")
-                    }
-                    ## Check data for conformity
-                    if (!is.data.frame(data)) {
-                        stop("Error: data is not a data frame")
-                    }
-                    expectedFields <- c("subGroup", "trt", "score")
-                    dfNames <- names(data)
-                    if (length(intersect(expectedFields, dfNames)) != 3) {
-                        stop("Error: Not all expected columns 'subgroup', 'trt', 'score' found in data")
-                    }
-                    trialParameters <- private$trialParameters
-                    N <- trialParameters$N
-                    designParameters <- private$designParameters
-                    J <- designParameters$J
-                    groupValues <- seq.int(from = 1, to = J, by = 1L)
-                    groupMatches <- match(data$subGroup, groupValues)
-                    if (any(is.na(groupMatches))) {
-                        stop("Error: subGroup column contains inappropriate values!")
-                    }
-                    if (!is.numeric(data$score)) {
-                        stop("Error: score column should be numeric")
-                    }
-                    if (!all(data$trt == 0L | data$trt == 1L)) {
-                        stop("Error: trt column should contain 0 for control, 1 for treatment")
-                    }
-
-                    ## We have to perform cumulative look for all previous stages as well.
-                    trialData <- data.frame(subGroup = integer(0),
-                                            trt = integer(0),
-                                            score = numeric(0))
-
-                    numStages <- private$NUM_STAGES
-                    trialHistoryColumnNames <- c(unlist(lapply(seq_len(numStages),
-                                                               private$colNamesForStage)),
-                                                 private$IHAT_COL_NAMES,
-                                                 private$CI_COL_NAME,
-                                                 private$STAGE_COL_NAME)
-                    ## We get a one row trial history
-                    trialHistory <- matrix(NA, nrow = 1L,
-                                           ncol = length(trialHistoryColumnNames))
-                    colnames(trialHistory) <- trialHistoryColumnNames
-                    subGroup <- J
-                    for (k in seq_len(stage)) {
-                        trialData <- rbind(trialData, data[seq_len(N[k]), expectedFields])
-                        ## performInterimLook is guaranteed to return a decision 1 or -1 at stage 3
-                        interimResult <- private$performInterimLook(data = trialData,
-                                                                    stage = stage,
-                                                                    recordStats = TRUE)
-                        resultNames <- private$colNamesForStage(stage)
-                        trialHistory[i, resultNames[-(1:4)]] <- interimResult$stats
-                        trialHistory[i, resultNames[1:4] ] <- unlist(interimResult[1:4], use.names = FALSE)
-                        if (interimResult$decision == 1L) {
-                            ## H_{subGroup} was rejected
-                            ## so trial stops
-                            break
-                        } else if (interimResult$decision == -1L) {
-                            if (subGroup == J) {
-                                ## Select a subgroup and perform an interim look using that subgroup
-                                subGroup <- private$selectSubgroup(trialData)
-                                ## Restrict the data from now on to those in the subGroup
-                                ## So we lose some patients when we restrict to subGroup!
-                                prevN <- nrow(trialData)
-                                trialData <- trialData[trialData$subGroup <= subGroup, ]
-                                interimResult <- private$performInterimLook(data = trialData,
-                                                                            stage = stage,
-                                                                            recordStats = FALSE)
-                                ## Append this sub-result to the interim result already obtained
-                                ## so that both the overall and the subgroup results are retained
-                                trialHistory[i, private$IHAT_COL_NAMES] <- c(unlist(interimResult[1:4], use.names = FALSE),
-                                                                             subGroup, stage, prevN - nrow(trialData))
-                                if (interimResult$decision != 0L) {
-                                    ## H_{\hat{I}} was accepted or rejected
-                                    ## so trial stops
-                                    break
-                                }
-                            } else {
-                                ## Trial was futile for H_{\hat{I}}
-                                ## So stop
-                                break
-                            }
-                        } else {
-                            ## Trial continues to next stage
-                            ##
-                        }
-                    }
-                    ## Record stage at which trial stopped
-                    trialHistory[i, private$STAGE_COL_NAME] <- stage
-                    ##
-                    ## sigmahat is fixed at 1 for now
-                    ##
-                    sigmahat <- 1
-                    if (k == 3) {
-                        cut <- glrBoundary["c"] # c
-                    } else {
-                        cut <- glrBoundary["b"]
-                    }
-                    trialHistory[i, private$CI_COL_NAME] <- (interimResult$wcx - cut) * sigmahat / interimResult$Nl
-
-                    trialHistory
-                },
                 summary = function(analysis) {
                     with(analysis, {
                         cat(sprintf("P(Reject H0_ITT) = %f; P(Reject H0_subgp) = %f; P(Reject H0) = %f\n",
@@ -694,10 +696,11 @@ ASSISTDesign <-
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(),
+#'         showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress if so desired. Returns a data frame of results}
+#'         Show progress and save raw data if so desired. Returns list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -733,7 +736,7 @@ ASSISTDesignB <-
     R6Class("ASSISTDesignB",
             inherit = ASSISTDesign,
             private = list(
-                performInterimLook = function (data) {
+                doInterimLook = function (data) {
                     d <- split(data$score, data$trt)
                     wcx <- wilcoxon(d$`1`, d$`0`)
                     bdy <- private$boundaries
@@ -770,7 +773,8 @@ ASSISTDesignB <-
                 },
                 explore = function (numberOfSimulations = 100, rngSeed = 12345,
                                     trueParameters = self$getDesignParameters(),
-                                    showProgress = TRUE) {
+                                    showProgress = TRUE,
+                                    saveRawData = FALSE) {
                     ## Save rng state
                     oldRngState <- if (exists(".Random.seed", envir = .GlobalEnv)) {
                                        get(x = ".Random.seed", envir=.GlobalEnv)
@@ -799,16 +803,28 @@ ASSISTDesignB <-
                         pb <- txtProgressBar(min = 0, max = numberOfSimulations, style = 3)
                     }
 
+                    if (saveRawData) {
+                        rawData <- data.frame(simId = integer(0),
+                                              subGroup = integer(0),
+                                              trt = integer(0),
+                                              score = numeric(0))
+                    }
+
                     for (i in seq_len(numberOfSimulations)) {
                         dataSoFar <- self$generateData(prevalence = trueParameters$prevalence,
                                                        N = trialParameters$N[3],
                                                        mean = trueParameters$mean,
                                                        sd = trueParameters$sd)
-                        interim <- private$performInterimLook(dataSoFar)
+                        if (saveRawData) {
+                            rawData <- rbind(rawData,
+                                             data.frame(simId = i, trialData))
+                        }
+
+                        interim <- private$doInterimLook(dataSoFar)
                         subGroup <- J ## Last group
                         if (interim$decision == -1) { ## continue
                             subGroup <- private$selectSubgroup(dataSoFar)
-                            interim <- private$performInterimLook(dataSoFar[dataSoFar$subGroup <= subGroup, ])
+                            interim <- private$doInterimLook(dataSoFar[dataSoFar$subGroup <= subGroup, ])
                         }
                         trialHistory[i, ] <- c(decision = interim$decision,
                                                select = subGroup,
@@ -829,7 +845,12 @@ ASSISTDesignB <-
                     }
                     names(trialHistory) <- c("decision", "select", "statistic",
                                              sapply(seq_len(J), function(i) paste0("G", i)))
-                    list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    if (saveRawData) {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters,
+                             rawData = rawData)
+                    } else {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    }
                 },
                 analyze = function (trialExploration) {
                     J <- private$designParameters$J
@@ -877,10 +898,10 @@ ASSISTDesignB <-
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE)}}{Explore the design
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress if so desired. Returns a data frame of results}
+#'         Show progress and save raw data if so desired. Returns a list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -919,7 +940,8 @@ ASSISTDesignC <-
                 },
                 explore = function (numberOfSimulations = 5000, rngSeed = 12345,
                                     trueParameters = self$getDesignParameters(),
-                                    showProgress = TRUE) {
+                                    showProgress = TRUE,
+                                    saveRawData = FALSE) {
                     ## Save rng state
                     oldRngState <- if (exists(".Random.seed", envir = .GlobalEnv)) {
                                        get(x = ".Random.seed", envir=.GlobalEnv)
@@ -946,12 +968,22 @@ ASSISTDesignC <-
                         pb <- txtProgressBar(min = 0, max = numberOfSimulations, style = 3)
                     }
 
+                    if (saveRawData) {
+                        rawData <- data.frame(simId = integer(0),
+                                              subGroup = integer(0),
+                                              trt = integer(0),
+                                              score = numeric(0))
+                    }
                     for (i in seq_len(numberOfSimulations)) {
                         dataSoFar <- self$generateData(prevalence = trueParameters$prevalence,
                                                        N = trialParameters$N[3],
                                                        mean = trueParameters$mean,
                                                        sd = trueParameters$sd)
-                        interim <- private$performInterimLook(dataSoFar)
+                        if (saveRawData) {
+                            rawData <- rbind(rawData,
+                                             data.frame(simId = i, trialData))
+                        }
+                        interim <- private$doInterimLook(dataSoFar)
                         trialHistory[i, ] <- c(decision = interim$decision,
                                                statistic = interim$wcx,
                                                table(dataSoFar$subGroup))
@@ -970,7 +1002,12 @@ ASSISTDesignC <-
                     }
                     names(trialHistory) <- c("decision", "statistic",
                                              sapply(seq_len(J), function(i) paste0("G", i)))
-                    list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    if (saveRawData) {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters,
+                             rawData = rawData)
+                    } else {
+                        list(trialHistory = trialHistory, trueParameters = trueParameters)
+                    }
                 },
                 analyze = function (trialExploration) {
                     J <- private$designParameters$J
@@ -1013,10 +1050,10 @@ ASSISTDesignC <-
 #'   \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
 #'         by performing simulations using the parameters provided}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE)}}{Explore the design
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), recordStats = TRUE, showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
 #'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
 #'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Record statistics and show progress if so desired. Returns a data frame of results}
+#'         Record statistics, save raw data and show progress if so desired. Returns a list of results}
 #'   \item{\code{analyze(trialHistory)}}{Analyze
 #'         the design given the \code{trialHistory} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -1123,21 +1160,24 @@ DEFUSE3Design <-
                         sqrt(3 * EM[3])
                     ## Update the effect size
                     private$trialParameters$effectSize <- expectedEffectSize
-                    newBoundaries <- computeMHPBoundaries(prevalence = designParameters$prevalence,
-                                                          N = EM,
-                                                          alpha = trialParameters$type1Error,
-                                                          beta = trialParameters$type2Error,
-                                                          eps = trialParameters$eps,
-                                                          futilityOnly = TRUE)
-                    ## Update the boundaries
-                    private$boundaries["btilde"] <- newBoundaries["btilde"]
+                    private$boundaries <- computeMHPBoundaries(prevalence = designParameters$prevalence,
+                                                               N = EM,
+                                                               alpha = trialParameters$type1Error,
+                                                               beta = trialParameters$type2Error,
+                                                               eps = trialParameters$eps)
                 },
                 explore = function (numberOfSimulations = 5000, rngSeed = 12345,
                                     trueParameters = self$getDesignParameters(),
                                     recordStats = TRUE,
-                                    showProgress = TRUE) {
+                                    showProgress = TRUE,
+                                    saveRawData = FALSE) {
                     super$explore(numberOfSimulations, rngSeed, trueParameters,
-                                  recordStats, showProgress, fixedSampleSize = TRUE)
+                                  recordStats, showProgress, fixedSampleSize = TRUE,
+                                  saveRawData = saveRawData)
+                },
+                performInterimLook = function (trialData, stage, recordStats = FALSE) {
+                    super$performInterimLook(trialData, stage, recordStats, fixedSampleSize = TRUE)
                 }
+
             ))
 
