@@ -1,10 +1,10 @@
 #' A class to encapsulate the adaptive clinical trial design of Lai, Lavori and Liao
 #'
-#' @description \code{ASSISTDesign} objects are used to design, simulate and analyze
+#' @description `ASSISTDesign` objects are used to design, simulate and analyze
 #' adaptive group sequential clinical trial with three stages.
 #'
 #' @docType class
-#' @seealso \code{LLL.SETTINGS} for an explanation of trial parameters
+#' @seealso `LLL.SETTINGS` for an explanation of trial parameters
 #' @importFrom R6 R6Class
 #' @importFrom dplyr mutate summarize filter group_by ungroup n select
 #' @importFrom magrittr %>%
@@ -16,8 +16,8 @@
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{ASSISTDesign$new(designParameters, trialParameters, generateData)}}{Create a new
-#'         \code{ASSISTDesign} instance object using the parameters specified}
+#'   \item{`ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE)`}{Create a new
+#'         `ASSISTDesign` instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object fields}
 #'   \item{\code{print()}}{Print the object in a human readable form}
@@ -60,14 +60,15 @@
 #' }
 #' ## For full examples, try:
 #' ## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
-#'
+#' @md
 ASSISTDesign <-
     R6Class(classname = "ASSISTDesign",
             private = list(
                 designParameters = NA,
                 trialParameters = NA,
                 boundaries = NA,
-                checkParameters = function(designParameters, trialParameters, generateData) {
+                discreteData = FALSE,
+                checkParameters = function(designParameters, trialParameters, discreteData) {
                     if (length(trialParameters$N) != NUM_STAGES) {
                         stop(sprintf("Improper sample size vector; this design assumes %d stages", NUM_STAGES))
                     }
@@ -93,22 +94,25 @@ ASSISTDesign <-
                     if (any(designParameters$prevalence <= 0)) {
                         stop("Improper prevalence specified")
                     }
-                    if (!all.equal(dim(designParameters$mean), c(2, designParameters$J))) {
-                        stop("Mean dimension does not match number of groups")
-                    }
-                    if (!all.equal(dim(designParameters$sd), c(2, designParameters$J))) {
-                        stop("Mean dimension does not match number of groups")
-                    }
-                    if (!all(designParameters$sd > 0)) {
-                        stop("SDs are not all positive")
-                    }
-                    if (!is.null(generateData)) {
-                        if (!is.function(generateData)) {
-                            stop("The generateData argument must be a function")
+                    J = designParameters$J
+                    if (discreteData) {
+                        ctlDist <- designParameters$ctlDist
+                        if ((length(ctlDist) != 7L) || any(ctlDist < 0)) {
+                            stop("Improper ctlDist; need a 7-length probability vector for Rankin scores")
                         }
-                        argNames <- sort(names(formals(self$generateData)))
-                        if (any(is.na(match(argNames, names(formals(generateData)))))) {
-                            stop("Arguments for data generator are incorrect")
+                        trtDist <- designParameters$trtDist
+                        if ((nrow(trtDist) != 7L) || (ncol(trtDist) != J) || any(trtDist < 0)) {
+                            stop(sprintf("Improper trtDist; need a 7 x %s matrix, with each column a probability vector", J))
+                        }
+                    } else {
+                        if (!all.equal(dim(designParameters$mean), c(2, J))) {
+                            stop("Mean dimension does not match number of groups")
+                        }
+                        if (!all.equal(dim(designParameters$sd), c(2, J))) {
+                            stop("Mean dimension does not match number of groups")
+                        }
+                        if (!all(designParameters$sd > 0)) {
+                            stop("SDs are not all positive")
                         }
                     }
                     TRUE
@@ -199,47 +203,77 @@ ASSISTDesign <-
                 }
             ),
             public = list(
-                generateData = function(prevalence, N, mean, sd) {
-                    if (N == 0) {
-                        data.frame(subGroup = integer(0), trt = integer(0),
-                                   score = numeric(0))
-                    } else {
-                        subGroup <- sample(seq_along(prevalence), N, replace = TRUE,
-                                           prob = prevalence)
-                        trt <- sample(c(0L, 1L), N, replace = TRUE)
-                        rankin <- unlist(
-                            Map(function(i, j)
-                                rnorm(n=1, mean = mean[i, j], sd = sd[i, j]),
-                                trt + 1, subGroup))
-                        data.frame(subGroup = subGroup, trt = trt, score = rankin)
-                    }
-                },
-                initialize = function(designParameters, trialParameters, generateData = NULL) {
-                    designParameters$J <- length(designParameters$prevalence)
-                    private$checkParameters(designParameters, trialParameters, generateData)
+                initialize = function(designParameters, trialParameters, discreteData = FALSE) {
+                    prevalence <- designParameters$prevalence
+                    designParameters$J <- J <- length(prevalence)
+                    ## Check and fix parameters
+                    private$checkParameters(designParameters, trialParameters, discreteData)
                     trialParameters$effectSize <- (qnorm(1 - trialParameters$type1Error) +
                                                    qnorm(1 - trialParameters$type2Error)) /
                         sqrt(3 * trialParameters$N[3])
-                    designParameters$prevalence <- designParameters$prevalence / sum(designParameters$prevalence)
+                    prevalence <- prevalence / sum(prevalence)
+                    if (discreteData) {
+                        ctlDist <- designParameters$ctlDist
+                        ctlDist <- ctlDist / sum(ctlDist)
+                        names(ctlDist) <- 0:6
+                        designParameters$ctlDist <- ctlDist
+                        trtDist <- designParameters$trtDist
+                        trtDist <- apply(trtDist, 2, function(x) x/sum(x))
+                        rownames(trtDist) <- 0:6
+                        colnames(trtDist) <- paste0("Group", seq_len(J))
+                        designParameters$trtDist <- trtDist
+                    } else {
+                        mean <- designParameters$mean
+                        sd <- designParameters$sd
+                        rownames(mean) <- rownames(sd) <- c("Null", "Alt")
+                        colnames(mean) <- colnames(sd) <- paste0("Group", seq_len(J))
+                        designParameters$mean <- mean
+                        designParameters$sd <- sd
+                    }
+                    names(prevalence) <- paste0("Group", seq_len(J))
+                    designParameters$prevalence <- prevalence
                     private$designParameters <- designParameters
                     private$trialParameters <- trialParameters
-                    if (!is.null(generateData)) {
-                        self$generateData <- generateData
-                    }
+                    private$discreteData <- discreteData
                     private$boundaries <- self$computeCriticalValues()
                 },
                 getDesignParameters = function() private$designParameters,
                 getTrialParameters = function() private$trialParameters,
                 getBoundaries  = function() private$boundaries,
                 print = function() {
+                    designParameters <- private$designParameters
                     cat("Design Parameters:\n")
-                    str(private$designParameters)
-                    cat("Trial Parameters:\n")
+                    cat(sprintf(" Number of Groups: %d\n", designParameters$J))
+                    cat(" Prevalence:")
+                    prevalence <- matrix(designParameters$prevalence, nrow = 1)
+                    colnames(prevalence) <- names(designParameters$prevalence)
+                    print(knitr::kable(prevalence))
+                    cat(sprintf("\n Using Discrete Rankin scores? %s\n\n", private$discreteData))
+                    if (private$discreteData) {
+                        cat(" Null Rankin Distribution (support 0:6):")
+                        ctlDist <- matrix(designParameters$ctlDist, ncol = 1)
+                        rownames(ctlDist) <- 0:6
+                        colnames(ctlDist) <- "Prob."
+                        print(knitr::kable(ctlDist))
+                        stats <- computeMeanAndSD(ctlDist[, 1])
+                        cat(sprintf("\ Null Distribution Mean: %f, SD: %f\n\n", stats["mean"], stats["sd"]))
+                        cat(" Alternative Rankin Distribution (support 0:6):\n")
+                        print(knitr::kable(designParameters$trtDist))
+                        cat(" Alternative Mean and SD")
+                        print(knitr::kable(apply(designParameters$trtDist, 2, computeMeanAndSD)))
+                    } else {
+                        cat(" Normal Rankin Distribution means (null row, alt. row):\n")
+                        print(knitr::kable(designParameters$mean))
+                        cat("\n Normal Rankin Distribution SDs (null row, alt. row):\n")
+                        print(knitr::kable(designParameters$sd))
+                    }
+                    cat("\nTrial Parameters:\n")
                     str(private$trialParameters)
-                    cat("Boundaries:\n")
-                    str(private$boundaries)
-                    cat("Data Generating function:\n")
-                    print(self$generateData)
+
+                    cat("\nBoundaries:\n")
+                    boundaries <- matrix(private$boundaries, nrow = 1)
+                    colnames(boundaries) <- names(private$boundaries)
+                    print(knitr::kable(boundaries))
                 },
                 computeCriticalValues = function() {
                     trialParameters <- private$trialParameters
@@ -298,12 +332,24 @@ ASSISTDesign <-
                     if (saveRawData) {
                         rawData <- vector(mode = "list", length = numberOfSimulations)
                     }
+                    discreteData <- private$discreteData
+
                     for (i in seq_len(numberOfSimulations)) {
                         ## Generate Empty dataset
-                        thisTrialData <- trialData <- self$generateData(prevalence = prevalence,
-                                                                        N = 0,
-                                                                        mean = trueParameters$mean,
-                                                                        sd = trueParameters$sd)
+                        if (discreteData) {
+                            thisTrialData <-
+                                trialData <- generateDiscreteData(prevalence = prevalence,
+                                                                  N = 0,
+                                                                  ctlDist = trueParameters$ctlDist,
+                                                                  trtDist = trueParameters$trtDist)
+
+                        } else {
+                            thisTrialData <-
+                                trialData <- generateNormalData(prevalence = prevalence,
+                                                                N = 0,
+                                                                mean = trueParameters$mean,
+                                                                sd = trueParameters$sd)
+                        }
                         ## H_J is tested first
                         subGroup <- J
                         N <- c(0, trialParameters$N)
@@ -317,12 +363,20 @@ ASSISTDesign <-
                                 sampleSizeForThisStage <- N[stage + 1] - nrow(trialData)
                             }
 
-                            thisStageData <- self$generateData(prevalence = prevalence[groupIndices],
-                                                               N = sampleSizeForThisStage,
-                                                               mean = trueParameters$mean[, groupIndices,
-                                                                                          drop = FALSE],
-                                                               sd = trueParameters$sd[, groupIndices,
-                                                                                      drop = FALSE])
+                            if (discreteData) {
+                                thisStageData <- generateDiscreteData(prevalence = prevalence[groupIndices],
+                                                                      N = sampleSizeForThisStage,
+                                                                      ctlDist = trueParameters$ctlDist,
+                                                                      trtDist = trueParameters$trtDist[, groupIndices,
+                                                                                                       drop = FALSE])
+                            } else {
+                                thisStageData <- generateNormalData(prevalence = prevalence[groupIndices],
+                                                                    N = sampleSizeForThisStage,
+                                                                    mean = trueParameters$mean[, groupIndices,
+                                                                                               drop = FALSE],
+                                                                    sd = trueParameters$sd[, groupIndices,
+                                                                                           drop = FALSE])
+                            }
                             ## Combine it with previous data
                             trialData <- rbind(trialData, thisStageData)
                             if (saveRawData) {
@@ -524,8 +578,15 @@ ASSISTDesign <-
                     trialParameters <- private$trialParameters
                     designParameters <- private$designParameters
                     J <- designParameters$J
-                    trueTheta <- cumsum(designParameters$mean[2, ]) / seq_len(J)
-                    trueDelta <- designParameters$mean[2, ]
+                    if (private$discreteData) {
+                        mu <- as.numeric(t(designParameters$ctlDist) %*% (0:6))
+                        trueTheta <- cumsum(designParameters$prevalence * mu)
+                    } else {
+                        ## These two lines were in versions prior to 1.3-15. They seem wrong!
+                        ## trueTheta <- cumsum(designParameters$mean[2, ]) / seq_len(J)
+                        ## trueDelta <- designParameters$mean[2, ]
+                        trueTheta <- cumsum(designParameters$prevalence * designParameters$mean[2, ])
+                    }
 
                     trialHistory %>%
                         dplyr::mutate(
@@ -685,13 +746,14 @@ ASSISTDesign <-
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
-#' @usage # design <- ASSISTDesignB$new(trialParameters, designParameters, generateData)
+#' @usage # design <- ASSISTDesignB$new(trialParameters, designParameters, discreteData)
 #'
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{ASSISTDesignB$new(designParameters, trialParameters, generateData)}}{Create a new \code{ASSISTDesign}
-#'         instance object using the parameters specified. }
+#'   \item{\code{ASSISTDesignB$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new \code{ASSISTDesign}
+#'         instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin
+#'         scores and `designParameters` must contain the appropriate distributions to sample from}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
@@ -811,10 +873,19 @@ ASSISTDesignB <-
                     }
 
                     for (i in seq_len(numberOfSimulations)) {
-                        dataSoFar <- self$generateData(prevalence = trueParameters$prevalence,
-                                                       N = trialParameters$N[3],
-                                                       mean = trueParameters$mean,
-                                                       sd = trueParameters$sd)
+                        if (private$discreteData) {
+                            dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
+                                                              N = trialParameters$N[3],
+                                                              ctlDist = trueParameters$ctlDist,
+                                                              trtDist = trueParameters$trtDist)
+
+                        } else {
+                            dataSoFar <- generateNormalData(prevalence = trueParameters$prevalence,
+                                                            N = trialParameters$N[3],
+                                                            mean = trueParameters$mean,
+                                                            sd = trueParameters$sd)
+                        }
+
                         if (saveRawData) {
                             rawData <- rbind(rawData,
                                              data.frame(simId = i, trialData))
@@ -888,12 +959,12 @@ ASSISTDesignB <-
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
-#' @usage # design <- ASSISTDesignC$new(trialParameters, designParameters, generateData)
+#' @usage # design <- ASSISTDesignC$new(trialParameters, designParameters)
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{ASSISTDesignC$new(designParameters, trialParameters, generateData)}}{Create a new
-#'         \code{ASSISTDesign} instance object using the parameters specified. }
+#'   \item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
+#'         \code{ASSISTDesign} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
 #'   \item{\code{getDesignameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
@@ -975,10 +1046,18 @@ ASSISTDesignC <-
                                               score = numeric(0))
                     }
                     for (i in seq_len(numberOfSimulations)) {
-                        dataSoFar <- self$generateData(prevalence = trueParameters$prevalence,
-                                                       N = trialParameters$N[3],
-                                                       mean = trueParameters$mean,
-                                                       sd = trueParameters$sd)
+                        if (private$discreteData) {
+                            dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
+                                                              N = trialParameters$N[3],
+                                                              ctlDist = trueParameters$ctlDist,
+                                                              trtDist = trueParameters$trtDist)
+
+                        } else {
+                            dataSoFar <- generateNormalData(prevalence = trueParameters$prevalence,
+                                                            N = trialParameters$N[3],
+                                                            mean = trueParameters$mean,
+                                                            sd = trueParameters$sd)
+                        }
                         if (saveRawData) {
                             rawData <- rbind(rawData,
                                              data.frame(simId = i, trialData))
@@ -1042,8 +1121,8 @@ ASSISTDesignC <-
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
-#'         a new \code{ASSISTDesign} instance object using the parameters specified. }
+#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
+#'         a new \code{ASSISTDesign} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
@@ -1113,11 +1192,11 @@ DEFUSE3Design <-
             ),
             public = list(
                 getOriginalBoundaries = function() private$originalBoundaries,
-                initialize = function(designParameters, trialParameters, generateData = NULL,
+                initialize = function(designParameters, trialParameters, discreteData = FALSE,
                                       numberOfSimulations = 5000, rngSeed = 54321,
                                       showProgress = TRUE,
                                       trueParameters = NULL) {
-                    super$initialize(designParameters, trialParameters, generateData)
+                    super$initialize(designParameters, trialParameters, discreteData)
                     ## Save original Effect sizes
                     private$originalBoundaries <- private$boundaries
                     private$trialParameters$originalEffectSize <- private$trialParameters$effectSize

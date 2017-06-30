@@ -16,8 +16,8 @@ adaptive group sequential clinical trial with three stages.
 
 
 \describe{
-\item{\code{ASSISTDesign$new(designParameters, trialParameters, generateData)}}{Create a new
-\code{ASSISTDesign} instance object using the parameters specified}
+\item{\code{ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
+\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
 \item{\code{getDesignParameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object fields}
 \item{\code{print()}}{Print the object in a human readable form}
@@ -56,7 +56,6 @@ designA$summary(analysis)
 }
 ## For full examples, try:
 ## browseURL(system.file("full_doc/ASSISTant.html", package="ASSISTant"))
-
 }
 \references{
 Adaptive Choice of Patient Subgroup for Comparing Two Treatments

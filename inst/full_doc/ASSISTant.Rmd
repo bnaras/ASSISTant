@@ -66,7 +66,7 @@ print(designA)
 ```
 
 ```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 25000, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
@@ -77,7 +77,7 @@ scenario <- LLL.SETTINGS$scenarios$S1
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -89,7 +89,7 @@ scenario <- LLL.SETTINGS$scenarios$S2
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -101,7 +101,7 @@ scenario <- LLL.SETTINGS$scenarios$S3
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -113,7 +113,7 @@ scenario <- LLL.SETTINGS$scenarios$S4
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -125,7 +125,7 @@ scenario <- LLL.SETTINGS$scenarios$S5
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -137,7 +137,7 @@ scenario <- LLL.SETTINGS$scenarios$S6
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -149,7 +149,7 @@ scenario <- LLL.SETTINGS$scenarios$S7
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -161,7 +161,7 @@ scenario <- LLL.SETTINGS$scenarios$S8
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -173,7 +173,7 @@ scenario <- LLL.SETTINGS$scenarios$S9
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -185,7 +185,7 @@ scenario <- LLL.SETTINGS$scenarios$S10
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table1,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000,
+result <- designA$explore(numberOfSimulations = 25000,
                           trueParameters = trueParameters, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -205,7 +205,7 @@ print(designA)
 ```
 
 ```{r}
-result <- designA$explore(numberOfSimulations = 5000, showProgress = FALSE)
+result <- designA$explore(numberOfSimulations = 25000, showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
 ```
@@ -216,7 +216,7 @@ scenario <- LLL.SETTINGS$scenarios$S1
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -228,7 +228,7 @@ scenario <- LLL.SETTINGS$scenarios$S2
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -240,7 +240,7 @@ scenario <- LLL.SETTINGS$scenarios$S3
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -252,7 +252,7 @@ scenario <- LLL.SETTINGS$scenarios$S4
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -264,7 +264,7 @@ scenario <- LLL.SETTINGS$scenarios$S5
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -276,7 +276,7 @@ scenario <- LLL.SETTINGS$scenarios$S6
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -288,7 +288,7 @@ scenario <- LLL.SETTINGS$scenarios$S7
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -300,7 +300,7 @@ scenario <- LLL.SETTINGS$scenarios$S8
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -312,7 +312,7 @@ scenario <- LLL.SETTINGS$scenarios$S9
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))
@@ -324,7 +324,7 @@ scenario <- LLL.SETTINGS$scenarios$S10
 trueParameters <- list(prevalence = LLL.SETTINGS$prevalences$table2,
                        mean = scenario$mean,
                        sd = scenario$sd)
-result <- designA$explore(numberOfSimulations = 5000, trueParameters = trueParameters,
+result <- designA$explore(numberOfSimulations = 25000, trueParameters = trueParameters,
                           showProgress = FALSE)
 analysis <- designA$analyze(result)
 print(designA$summary(analysis))

@@ -18,8 +18,8 @@ account as well.
 
 
 \describe{
-\item{\code{DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
-a new \code{ASSISTDesign} instance object using the parameters specified. }
+\item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
+a new \code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
 \item{\code{getDesignParameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 \item{\code{print()}}{Print the object in a human readable form}

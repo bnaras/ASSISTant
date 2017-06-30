@@ -625,3 +625,72 @@ colNamesForStage <- function(stage, J) {
             sprintf("sdt_%d_%d", stage, group))
       }))
 }
+
+#' A data generation function using a discrete distribution for Rankin
+#' score rather than a normal distribution
+#'
+#' @param prevalence a vector of group prevalences (length denoted by J below)
+#' @param N the sample size to generate
+#' @param ctlDist a probability vector of length 7 denoting the Rankin Score distribution for control
+#' @param trtDist a 7 x J probability matrix with each column is the Ranking distribution for the associated group
+#' @return a three-column data frame of `subGroup`, `trt` (0 or 1), and `score`
+#' @export
+#' @md
+generateDiscreteData <- function(prevalence, N, ctlDist, trtDist) {
+    J <- length(prevalence)
+    null <- sapply(seq_len(J), function(x) ctlDist)
+    dists <- cbind(null, trtDist)
+
+    if (N == 0) {
+        data.frame(subGroup = integer(0), trt = integer(0),
+                   score = integer(0))
+    } else {
+        subGroup <- sample.int(n = J, size = N, replace = TRUE,
+                               prob = prevalence)
+        trt <- sample.int(n = 2L, size = N, replace = TRUE) - 1L
+
+        rankin <- sapply(J * trt + subGroup,
+                         function(k) sample.int(n = 7L, size = 1, prob = dists[, k] )) -
+            1L
+        data.frame(subGroup = subGroup, trt = trt, score = rankin)
+    }
+}
+
+#' A data generation function along the lines of what was used in the Lai, Lavori, Liao paper.
+#' score rather than a normal distribution
+#'
+#' @param prevalence a vector of group prevalences (length denoted by J below)
+#' @param N the sample size to generate
+#' @param mean a 2 x J matrix of means under the null (first row) and alternative for each group
+#' @param sd a 2 x J matrix of standard deviations under the null (first row) and alternative for each group
+#' @return a three-column data frame of `subGroup`, `trt` (0 or 1), and `score`
+#' @export
+#' @md
+generateNormalData <- function(prevalence, N, mean, sd) {
+    J <- length(prevalence)
+    if (N == 0) {
+        data.frame(subGroup = integer(0), trt = integer(0),
+                   score = numeric(0))
+    } else {
+        subGroup <- sample.int(n = J, size = N, replace = TRUE,
+                               prob = prevalence)
+        trt <- sample.int(n = 2L, size = N, replace = TRUE) - 1L
+        rankin <- unlist(
+            Map(function(i, j)
+                rnorm(n = 1, mean = mean[i, j], sd = sd[i, j]),
+                trt + 1, subGroup))
+        data.frame(subGroup = subGroup, trt = trt, score = rankin)
+    }
+}
+
+#' Compute the mean and sd of a discrete Rankin distribution
+#' @param probVec a probability vector of length 7 (implicit support on `0:6`)
+#' @return a named vector of `mean` and `sd`
+#' @export
+#' @md
+computeMeanAndSD <- function(probVec = rep(1, 7)) {
+    probVec <- probVec / sum(probVec)
+    mean <- sum((0:6) * probVec)
+    sd <- sqrt(sum((0:6)^2 * probVec) - mean^2)
+    c(mean = mean, sd = sd)
+}
