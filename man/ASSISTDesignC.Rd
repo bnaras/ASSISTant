@@ -6,7 +6,7 @@
 \title{A fixed sample RCT design to compare against the adaptive clinical trial design of Lai, Lavori and Liao.}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-# design <- ASSISTDesignC$new(trialParameters, designParameters, generateData)
+# design <- ASSISTDesignC$new(trialParameters, designParameters)
 }
 \description{
 \code{ASSISTDesignC} objects are used to design a trial with certain
@@ -18,8 +18,8 @@ and what quantities are computed in a trial run.
 
 
 \describe{
-\item{\code{ASSISTDesignC$new(designParameters, trialParameters, generateData)}}{Create a new
-\code{ASSISTDesign} instance object using the parameters specified. }
+\item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
+\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
 \item{\code{getDesignameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 \item{\code{print()}}{Print the object in a human readable form}
