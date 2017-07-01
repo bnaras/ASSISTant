@@ -20,12 +20,12 @@ at each of the three stages}
 
 \item{group}{the group whose sample size is desired}
 
-\item{chosenGroup}{the selected group if HJFutilityAtStage is not
-\code{NA}. Ignored if stage is 1.}
-
-\item{HJFutilityStage}{is the stage at which overall futility
+\item{HJFutileAtStage}{is the stage at which overall futility
 occured. Default \code{NA} indicating it did not occur. Also
 ignored if stage is 1.}
+
+\item{chosenGroup}{the selected group if HJFutilityAtStage is not
+\code{NA}. Ignored if stage is 1.}
 }
 \value{
 the sample size for group

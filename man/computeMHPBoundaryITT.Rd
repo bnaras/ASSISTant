@@ -12,18 +12,9 @@ to 1. \eqn{J}, the number of groups, is implicitly the length
 of this vector and should be at least 2.}
 
 \item{alpha}{the type I error}
-
-\item{N}{a three-vector of total sample size at each stage}
-
-\item{beta}{the type II error}
-
-\item{eps}{the fraction (between 0 and 1) of the type 1 error to
-spend in the interim stages 1 and 2}
 }
 \value{
-a named vector of four values containing
-\eqn{\tilde{b}}{btilde}, b, c, and \eqn{\theta}{theta} the
-effect size on the probability scale for the Wilcoxon statistic
+a named vector of a single value containing the value for \code{c}
 }
 \description{
 Compute the three modified Haybittle-Peto boundaries and effect size

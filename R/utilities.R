@@ -39,12 +39,14 @@ STAGE_COL_NAME = "exitStage"
 #' @param y a sample numeric vector
 #' @param theta a value > 0 but < 1/2.
 #' @return the standardized Wilcoxon statistic
+#'
+#' @importFrom stats wilcox.test
 #' @export
 #' @md
 wilcoxon <- function(x, y, theta = 0) {
     nx <- length(x)
     ny <- length(y)
-    (wilcox.test(x, y, exact = FALSE)$statistic - nx * ny * (1/2 + theta)) /
+    (stats::wilcox.test(x, y, exact = FALSE)$statistic - nx * ny * (1/2 + theta)) /
         sqrt(nx * ny * (nx + ny + 1) / 12)
 }
 
@@ -64,7 +66,7 @@ wilcoxon <- function(x, y, theta = 0) {
 #'     at each of the three stages
 #' @param stage the stage of the trial
 #' @param group the group whose sample size is desired
-#' @param HJFutilityStage is the stage at which overall futility
+#' @param HJFutileAtStage is the stage at which overall futility
 #'     occured. Default `NA` indicating it did not occur. Also
 #'     ignored if stage is 1.
 #' @param chosenGroup the selected group if HJFutilityAtStage is not
@@ -80,7 +82,7 @@ wilcoxon <- function(x, y, theta = 0) {
 #'     (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
 #' @md
 groupSampleSize <- function(prevalence, N, stage, group, HJFutileAtStage = NA, chosenGroup = NA) {
-    if (!integerInRange(trialParameters$N, low = 1) || length(N) != NUM_STAGES) {
+    if (!integerInRange(N, low = 1) || length(N) != NUM_STAGES) {
         stop("Improper values for sample size N")
     }
     if (!identical(order(N), seq_along(N))) {
@@ -169,6 +171,8 @@ groupSampleSize <- function(prevalence, N, stage, group, HJFutileAtStage = NA, c
 #'
 #' @rdname ASSISTant-internal
 #'
+#' @importFrom mvtnorm pmvnorm Miwa
+#' @importFrom stats dnorm
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
 #'     Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
 #'     Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
@@ -178,8 +182,8 @@ groupSampleSize <- function(prevalence, N, stage, group, HJFutileAtStage = NA, c
 den.vs <- function(v, i, mu.prime, Sigma.prime, fut ) {
     ## Density function used in integration
     mu.prime <- mu.prime * v
-    pmvnorm(upper = c(rep(v, nrow(mu.prime) - 1), fut), mean = mu.prime[, i],
-            sigma = Sigma.prime[[i]], algorithm = Miwa()) * dnorm(v)
+    mvtnorm::pmvnorm(upper = c(rep(v, nrow(mu.prime) - 1), fut), mean = mu.prime[, i],
+                     sigma = Sigma.prime[[i]], algorithm = mvtnorm::Miwa()) * stats::dnorm(v)
 }
 
 #' Compute the futility boundary (modified Haybittle-Peto) for the
@@ -202,6 +206,8 @@ den.vs <- function(v, i, mu.prime, Sigma.prime, fut ) {
 #' @param beta the type II error
 #' @param cov.J the 3 x 3 covariance matrix
 #'
+#' @importFrom stats uniroot qnorm
+#' @importFrom mvtnorm pmvnorm Miwa
 #' @export
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
@@ -212,14 +218,14 @@ den.vs <- function(v, i, mu.prime, Sigma.prime, fut ) {
 #' @md
 mHP.btilde <- function (beta, cov.J) {
     sigma <- cov.J[-NUM_STAGES, -NUM_STAGES]
-    btilde <- uniroot(f = function(btilde) {
-        1 - pmvnorm(lower = rep(btilde, NUM_STAGES - 1),
-                    upper = upper <- rep(Inf, NUM_STAGES - 1),
-                    sigma = sigma,
-                    algorithm = Miwa()) -
+    btilde <- stats::uniroot(f = function(btilde) {
+        1 - mvtnorm::pmvnorm(lower = rep(btilde, NUM_STAGES - 1),
+                             upper = rep(Inf, NUM_STAGES - 1),
+                             sigma = sigma,
+                             algorithm = Miwa()) -
             beta },
-        lower = qnorm(beta) - 1,
-        upper = qnorm(beta^(1 / (NUM_STAGES - 1))) + 1)
+        lower = stats::qnorm(beta) - 1,
+        upper = stats::qnorm(beta^(1 / (NUM_STAGES - 1))) + 1)
     btilde$root
 }
 
@@ -243,7 +249,8 @@ mHP.btilde <- function (beta, cov.J) {
 #' @param alpha the amount of type I error to spend
 #' @param btilde the futility boundary
 #' @param theta the effect size on the probability scale
-#'
+#' @importFrom stats integrate pnorm uniroot
+#' @importFrom mvtnorm pmvnorm Miwa
 #' @export
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
@@ -274,12 +281,12 @@ mHP.b <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, t
                 ## So this is just an integral of the conditional joint
                 ## distribution
                 ##
-                integrate(
-                    function(x) {
-                        sapply(x, function(x) den.vs(x, i, mu.prime,
-                                                     Sigma.prime, fut = btilde))
-                    },
-                    lower = b, upper = Inf)$value
+                stats::integrate(
+                           function(x) {
+                               sapply(x, function(x) den.vs(x, i, mu.prime,
+                                                            Sigma.prime, fut = btilde))
+                           },
+                           lower = b, upper = Inf)$value
             } else {
                 ## Rejection of subgroup at the subsequent stage,
                 ## that is, stage === stage.accept.J + 1
@@ -295,12 +302,12 @@ mHP.b <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, t
                 sigma <- sqrt(ssi[stage - 1] / ssi[stage])
                 integrand <- function(u) {
                     den.vs(u, i, mu.prime, Sigma.prime, fut = btilde) *
-                        pnorm(b, mean = u * sigma, sd = sqrt(1 - sigma^2),
+                        stats::pnorm(b, mean = u * sigma, sd = sqrt(1 - sigma^2),
                               lower.tail = FALSE)
                 }
-                integrate(
-                    function(u) sapply(u, integrand),
-                    lower = -Inf, upper = b)$value
+                stats::integrate(
+                           function(u) sapply(u, integrand),
+                           lower = -Inf, upper = b)$value
             }
         }
         ## Type I error at interim stages 1 and 2 =
@@ -313,12 +320,13 @@ mHP.b <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, t
         sum(sapply(
             seq_len(J - 1), function(i)  f(1, 1, i) + f(2, 1, i) + f(2, 2, i))) +
             ##
-            1 - pmvnorm(lower = -Inf, upper = b, mean = rep(0, NUM_STAGES - 1),
-                        sigma = cov.J[-NUM_STAGES, -NUM_STAGES], algorithm = Miwa()) -
+            1 - mvtnorm::pmvnorm(lower = -Inf, upper = b, mean = rep(0, NUM_STAGES - 1),
+                                 sigma = cov.J[-NUM_STAGES, -NUM_STAGES],
+                                 algorithm = mvtnorm::Miwa()) -
             ##
             alpha
     }
-    uniroot(f = crossingProb, lower = 1.0, upper = 4.0)$root
+    stats::uniroot(f = crossingProb, lower = 1.0, upper = 4.0)$root
 }
 
 
@@ -344,6 +352,8 @@ mHP.b <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, t
 #' @param b the efficacy boundary for the first two stages
 #' @param theta the effect size on the probability scale
 #'
+#' @importFrom stats uniroot qnorm integrate
+#' @importFrom mvtnorm pmvnorm Miwa
 #' @export
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
@@ -380,13 +390,13 @@ mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b
                 ## except that at the third stage, the critical
                 ## boundary is c.
                 ##
-                integrate(
-                    function(x) {
-                        sapply(x, function(x)
-                            den.vs(x, i, mu.prime, Sigma.prime, fut = c))
-                    },
-                    lower = c,
-                    upper = Inf)$value
+                stats::integrate(
+                           function(x) {
+                               sapply(x, function(x)
+                                   den.vs(x, i, mu.prime, Sigma.prime, fut = c))
+                           },
+                           lower = c,
+                           upper = Inf)$value
             } else if (stage.accept.J == 2 ) {
                 ## Rejection of subgroup at the subsequent stage,
                 ## that is, H_J was futile at stage 2, and H_I is rejected
@@ -403,11 +413,11 @@ mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b
                 sigma <- sqrt(ssi[2] / ssi[3])
                 integrand <- function(u) {
                     den.vs(u, i, mu.prime, Sigma.prime, btilde) *
-                        pnorm(c, mean = u * sigma, sd = sqrt(1 - sigma^2), lower.tail = FALSE)
+                        stats::pnorm(c, mean = u * sigma, sd = sqrt(1 - sigma^2), lower.tail = FALSE)
                 }
-                integrate(function(u) sapply(u, integrand),
-                          lower = -Inf,
-                          upper = b)$value
+                stats::integrate(function(u) sapply(u, integrand),
+                                 lower = -Inf,
+                                 upper = b)$value
             } else {
                 ## Rejection of subgroup at the third stage, while
                 ## H_J was futile at stage 1, and H_I is rejected
@@ -427,15 +437,15 @@ mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b
                 sigma <- sigma23 - v23 %*% t(v23)
                 integrand <- function(u) {
                     den.vs(u, i, mu.prime, Sigma.prime, btilde) *
-                        pmvnorm(lower = c(-Inf, c),
-                                upper = c(b, Inf),
-                                mean = u * v23,
-                                sigma = sigma,
-                                algorithm = Miwa())
+                        mvtnorm::pmvnorm(lower = c(-Inf, c),
+                                         upper = c(b, Inf),
+                                         mean = u * v23,
+                                         sigma = sigma,
+                                         algorithm = mvtnorm::Miwa())
                 }
-                integrate(function(u) sapply(u, integrand),
-                          lower = -Inf,
-                          upper = b)$value
+                stats::integrate(function(u) sapply(u, integrand),
+                                 lower = -Inf,
+                                 upper = b)$value
             }
         }
         ##
@@ -448,16 +458,16 @@ mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b
         ##
         sum(sapply(seq_len(J - 1), function(i) f(1, i) + f(2, i) + f(3, i))) +
             ##
-            pmvnorm(lower = c(rep(-Inf, NUM_STAGES - 1), c),
-                    upper = c(rep(b, NUM_STAGES - 1), Inf), sigma = cov.J,
-                    mean = rep(0, NUM_STAGES),
-                    algorithm = Miwa()) -
+            mvtnorm::pmvnorm(lower = c(rep(-Inf, NUM_STAGES - 1), c),
+                             upper = c(rep(b, NUM_STAGES - 1), Inf), sigma = cov.J,
+                             mean = rep(0, NUM_STAGES),
+                             algorithm = mvtnorm::Miwa()) -
             ##
             alpha
     }
-    uniroot(f = crossingProb,
-            lower = min(0.0, b - 2.0),
-            upper = max(b + 2.0, 4.0))$root
+    stats::uniroot(f = crossingProb,
+                   lower = min(0.0, b - 2.0),
+                   upper = max(b + 2.0, 4.0))$root
 }
 
 #' Compute the three modified Haybittle-Peto boundaries
@@ -474,6 +484,8 @@ mHP.c <- function (prevalence, N, cov.J, mu.prime, Sigma.prime, alpha, btilde, b
 #'     boundary is to be computed; default `FALSE`
 #' @return a named vector of three values containing
 #'     \eqn{\tilde{b}}{btilde}, b, c
+#'
+#' @importFrom stats integrate pnorm uniroot
 #' @export
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
@@ -547,14 +559,8 @@ computeMHPBoundaries <- function(prevalence, N, alpha, beta, eps, futilityOnly =
 #' @param prevalence the vector of prevalences between 0 and 1 summing
 #'     to 1. \eqn{J}, the number of groups, is implicitly the length
 #'     of this vector and should be at least 2.
-#' @param N a three-vector of total sample size at each stage
 #' @param alpha the type I error
-#' @param beta the type II error
-#' @param eps the fraction (between 0 and 1) of the type 1 error to
-#'     spend in the interim stages 1 and 2
-#' @return a named vector of four values containing
-#'     \eqn{\tilde{b}}{btilde}, b, c, and \eqn{\theta}{theta} the
-#'     effect size on the probability scale for the Wilcoxon statistic
+#' @return a named vector of a single value containing the value for `c`
 #' @export
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two
@@ -590,18 +596,18 @@ computeMHPBoundaryITT <- function(prevalence, alpha) {
     crossingProb <- function(c) {
         f <- function(i) {
             ##i=sub-population selected
-            integrate(
-                function(x) {
-                    sapply(x, function(x)
-                        den.vs(x, i, mu.prime, Sigma.prime, fut = c))
-                },
-                lower = c,
-                upper = Inf)$value
+            stats::integrate(
+                       function(x) {
+                           sapply(x, function(x)
+                               den.vs(x, i, mu.prime, Sigma.prime, fut = c))
+                       },
+                       lower = c,
+                       upper = Inf)$value
         }
         sum(sapply(seq_len(J - 1), function(i) f(i))) +
-            pnorm(c, lower.tail = FALSE) - alpha
+            stats::pnorm(c, lower.tail = FALSE) - alpha
     }
-    c(cAlpha = uniroot(f = crossingProb, lower = 1, upper = 4)$root)
+    c(cAlpha = stats::uniroot(f = crossingProb, lower = 1, upper = 4)$root)
 }
 
 
