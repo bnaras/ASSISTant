@@ -23,3 +23,21 @@ a three-column data frame of \code{subGroup}, \code{trt} (0 or 1), and \code{sco
 A data generation function using a discrete distribution for Rankin
 score rather than a normal distribution
 }
+\examples{
+# Simulate data from a discrete distribution for the Rankin scores,
+# which are ordinal integers from 0 to 6 in the following
+# simulations. So we define a few scenarios.
+library(ASSISTant)
+null.uniform <- rep(1, 7L) ## uniform on 7 support points
+hourglass <- c(1, 2, 2, 1, 2, 2, 1)
+inverted.hourglass <- c(2, 1, 1, 2, 1, 1, 2)
+bottom.heavy <- c(2, 2, 2, 1, 1, 1, 1)
+bottom.heavier <- c(3, 3, 2, 2, 1, 1, 1)
+top.heavy <- c(1, 1, 1, 1, 2, 2, 2)
+top.heavier <- c(1, 1, 1, 2, 2, 3, 3)
+ctlDist <- null.uniform
+trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass)
+generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
+trtDist <- cbind(bottom.heavy, bottom.heavy, top.heavy, top.heavy)
+generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
+}

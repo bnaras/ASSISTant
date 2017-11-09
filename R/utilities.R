@@ -640,10 +640,28 @@ colNamesForStage <- function(stage, J) {
 #' @param ctlDist a probability vector of length 7 denoting the Rankin Score distribution for control
 #' @param trtDist a 7 x J probability matrix with each column is the Ranking distribution for the associated group
 #' @return a three-column data frame of `subGroup`, `trt` (0 or 1), and `score`
+#' @examples
+#' # Simulate data from a discrete distribution for the Rankin scores,
+#' # which are ordinal integers from 0 to 6 in the following
+#' # simulations. So we define a few scenarios.
+#' library(ASSISTant)
+#' null.uniform <- rep(1, 7L) ## uniform on 7 support points
+#' hourglass <- c(1, 2, 2, 1, 2, 2, 1)
+#' inverted.hourglass <- c(2, 1, 1, 2, 1, 1, 2)
+#' bottom.heavy <- c(2, 2, 2, 1, 1, 1, 1)
+#' bottom.heavier <- c(3, 3, 2, 2, 1, 1, 1)
+#' top.heavy <- c(1, 1, 1, 1, 2, 2, 2)
+#' top.heavier <- c(1, 1, 1, 2, 2, 3, 3)
+#' ctlDist <- null.uniform
+#' trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass)
+#' generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
+#' trtDist <- cbind(bottom.heavy, bottom.heavy, top.heavy, top.heavy)
+#' generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
 #' @export
 #' @md
 generateDiscreteData <- function(prevalence, N, ctlDist, trtDist) {
     J <- length(prevalence)
+    stopifnot(J == ncol(trtDist))
     null <- sapply(seq_len(J), function(x) ctlDist)
     dists <- cbind(null, trtDist)
 
@@ -674,6 +692,7 @@ generateDiscreteData <- function(prevalence, N, ctlDist, trtDist) {
 #' @md
 generateNormalData <- function(prevalence, N, mean, sd) {
     J <- length(prevalence)
+    stopifnot((J == ncol(mean)) && (J == ncol(sd)))
     if (N == 0) {
         data.frame(subGroup = integer(0), trt = integer(0),
                    score = numeric(0))
