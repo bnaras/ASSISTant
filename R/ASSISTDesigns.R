@@ -1116,7 +1116,7 @@ ASSISTDesignC <-
 #' @importFrom R6 R6Class
 #' @importFrom mvtnorm pmvnorm Miwa
 #' @importFrom stats uniroot rnorm pnorm qnorm
-#' @usage # design <- DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)
+#' @usage # design <- DEFUSE3Design$new(designParameters, trialParameters)
 #'
 #' @section Methods:
 #'
