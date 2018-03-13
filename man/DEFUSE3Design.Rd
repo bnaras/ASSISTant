@@ -6,7 +6,7 @@
 \title{The DEFUSE3 design}
 \format{An \code{\link{R6Class}} generator object}
 \usage{
-# design <- DEFUSE3Design$new(designParameters, trialParameters, generateData, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)
+# design <- DEFUSE3Design$new(designParameters, trialParameters)
 }
 \description{
 \code{DEFUSE3Design} is a slight variant of the the adaptive
@@ -77,10 +77,8 @@ print(defuse3$summary(analysis))
 
 }
 \references{
-Adaptive design of confirmatory trials: Advances and challenges,
-\url{http://www.sciencedirect.com/science/article/pii/S1551714415300239} by
-Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. Contemporary Clinical Trials, Vol. 45, Part A,
-pp 93-102 (2015).
+Adaptive design of confirmatory trials: Advances and challenges, 2015 45(Pt A):93-102,
+by Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. doi:10.1016/j.cct.2015.06.007
 }
 \seealso{
 \code{ASSISTDesign} which is a superclass of this object

@@ -24,12 +24,8 @@ adaptive group sequential clinical trial with three stages.
 \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 \code{boundaries}}
-\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(),
-         recordStats = TRUE, showProgress = TRUE, fixedSampleSize = FALSE, saveRawData = FALSE)}}{Explore the
-design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
-as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-Record statistics, raw data, and show progress if so desired. A fixed sample size can be specified to ensure that patients
-lost after a futile overall look are not made up. Returns a list of results}
+\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345)}}{Explore the
+design using the specified number of simulations and random number seed. There are a number of further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{recordStats = TRUE/FALSE}, \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control recording statistics, raw data saves, display of  progress. Fixed sample size  (\code{fixedSampleSize = TRUE/FALSE}) can be specified to ensure that patients lost after a futile overall look are not made up. Returns a list of results}
 \item{\code{analyze(trialExploration)}}{Analyze
 the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 simulate the design. Return a list of summary quantities}
@@ -60,7 +56,7 @@ designA$summary(analysis)
 \references{
 Adaptive Choice of Patient Subgroup for Comparing Two Treatments
 by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
-Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+Vol. 39, No. 2, pp 191-200 (2014). doi:10.1016/j.cct.2014.09.001g
 }
 \seealso{
 \code{LLL.SETTINGS} for an explanation of trial parameters

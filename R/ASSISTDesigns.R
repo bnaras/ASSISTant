@@ -24,12 +24,8 @@
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 #'         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 #'         \code{boundaries}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(),
-#'          recordStats = TRUE, showProgress = TRUE, fixedSampleSize = FALSE, saveRawData = FALSE)}}{Explore the
-#'         design using the specified number of simulations and random number seed. \code{trueParameters} is by default the same
-#'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Record statistics, raw data, and show progress if so desired. A fixed sample size can be specified to ensure that patients
-#'         lost after a futile overall look are not made up. Returns a list of results}
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345)}}{Explore the
+#'         design using the specified number of simulations and random number seed. There are a number of further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{recordStats = TRUE/FALSE}, \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control recording statistics, raw data saves, display of  progress. Fixed sample size  (\code{fixedSampleSize = TRUE/FALSE}) can be specified to ensure that patients lost after a futile overall look are not made up. Returns a list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -39,7 +35,7 @@
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
 #' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
-#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' Vol. 39, No. 2, pp 191-200 (2014). doi:10.1016/j.cct.2014.09.001g
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -96,13 +92,14 @@ ASSISTDesign <-
                     }
                     J = designParameters$J
                     if (discreteData) {
+                        K <- length(designParameters$distSupport)
                         ctlDist <- designParameters$ctlDist
-                        if ((length(ctlDist) != 7L) || any(ctlDist < 0)) {
-                            stop("Improper ctlDist; need a 7-length probability vector for Rankin scores")
+                        if ((length(ctlDist) != K) || any(ctlDist < 0)) {
+                            stop(sprintf("Improper ctlDist; need a %d-length probability vector for Rankin scores", K))
                         }
                         trtDist <- designParameters$trtDist
-                        if ((nrow(trtDist) != 7L) || (ncol(trtDist) != J) || any(trtDist < 0)) {
-                            stop(sprintf("Improper trtDist; need a 7 x %s matrix, with each column a probability vector", J))
+                        if ((nrow(trtDist) != K) || (ncol(trtDist) != J) || any(trtDist < 0)) {
+                            stop(sprintf("Improper trtDist; need a %d x %d matrix, with each column a probability vector", K, J))
                         }
                     } else {
                         if (!all.equal(dim(designParameters$mean), c(2, J))) {
@@ -204,8 +201,14 @@ ASSISTDesign <-
             ),
             public = list(
                 initialize = function(designParameters, trialParameters, discreteData = FALSE) {
+                    ##browser()
                     prevalence <- designParameters$prevalence
                     designParameters$J <- J <- length(prevalence)
+                    ## Assume Rankin is 0:6 unless specified in designParameters
+                    if (is.null(designParameters$distSupport)) {
+                        designParameters$distSupport <- 0L:6L
+                    }
+
                     ## Check and fix parameters
                     private$checkParameters(designParameters, trialParameters, discreteData)
                     trialParameters$effectSize <- (qnorm(1 - trialParameters$type1Error) +
@@ -213,13 +216,14 @@ ASSISTDesign <-
                         sqrt(3 * trialParameters$N[3])
                     prevalence <- prevalence / sum(prevalence)
                     if (discreteData) {
+                        support <- designParameters$distSupport
                         ctlDist <- designParameters$ctlDist
                         ctlDist <- ctlDist / sum(ctlDist)
-                        names(ctlDist) <- 0:6
+                        names(ctlDist) <- support
                         designParameters$ctlDist <- ctlDist
                         trtDist <- designParameters$trtDist
                         trtDist <- apply(trtDist, 2, function(x) x/sum(x))
-                        rownames(trtDist) <- 0:6
+                        rownames(trtDist) <- support
                         colnames(trtDist) <- paste0("Group", seq_len(J))
                         designParameters$trtDist <- trtDist
                     } else {
@@ -250,17 +254,19 @@ ASSISTDesign <-
                     print(knitr::kable(prevalence))
                     cat(sprintf("\n Using Discrete Rankin scores? %s\n\n", private$discreteData))
                     if (private$discreteData) {
-                        cat(" Null Rankin Distribution (support 0:6):")
+                        support <- designParameters$distSupport
+                        cat(" Null Rankin Distribution:")
                         ctlDist <- matrix(designParameters$ctlDist, ncol = 1)
-                        rownames(ctlDist) <- 0:6
+                        rownames(ctlDist) <- support
                         colnames(ctlDist) <- "Prob."
                         print(knitr::kable(ctlDist))
-                        stats <- computeMeanAndSD(ctlDist[, 1])
+                        stats <- computeMeanAndSD(ctlDist[, 1], support = support)
                         cat(sprintf("\ Null Distribution Mean: %f, SD: %f\n\n", stats["mean"], stats["sd"]))
-                        cat(" Alternative Rankin Distribution (support 0:6):\n")
+                        cat(" Alternative Rankin Distribution:\n")
                         print(knitr::kable(designParameters$trtDist))
                         cat(" Alternative Mean and SD")
-                        print(knitr::kable(apply(designParameters$trtDist, 2, computeMeanAndSD)))
+                        print(knitr::kable(apply(designParameters$trtDist, 2,
+                                                 computeMeanAndSD, support = support)))
                     } else {
                         cat(" Normal Rankin Distribution means (null row, alt. row):\n")
                         print(knitr::kable(designParameters$mean))
@@ -289,6 +295,7 @@ ASSISTDesign <-
                                     showProgress = TRUE,
                                     fixedSampleSize = FALSE,
                                     saveRawData = FALSE) {
+                    ##browser()
                     ## Save rng state
                     oldRngState <- if (exists(".Random.seed", envir = .GlobalEnv)) {
                                        get(x = ".Random.seed", envir=.GlobalEnv)
@@ -340,6 +347,7 @@ ASSISTDesign <-
                             thisTrialData <-
                                 trialData <- generateDiscreteData(prevalence = prevalence,
                                                                   N = 0,
+                                                                  support = trueParameters$distSupport,
                                                                   ctlDist = trueParameters$ctlDist,
                                                                   trtDist = trueParameters$trtDist)
 
@@ -366,6 +374,7 @@ ASSISTDesign <-
                             if (discreteData) {
                                 thisStageData <- generateDiscreteData(prevalence = prevalence[groupIndices],
                                                                       N = sampleSizeForThisStage,
+                                                                      support = trueParameters$distSupport,
                                                                       ctlDist = trueParameters$ctlDist,
                                                                       trtDist = trueParameters$trtDist[, groupIndices,
                                                                                                        drop = FALSE])
@@ -579,7 +588,8 @@ ASSISTDesign <-
                     designParameters <- private$designParameters
                     J <- designParameters$J
                     if (private$discreteData) {
-                        mu <- as.numeric(t(designParameters$ctlDist) %*% (0:6))
+                        mu <- computeMeanAndSD(probVec = designParameters$ctlDist,
+                                               support = designParameters$distSupport)["mean"]
                         trueTheta <- cumsum(designParameters$prevalence * mu)
                     } else {
                         ## These two lines were in versions prior to 1.3-15. They seem wrong!
@@ -758,11 +768,8 @@ ASSISTDesign <-
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(),
-#'         showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
-#'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
-#'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress and save raw data if so desired. Returns list of results}
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345)}}{Explore the design
+#'         using the specified number of simulations and random number seed. There are further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control raw data saves and display of  progress.  Returns a list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -772,7 +779,7 @@ ASSISTDesign <-
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
 #' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
-#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' Vol. 39, No. 2, pp 191-200 (2014). doi:10.1016/j.cct.2014.09.001g
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -876,6 +883,7 @@ ASSISTDesignB <-
                         if (private$discreteData) {
                             dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
                                                               N = trialParameters$N[3],
+                                                              support = trueParameters$distSupport,
                                                               ctlDist = trueParameters$ctlDist,
                                                               trtDist = trueParameters$trtDist)
 
@@ -969,10 +977,8 @@ ASSISTDesignB <-
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
-#'         using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
-#'         as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-#'         Show progress and save raw data if so desired. Returns a list of results}
+#'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345}}{Explore the design
+#'         using the specified number of simulations and random number seed. There are further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control raw data saves and display of  progress.  Returns a list of results}
 #'   \item{\code{analyze(trialExploration)}}{Analyze
 #'         the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 #'         simulate the design. Return a list of summary quantities}
@@ -982,7 +988,7 @@ ASSISTDesignB <-
 #'
 #' @references Adaptive Choice of Patient Subgroup for Comparing Two Treatments
 #' by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
-#' Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+#' Vol. 39, No. 2, pp 191-200 (2014). doi:10.1016/j.cct.2014.09.001g
 #' @export
 #' @format An \code{\link{R6Class}} generator object
 #' @examples
@@ -1049,6 +1055,7 @@ ASSISTDesignC <-
                         if (private$discreteData) {
                             dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
                                                               N = trialParameters$N[3],
+                                                              support = trueParameters$distSupport,
                                                               ctlDist = trueParameters$ctlDist,
                                                               trtDist = trueParameters$trtDist)
 
@@ -1140,10 +1147,8 @@ ASSISTDesignC <-
 #'         result from the \code{analyze} call}
 #' }
 #'
-#' @references Adaptive design of confirmatory trials: Advances and challenges,
-#' \url{http://www.sciencedirect.com/science/article/pii/S1551714415300239} by
-#' Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. Contemporary Clinical Trials, Vol. 45, Part A,
-#' pp 93-102 (2015).
+#' @references Adaptive design of confirmatory trials: Advances and challenges, 2015 45(Pt A):93-102,
+#' by Tze Leung Lai and Philip W. Lavori and Ka Wai Tsang. doi:10.1016/j.cct.2015.06.007
 #'
 #' @export
 #' @format An \code{\link{R6Class}} generator object
@@ -1198,6 +1203,7 @@ DEFUSE3Design <-
                                       trueParameters = NULL) {
                     super$initialize(designParameters, trialParameters, discreteData)
                     ## Save original Effect sizes
+                    ##browser()
                     private$originalBoundaries <- private$boundaries
                     private$trialParameters$originalEffectSize <- private$trialParameters$effectSize
                     self$adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)

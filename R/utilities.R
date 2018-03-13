@@ -637,12 +637,13 @@ colNamesForStage <- function(stage, J) {
 #'
 #' @param prevalence a vector of group prevalences (length denoted by J below)
 #' @param N the sample size to generate
-#' @param ctlDist a probability vector of length 7 denoting the Rankin Score distribution for control
-#' @param trtDist a 7 x J probability matrix with each column is the Ranking distribution for the associated group
+#' @param support the support values of the discrete distribution (length K), default 0:6
+#' @param ctlDist a probability vector of length K denoting the Rankin score distribution for control.
+#' @param trtDist an K x J probability matrix with each column is the Rankin distribution for the associated group
 #' @return a three-column data frame of `subGroup`, `trt` (0 or 1), and `score`
 #' @examples
 #' # Simulate data from a discrete distribution for the Rankin scores,
-#' # which are ordinal integers from 0 to 6 in the following
+#' # which are typically ordinal integers from 0 to 6 in the following
 #' # simulations. So we define a few scenarios.
 #' library(ASSISTant)
 #' null.uniform <- rep(1, 7L) ## uniform on 7 support points
@@ -653,13 +654,20 @@ colNamesForStage <- function(stage, J) {
 #' top.heavy <- c(1, 1, 1, 1, 2, 2, 2)
 #' top.heavier <- c(1, 1, 1, 2, 2, 3, 3)
 #' ctlDist <- null.uniform
-#' trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass)
-#' generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
+#' trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass) ## 4 groups
+#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist) ## default support is 0:6
 #' trtDist <- cbind(bottom.heavy, bottom.heavy, top.heavy, top.heavy)
-#' generateDiscreteData(prevalence = rep(1, 4), 10, ctlDist, trtDist)
+#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist)
+#' support <- c(-2, -1, 0, 1, 2) ## Support of distribution
+#' top.loaded <- c(1, 1, 1, 3, 3) ## Top is heavier
+#' ctl.dist <- c(1, 1, 1, 1, 1) ## null on 5 support points
+#' trt.dist _cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
+#' generateDiscreteData(prevalence = rep(1, 5), N = 10, support = support, ctlDist = ctlDist, triDist = trtDist)
 #' @export
 #' @md
-generateDiscreteData <- function(prevalence, N, ctlDist, trtDist) {
+generateDiscreteData <- function(prevalence, N, support = 0L:6L, ctlDist, trtDist) {
+    nR <- length(support)
+    stopifnot(length(ctlDist) == nR && nrow(trtDist) == nR)
     J <- length(prevalence)
     stopifnot(J == ncol(trtDist))
     null <- sapply(seq_len(J), function(x) ctlDist)
@@ -671,11 +679,11 @@ generateDiscreteData <- function(prevalence, N, ctlDist, trtDist) {
     } else {
         subGroup <- sample.int(n = J, size = N, replace = TRUE,
                                prob = prevalence)
+        ## Scale trt to 0:1 from 1:2.
         trt <- sample.int(n = 2L, size = N, replace = TRUE) - 1L
 
         rankin <- sapply(J * trt + subGroup,
-                         function(k) sample.int(n = 7L, size = 1, prob = dists[, k] )) -
-            1L
+                         function(k) sample(support, size = 1, prob = dists[, k] ))
         data.frame(subGroup = subGroup, trt = trt, score = rankin)
     }
 }
@@ -709,13 +717,16 @@ generateNormalData <- function(prevalence, N, mean, sd) {
 }
 
 #' Compute the mean and sd of a discrete Rankin distribution
-#' @param probVec a probability vector of length 7 (implicit support on `0:6`)
+#' @param probVec a probability vector of length equal to length of support,
+#'        default is uniform
+#' @param support a vector of support values (default 0:6 for Rankin Scores)
 #' @return a named vector of `mean` and `sd`
 #' @export
 #' @md
-computeMeanAndSD <- function(probVec = rep(1, 7)) {
+computeMeanAndSD <- function(probVec = rep(1, 7L), support = 0L:6L) {
+    stopifnot(all(probVec >= 0))
     probVec <- probVec / sum(probVec)
-    mean <- sum((0:6) * probVec)
-    sd <- sqrt(sum((0:6)^2 * probVec) - mean^2)
+    mean <- sum(support * probVec)
+    sd <- sqrt(sum(probVec * support^2) - mean^2)
     c(mean = mean, sd = sd)
 }

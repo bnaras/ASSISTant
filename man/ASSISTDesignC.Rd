@@ -24,10 +24,8 @@ and what quantities are computed in a trial run.
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 \item{\code{print()}}{Print the object in a human readable form}
 \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
-\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345, trueParameters = self$getDesignParameters(), showProgress = TRUE, saveRawData = FALSE)}}{Explore the design
-using the specified number of simulations and random number seed.  \code{trueParameters} is by default the same
-as \code{designParameters} as would be the case for a Type I error calculation. If changed, would yield power.
-Show progress and save raw data if so desired. Returns a list of results}
+\item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345}}{Explore the design
+using the specified number of simulations and random number seed. There are further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control raw data saves and display of  progress.  Returns a list of results}
 \item{\code{analyze(trialExploration)}}{Analyze
 the design given the \code{trialExploration} which is the result of a call to \code{explore} to
 simulate the design. Return a list of summary quantities}
@@ -57,7 +55,7 @@ designC$summary(analysis)
 \references{
 Adaptive Choice of Patient Subgroup for Comparing Two Treatments
 by Tze Leung Lai and Philip W. Lavori and Olivia Yueh-Wen Liao. Contemporary Clinical Trials,
-Vol. 39, No. 2, pp 191-200 (2014). \url{http://www.sciencedirect.com/science/article/pii/S1551714414001311}
+Vol. 39, No. 2, pp 191-200 (2014). doi:10.1016/j.cct.2014.09.001g
 }
 \seealso{
 \code{ASSISTDesignB} which is a superclass of this object

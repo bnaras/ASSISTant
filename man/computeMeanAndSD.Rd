@@ -4,10 +4,13 @@
 \alias{computeMeanAndSD}
 \title{Compute the mean and sd of a discrete Rankin distribution}
 \usage{
-computeMeanAndSD(probVec = rep(1, 7))
+computeMeanAndSD(probVec = rep(1, 7L), support = 0L:6L)
 }
 \arguments{
-\item{probVec}{a probability vector of length 7 (implicit support on \code{0:6})}
+\item{probVec}{a probability vector of length equal to length of support,
+default is uniform}
+
+\item{support}{a vector of support values (default 0:6 for Rankin Scores)}
 }
 \value{
 a named vector of \code{mean} and \code{sd}
