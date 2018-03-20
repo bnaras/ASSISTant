@@ -39,12 +39,15 @@ top.heavy <- c(1, 1, 1, 1, 2, 2, 2)
 top.heavier <- c(1, 1, 1, 2, 2, 3, 3)
 ctlDist <- null.uniform
 trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass) ## 4 groups
-generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist) ## default support is 0:6
+generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist,
+                     trtDist = trtDist) ## default support is 0:6
 trtDist <- cbind(bottom.heavy, bottom.heavy, top.heavy, top.heavy)
-generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist)
+generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist,
+                     trtDist = trtDist)
 support <- c(-2, -1, 0, 1, 2) ## Support of distribution
 top.loaded <- c(1, 1, 1, 3, 3) ## Top is heavier
 ctl.dist <- c(1, 1, 1, 1, 1) ## null on 5 support points
-trt.dist _cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
-generateDiscreteData(prevalence = rep(1, 5), N = 10, support = support, ctlDist = ctlDist, triDist = trtDist)
+trt.dist <- cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
+generateDiscreteData(prevalence = rep(1, 3), N = 10, support = support,
+                     ctlDist = ctl.dist, trtDist = trt.dist)
 }

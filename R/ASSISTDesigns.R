@@ -205,8 +205,9 @@ ASSISTDesign <-
                     prevalence <- designParameters$prevalence
                     designParameters$J <- J <- length(prevalence)
                     ## Assume Rankin is 0:6 unless specified in designParameters
-                    if (is.null(designParameters$distSupport)) {
-                        designParameters$distSupport <- 0L:6L
+                    support <- designParameters$distSupport
+                    if (is.null(support)) {
+                        support <- designParameters$distSupport <- 0L:6L
                     }
 
                     ## Check and fix parameters
@@ -216,7 +217,6 @@ ASSISTDesign <-
                         sqrt(3 * trialParameters$N[3])
                     prevalence <- prevalence / sum(prevalence)
                     if (discreteData) {
-                        support <- designParameters$distSupport
                         ctlDist <- designParameters$ctlDist
                         ctlDist <- ctlDist / sum(ctlDist)
                         names(ctlDist) <- support
@@ -313,6 +313,7 @@ ASSISTDesign <-
                         trueParameters$J <- J
                     }
 
+                    support <- private$designParameters$distSupport
                     glrBoundary <- private$boundaries
                     prevalence <- trueParameters$prevalence
 
@@ -341,13 +342,14 @@ ASSISTDesign <-
                     }
                     discreteData <- private$discreteData
 
+
                     for (i in seq_len(numberOfSimulations)) {
                         ## Generate Empty dataset
                         if (discreteData) {
                             thisTrialData <-
                                 trialData <- generateDiscreteData(prevalence = prevalence,
                                                                   N = 0,
-                                                                  support = trueParameters$distSupport,
+                                                                  support = support,
                                                                   ctlDist = trueParameters$ctlDist,
                                                                   trtDist = trueParameters$trtDist)
 
@@ -374,7 +376,7 @@ ASSISTDesign <-
                             if (discreteData) {
                                 thisStageData <- generateDiscreteData(prevalence = prevalence[groupIndices],
                                                                       N = sampleSizeForThisStage,
-                                                                      support = trueParameters$distSupport,
+                                                                      support = support,
                                                                       ctlDist = trueParameters$ctlDist,
                                                                       trtDist = trueParameters$trtDist[, groupIndices,
                                                                                                        drop = FALSE])
@@ -861,6 +863,7 @@ ASSISTDesignB <-
                     J <- trueParameters$J
 
                     glrBoundary <- private$boundaries
+                    support <- private$designParameters$distSupport
 
                     naVec <- rep(NA, numberOfSimulations)
                     zeroVec <- integer(numberOfSimulations)
@@ -883,7 +886,7 @@ ASSISTDesignB <-
                         if (private$discreteData) {
                             dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
                                                               N = trialParameters$N[3],
-                                                              support = trueParameters$distSupport,
+                                                              support = support,
                                                               ctlDist = trueParameters$ctlDist,
                                                               trtDist = trueParameters$trtDist)
 
@@ -1034,6 +1037,7 @@ ASSISTDesignC <-
                     }
                     J <- trueParameters$J
                     glrBoundary <- private$boundaries
+                    support <- private$designParameters$distSupport
 
                     naVec <- rep(NA, numberOfSimulations)
                     zeroVec <- integer(numberOfSimulations)
@@ -1055,7 +1059,7 @@ ASSISTDesignC <-
                         if (private$discreteData) {
                             dataSoFar <- generateDiscreteData(prevalence = trueParameters$prevalence,
                                                               N = trialParameters$N[3],
-                                                              support = trueParameters$distSupport,
+                                                              support = support,
                                                               ctlDist = trueParameters$ctlDist,
                                                               trtDist = trueParameters$trtDist)
 

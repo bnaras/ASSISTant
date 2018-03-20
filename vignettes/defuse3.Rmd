@@ -70,14 +70,14 @@ designParameters <- list(
 
 ```{r}
 defuse3 <- DEFUSE3Design$new(trialParameters = trialParameters,
-                             numberOfSimulations = 5000,
+                             numberOfSimulations = 500,
                              designParameters = designParameters$nul0,
                              showProgress = FALSE)
 print(defuse3)
 ```
 
 ```{r}
-result <- defuse3$explore(numberOfSimulations = 5000,
+result <- defuse3$explore(numberOfSimulations = 500,
                           showProgress = FALSE,
                           rngSeed = 28912)
 analysis <- defuse3$analyze(result)
@@ -87,7 +87,7 @@ print(defuse3$summary(analysis))
 ### The ALT1 Scenario
 
 ```{r}
-result1 <- defuse3$explore(numberOfSimulations = 5000,
+result1 <- defuse3$explore(numberOfSimulations = 500,
                            trueParameters = designParameters$alt1,
                            showProgress = FALSE,
                            rngSeed = 737218)
@@ -98,7 +98,7 @@ print(defuse3$summary(analysis1))
 ### The ALT2 Scenario
 
 ```{r}
-result2 <- defuse3$explore(numberOfSimulations = 5000,
+result2 <- defuse3$explore(numberOfSimulations = 500,
                            trueParameters = designParameters$alt2,
                            showProgress = FALSE,
                           rngSeed = 928812)
@@ -160,15 +160,15 @@ wanted $J = 2$, which I adhere to, below.
 
 ```{r}
 designParameters <- list(
-    nul0 = list(prevalence = rep(1/2, 2),
+    nul0 = list(prevalence = rep(1, 2),
                 ctlDist = null.uniform,
                 trtDist = cbind(null.uniform,
                                 null.uniform)),
-    alt1 = list(prevalence = rep(1/2, 2), 
+    alt1 = list(prevalence = rep(1, 2), 
                 ctlDist = null.uniform,
                 trtDist = cbind(top.loaded,
                                 null.uniform)),
-    alt2 = list(prevalence = rep(1/2, 2), 
+    alt2 = list(prevalence = rep(1, 2), 
                 ctlDist = null.uniform,
                 trtDist = cbind(null.uniform,
                                 top.loaded))
@@ -187,7 +187,7 @@ print(discDefuse3)
 ```
 
 ```{r}
-result <- discDefuse3$explore(numberOfSimulations = 5000,
+result <- discDefuse3$explore(numberOfSimulations = 50,
                               showProgress = FALSE,
                               rngSeed = 3783)
 analysis <- discDefuse3$analyze(result)
@@ -197,7 +197,7 @@ print(discDefuse3$summary(analysis))
 ### The ALT1 Scenario
 
 ```{r}
-result1 <- discDefuse3$explore(numberOfSimulations = 5000,
+result1 <- discDefuse3$explore(numberOfSimulations = 50,
                                trueParameters = designParameters$alt1,
                                showProgress = FALSE,
                                rngSeed = 28912)
@@ -208,7 +208,7 @@ print(discDefuse3$summary(analysis1))
 ### The ALT2 Scenario
 
 ```{r}
-result2 <- discDefuse3$explore(numberOfSimulations = 5000,
+result2 <- discDefuse3$explore(numberOfSimulations = 50,
                                trueParameters = designParameters$alt2,
                                showProgress = FALSE,
                                rngSeed = 931)

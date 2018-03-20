@@ -44,11 +44,21 @@ STAGE_COL_NAME = "exitStage"
 #' @export
 #' @md
 wilcoxon <- function(x, y, theta = 0) {
-    nx <- length(x)
-    ny <- length(y)
-    (stats::wilcox.test(x, y, exact = FALSE)$statistic - nx * ny * (1/2 + theta)) /
-        sqrt(nx * ny * (nx + ny + 1) / 12)
+    r <- rank(c(x, y))
+    n.x <- as.double(length(x))
+    n.y <- as.double(length(y))
+    STATISTIC <- c(W = sum(r[seq_along(x)]) - n.x * (n.x +
+                                                     1)/2)
+    TIES <- (length(r) != length(unique(r)))
+    NTIES <- table(r)
+    z <- STATISTIC - n.x * n.y * (1/2 + theta)
+    SIGMA <- sqrt((n.x * n.y/12) * ((n.x + n.y + 1) -
+                                    sum(NTIES^3 - NTIES)/((n.x + n.y) * (n.x + n.y -
+                                                                         1))))
+    ##CORRECTION <- sign(z) * 0.5
+    z / SIGMA
 }
+
 
 #' Compute the sample size for any group at a stage assuming a nested
 #' structure as in the paper.
@@ -655,14 +665,17 @@ colNamesForStage <- function(stage, J) {
 #' top.heavier <- c(1, 1, 1, 2, 2, 3, 3)
 #' ctlDist <- null.uniform
 #' trtDist <- cbind(null.uniform, null.uniform, hourglass, hourglass) ## 4 groups
-#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist) ## default support is 0:6
+#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist,
+#'                      trtDist = trtDist) ## default support is 0:6
 #' trtDist <- cbind(bottom.heavy, bottom.heavy, top.heavy, top.heavy)
-#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist, trtDist = trtDist)
+#' generateDiscreteData(prevalence = rep(1, 4), N = 10, ctlDist = ctlDist,
+#'                      trtDist = trtDist)
 #' support <- c(-2, -1, 0, 1, 2) ## Support of distribution
 #' top.loaded <- c(1, 1, 1, 3, 3) ## Top is heavier
 #' ctl.dist <- c(1, 1, 1, 1, 1) ## null on 5 support points
-#' trt.dist _cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
-#' generateDiscreteData(prevalence = rep(1, 5), N = 10, support = support, ctlDist = ctlDist, triDist = trtDist)
+#' trt.dist <- cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
+#' generateDiscreteData(prevalence = rep(1, 3), N = 10, support = support,
+#'                      ctlDist = ctl.dist, trtDist = trt.dist)
 #' @export
 #' @md
 generateDiscreteData <- function(prevalence, N, support = 0L:6L, ctlDist, trtDist) {
