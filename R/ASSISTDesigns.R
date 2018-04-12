@@ -1133,7 +1133,7 @@ ASSISTDesignC <-
 #'
 #' \describe{
 #'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
-#'         a new \code{ASSISTDesign} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
+#'         a new \code{DEFUSE3Design} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
 #'   \item{\code{print()}}{Print the object in a human readable form}
