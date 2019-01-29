@@ -16,11 +16,14 @@
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{`ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE)`}{Create a new
-#'         `ASSISTDesign` instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
+#'   \item{`ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE, boundaries)`}{Create a new
+#'         `ASSISTDesign` instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from. If `boundaries` is specified, it used.}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object fields}
-#'   \item{\code{print()}}{Print the object in a human readable form}
+#'    \item{\code{setBoundaries}}{Modifier method for boundaries a
+#'          named vector of double values with names \code{btilde},
+#'          \code{b}, and \code{c}, in that order}
+#' \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 #'         \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field
 #'         \code{boundaries}}
@@ -200,7 +203,7 @@ ASSISTDesign <-
                 }
             ),
             public = list(
-                initialize = function(designParameters, trialParameters, discreteData = FALSE) {
+                initialize = function(designParameters, trialParameters, discreteData = FALSE, boundaries) {
                     ##browser()
                     prevalence <- designParameters$prevalence
                     designParameters$J <- J <- length(prevalence)
@@ -239,11 +242,21 @@ ASSISTDesign <-
                     private$designParameters <- designParameters
                     private$trialParameters <- trialParameters
                     private$discreteData <- discreteData
-                    private$boundaries <- self$computeCriticalValues()
+                    if (missing(boundaries)) {
+                        private$boundaries <- self$computeCriticalValues()
+                    } else {
+                        self$setBoundaries(boundaries)
+                    }
                 },
                 getDesignParameters = function() private$designParameters,
                 getTrialParameters = function() private$trialParameters,
                 getBoundaries  = function() private$boundaries,
+                setBoundaries  = function(value) {
+                    if (!all(names(values) == c("btilde", "b", "c"))) {
+                        stop("setBoundaries: Need names 'btilde', 'b', and 'c' in order")
+                    }
+                    private$boundaries <- value
+                },
                 print = function() {
                     designParameters <- private$designParameters
                     cat("Design Parameters:\n")
@@ -763,12 +776,15 @@ ASSISTDesign <-
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{ASSISTDesignB$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new \code{ASSISTDesign}
+#'   \item{\code{ASSISTDesignB$new(designParameters, trialParameters, discreteData = FALSE, boundaries)}}{Create a new \code{ASSISTDesign}
 #'         instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin
-#'         scores and `designParameters` must contain the appropriate distributions to sample from}
+#'         scores and `designParameters` must contain the appropriate distributions to sample from. If `boundaries` is specified, it is used}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
-#'   \item{\code{print()}}{Print the object in a human readable form}
+#'    \item{\code{setBoundaries}}{Modifier method for boundaries a
+#'          named vector of double values with names \code{btilde},
+#'          \code{b}, and \code{c}, in that order}
+#' \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
 #'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345)}}{Explore the design
 #'         using the specified number of simulations and random number seed. There are further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control raw data saves and display of  progress.  Returns a list of results}
@@ -974,11 +990,14 @@ ASSISTDesignB <-
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
-#'         \code{ASSISTDesign} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
+#'   \item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE, boundaries)}}{Create a new
+#'         \code{ASSISTDesign} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from. If `boundaries is specified, it is used.}
 #'   \item{\code{getDesignameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
-#'   \item{\code{print()}}{Print the object in a human readable form}
+#'    \item{\code{setBoundaries}}{Modifier method for boundaries a
+#'          named vector of double values with names \code{btilde},
+#'          \code{b}, and \code{c}, in that order}
+#' \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
 #'   \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345}}{Explore the design
 #'         using the specified number of simulations and random number seed. There are further parameters. By default \code{trueParameters = self$getDesignParameters()} as would be the case for a Type I error calculation. If changed, would yield power. Also \code{showProgress = TRUE/FALSE}, \code{saveRawData = TRUE/FALSE} control raw data saves and display of  progress.  Returns a list of results}
@@ -1132,11 +1151,14 @@ ASSISTDesignC <-
 #' @section Methods:
 #'
 #' \describe{
-#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
-#'         a new \code{DEFUSE3Design} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from}
+#'   \item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE, boundaries)}}{Create
+#'         a new \code{DEFUSE3Design} instance object using the parameters specified. If `discreteData` is `TRUE` use a discrete distribution for the Rankin scores and `designParameters` must contain the appropriate distributions to sample from. If `boundaries` is specified, it is used.}
 #'   \item{\code{getDesignParameters},\code{getTrialParameters},
 #'         \code{getBoundaries}}{Accessor methods for (obvious) object slots}
-#'   \item{\code{print()}}{Print the object in a human readable form}
+#'    \item{\code{setBoundaries}}{Modifier method for boundaries a
+#'          named vector of double values with names \code{btilde},
+#'          \code{b}, and \code{c}, in that order}
+#' \item{\code{print()}}{Print the object in a human readable form}
 #'   \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
 #'         by performing simulations using the parameters provided}
 #'   \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
@@ -1204,13 +1226,16 @@ DEFUSE3Design <-
                 initialize = function(designParameters, trialParameters, discreteData = FALSE,
                                       numberOfSimulations = 5000, rngSeed = 54321,
                                       showProgress = TRUE,
-                                      trueParameters = NULL) {
-                    super$initialize(designParameters, trialParameters, discreteData)
+                                      trueParameters = NULL,
+                                      boundaries) {
+                    super$initialize(designParameters, trialParameters, discreteData, boundaries)
                     ## Save original Effect sizes
                     ##browser()
                     private$originalBoundaries <- private$boundaries
                     private$trialParameters$originalEffectSize <- private$trialParameters$effectSize
-                    self$adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)
+                    if (missing(boundaries)) {
+                        self$adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)
+                    }
                 },
                 adjustCriticalValues = function(numberOfSimulations, rngSeed, showProgress) {
                     designParameters <- private$designParameters
