@@ -16,10 +16,13 @@ adaptive group sequential clinical trial with three stages.
 
 
 \describe{
-\item{\code{ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
-\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
+\item{\code{ASSISTDesign$new(designParameters, trialParameters, discreteData = FALSE, boundaries)}}{Create a new
+\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from. If \code{boundaries} is specified, it used.}
 \item{\code{getDesignParameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object fields}
+\item{\code{setBoundaries}}{Modifier method for boundaries a
+named vector of double values with names \code{btilde},
+\code{b}, and \code{c}, in that order}
 \item{\code{print()}}{Print the object in a human readable form}
 \item{\code{computeCriticalValues()}}{Compute the critical boundary values \eqn{\tilde{b}},
 \eqn{b} and \eqn{c} for futility, efficacy and final efficacy decisions; saved in field

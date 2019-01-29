@@ -18,10 +18,13 @@ account as well.
 
 
 \describe{
-\item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE)}}{Create
-a new \code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
+\item{\code{DEFUSE3Design$new(designParameters, trialParameters, discreteData = FALSE, numberOfSimulations = 5000, rngSeed = 54321, showProgress = TRUE, boundaries)}}{Create
+a new \code{DEFUSE3Design} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from. If \code{boundaries} is specified, it is used.}
 \item{\code{getDesignParameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
+\item{\code{setBoundaries}}{Modifier method for boundaries a
+named vector of double values with names \code{btilde},
+\code{b}, and \code{c}, in that order}
 \item{\code{print()}}{Print the object in a human readable form}
 \item{\code{adjustCriticalValues(numberOfSimulations, rngSeed, showProgress)}}{Adjust the critical values
 by performing simulations using the parameters provided}

@@ -1,0 +1,19 @@
+template:
+  params:
+    bootswatch: cerulean
+
+authors:
+
+  Balasubramanian Narasimhan:
+    href: https://statweb.stanford.edu/~naras
+
+  Philip Lavori:
+    href: https://profiles.stanford.edu/philip-lavori
+
+  Tze Lai:
+    href: https://statweb.stanford.edu/~ckirby/lai/
+
+  Olivia Liao:
+    href: https://med.stanford.edu/profiles/tho-duc-pham
+
+  Ka Wai Tsang:

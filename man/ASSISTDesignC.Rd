@@ -18,10 +18,13 @@ and what quantities are computed in a trial run.
 
 
 \describe{
-\item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE)}}{Create a new
-\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from}
+\item{\code{ASSISTDesignC$new(designParameters, trialParameters, discreteData = FALSE, boundaries)}}{Create a new
+\code{ASSISTDesign} instance object using the parameters specified. If \code{discreteData} is \code{TRUE} use a discrete distribution for the Rankin scores and \code{designParameters} must contain the appropriate distributions to sample from. If `boundaries is specified, it is used.}
 \item{\code{getDesignameters},\code{getTrialParameters},
 \code{getBoundaries}}{Accessor methods for (obvious) object slots}
+\item{\code{setBoundaries}}{Modifier method for boundaries a
+named vector of double values with names \code{btilde},
+\code{b}, and \code{c}, in that order}
 \item{\code{print()}}{Print the object in a human readable form}
 \item{\code{computeCriticalValues()}}{Compute the critical boundary value \eqn{c_\alpha}}
 \item{\code{explore(numberOfSimulations = 5000, rngSeed = 12345}}{Explore the design

@@ -4,7 +4,8 @@
 \alias{computeMHPBoundaries}
 \title{Compute the three modified Haybittle-Peto boundaries}
 \usage{
-computeMHPBoundaries(prevalence, N, alpha, beta, eps, futilityOnly = FALSE)
+computeMHPBoundaries(prevalence, N, alpha, beta, eps,
+  futilityOnly = FALSE)
 }
 \arguments{
 \item{prevalence}{the vector of prevalences between 0 and 1 summing
