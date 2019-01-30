@@ -252,7 +252,7 @@ ASSISTDesign <-
                 getTrialParameters = function() private$trialParameters,
                 getBoundaries  = function() private$boundaries,
                 setBoundaries  = function(value) {
-                    if (!all(names(values) == c("btilde", "b", "c"))) {
+                    if (!all(names(value) == c("btilde", "b", "c"))) {
                         stop("setBoundaries: Need names 'btilde', 'b', and 'c' in order")
                     }
                     private$boundaries <- value
