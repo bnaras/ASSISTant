@@ -2,7 +2,7 @@ Package: ASSISTant
 Type: Package
 Title: Adaptive Subgroup Selection in Group Sequential Trials
 Version: 1.4.2
-Date: 2019-01-29
+Date: 2019-05-01
 VignetteBuilder: knitr
 Authors@R: c(person("Tze Leung", "Lai", role=c("ctb"),
 	   	    email = "lait@stanford.edu"),
