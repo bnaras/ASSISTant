@@ -56,6 +56,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Rankin.html">Using Discrete Rankin Scores</a>
+    </li>
+    <li>
       <a href="../articles/defuse3.html">Design of the DEFUSE3 Trial</a>
     </li>
   </ul>
@@ -83,7 +86,7 @@
       <h1>Adaptive Subgroup Selection in Sequential Trials</h1>
                         <h4 class="author">Tze Leung Lai, Philip W. Lavori, Olivia Liao, Ka Wai Tsang and Balasubramanian Narasimhan</h4>
             
-            <h4 class="date">2019-01-29</h4>
+            <h4 class="date">2019-04-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bnaras/ASSISTant/blob/master/vignettes/ASSISTant.Rmd"><code>vignettes/ASSISTant.Rmd</code></a></small>
       <div class="hidden name"><code>ASSISTant.Rmd</code></div>
@@ -203,9 +206,9 @@ designA &lt;-<span class="st"> </span>ASSISTDesign<span class="op">$</span><span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">explore</span>(<span class="dt">numberOfSimulations =</span> <span class="dv">50</span>, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.040000; P(Reject H0_subgp) = 0.000000; P(Reject H0) = 0.040000
-## P(Early stop for efficacy [futility]) = 0.040000 [0.480000]
-## Mean [SD] Randomized N = 428.000000 [78.350338]
+<pre><code>## P(Reject H0_ITT) = 0.020000; P(Reject H0_subgp) = 0.000000; P(Reject H0) = 0.020000
+## P(Early stop for efficacy [futility]) = 0.020000 [0.640000]
+## Mean [SD] Randomized N = 414.000000 [72.871147]
 ## 
 ## Stage at exit (proportion)
 ## 
@@ -213,64 +216,63 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ##  exitStage   proportion
 ## ----------  -----------
 ##          1         0.20
-##          2         0.32
-##          3         0.48
+##          2         0.46
+##          3         0.34
 ## 
-## Mean [SD] Lost N = 194.300000 [91.615490]
-## Mean [SD] Analyzed N = 233.700000 [94.038258]
+## Mean [SD] Lost N = 183.880000 [85.293644]
+## Mean [SD] Analyzed N = 230.120000 [92.989716]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup        mean          sd
 ## --------------  --------------  ----------  ----------
-##              1               1   251.56250    7.685213
-##              1               2   201.60000    8.049845
-##              1               3   155.00000    6.557438
-##              1               4   101.00000    5.612486
-##              1               5    45.25000    4.193249
-##              2               1   325.00000          NA
-##              2               2   277.25000    9.639329
-##              2               3   203.00000          NA
-##              3               2   326.66667    5.773503
-##              3               3   250.00000    2.828427
-##              3               4   179.00000          NA
-##              3               5    78.33333   10.692677
+##              1               1   250.94118    4.955686
+##              1               2   201.42857    6.241184
+##              1               3   152.33333    3.511885
+##              1               4   107.66667    6.027714
+##              1               5    52.80000    4.266146
+##              2               1   328.00000   12.727922
+##              2               2   267.33333   25.026653
+##              2               5    71.66667   15.143756
+##              3               3   232.00000          NA
+##              3               4   161.50000    9.192388
+##              3               5    82.00000   12.529964
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      6       2         0.04
+##      6       1         0.02
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   16    5    3    5    4
-##              2    1    4    1    0    0
-##              3    0    3    2    1    3
+##              1   17    7    3    3    5
+##              2    2    3    0    0    3
+##              3    0    0    1    2    3
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.96           0
+##     0.98           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##  coverage   selectedCount   rejectedCount
 ## ---------  --------------  --------------
-##         1              17               0
-##         1              12               0
-##         1               6               0
-##         1               6               0
-##         1               7               0
-##         0               2               2
+##         1              19               0
+##         1              10               0
+##         1               4               0
+##         1               5               0
+##         1              11               0
+##         0               1               1
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s1" class="section level3">
@@ -284,33 +286,32 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.720000; P(Reject H0_subgp) = 0.100000; P(Reject H0) = 0.820000
-## P(Early stop for efficacy [futility]) = 0.640000 [0.040000]
-## Mean [SD] Randomized N = 378.000000 [91.003476]
+<pre><code>## P(Reject H0_ITT) = 0.780000; P(Reject H0_subgp) = 0.040000; P(Reject H0) = 0.820000
+## P(Early stop for efficacy [futility]) = 0.700000 [0.000000]
+## Mean [SD] Randomized N = 372.000000 [90.441096]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.54
-##          2         0.14
-##          3         0.32
+##          1         0.58
+##          2         0.12
+##          3         0.30
 ## 
-## Mean [SD] Lost N = 35.600000 [68.483277]
-## Mean [SD] Analyzed N = 342.400000 [81.276550]
+## Mean [SD] Lost N = 45.500000 [112.449762]
+## Mean [SD] Analyzed N = 326.500000 [94.545368]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   253.00000          NA
-##              1               2   195.00000          NA
-##              1               5    41.00000   14.142136
-##              3               3   246.00000          NA
-##              3               4   169.00000    4.582576
-##              3               5    82.83333    5.845226
+##  FutilityStage   selectedGroup       mean         sd
+## --------------  --------------  ---------  ---------
+##              1               5    48.0000         NA
+##              2               1   330.0000         NA
+##              3               1   415.6667   8.504900
+##              3               3   246.0000         NA
+##              3               5    80.8000   8.228001
 ## 
 ## Chance of each subpopulation rejected
 ## 
@@ -318,19 +319,17 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ##  group   count   proportion
 ## ------  ------  -----------
 ##      1       1         0.02
-##      2       1         0.02
-##      4       1         0.02
-##      5       2         0.04
-##      6      36         0.72
+##      3       1         0.02
+##      6      39         0.78
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    1    0    0    2
-##              2    0    0    0    0    0
-##              3    0    0    1    3    6
+##              1    0    0    0    0    1
+##              2    1    0    0    0    0
+##              3    3    0    1    0    5
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
@@ -342,14 +341,12 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.0000000               1               1
-##  0.0000000               1               1
-##  1.0000000               1               0
-##  0.6666667               3               1
-##  0.7500000               8               2
-##  0.0000000              36              36
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##      0.75               4               1
+##      0.00               1               1
+##      1.00               6               0
+##      0.00              39              39
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s2" class="section level3">
@@ -363,53 +360,58 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.460000; P(Reject H0_subgp) = 0.260000; P(Reject H0) = 0.720000
-## P(Early stop for efficacy [futility]) = 0.380000 [0.000000]
-## Mean [SD] Randomized N = 432.000000 [91.339242]
+<pre><code>## P(Reject H0_ITT) = 0.400000; P(Reject H0_subgp) = 0.320000; P(Reject H0) = 0.720000
+## P(Early stop for efficacy [futility]) = 0.420000 [0.000000]
+## Mean [SD] Randomized N = 436.000000 [82.709228]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.30
-##          2         0.08
-##          3         0.62
+##          1         0.22
+##          2         0.20
+##          3         0.58
 ## 
-## Mean [SD] Lost N = 89.380000 [95.834017]
-## Mean [SD] Analyzed N = 342.620000 [79.698383]
+## Mean [SD] Lost N = 122.160000 [123.479381]
+## Mean [SD] Analyzed N = 313.840000 [100.538014]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               3   150.5000   12.020815
-##              1               4    98.0000    8.485281
-##              2               4   138.6667    4.041452
-##              3               2   333.5000   14.849242
-##              3               3   255.0000    2.828427
-##              3               4   168.3333   10.637270
-##              3               5    89.7500   16.317169
+##              1               1   254.0000    2.828427
+##              1               2   199.0000    8.485281
+##              1               3   141.5000   21.920310
+##              1               4    96.0000   11.313709
+##              1               5    50.0000          NA
+##              2               4   133.0000    5.656854
+##              3               1   423.5000    7.778175
+##              3               2   334.3333    7.505554
+##              3               3   241.2500    6.701990
+##              3               4   167.6667    5.267827
+##              3               5    87.0000          NA
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      3       3         0.06
-##      4       9         0.18
-##      5       1         0.02
-##      6      23         0.46
+##      1       2         0.04
+##      2       4         0.08
+##      3       4         0.08
+##      4       6         0.12
+##      6      20         0.40
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    0    0    2    2    0
-##              2    0    0    0    3    0
-##              3    0    2    2   12    4
+##              1    2    2    2    2    1
+##              2    0    0    0    2    0
+##              3    2    3    4    9    1
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
@@ -423,11 +425,12 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
+##  0.5000000               4               2
+##  0.2000000               5               4
+##  0.3333333               6               4
+##  0.5384615              13               6
 ##  1.0000000               2               0
-##  0.2500000               4               3
-##  0.4705882              17               9
-##  0.7500000               4               1
-##  0.0000000              23              23
+##  0.0000000              20              20
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s3" class="section level3">
@@ -441,79 +444,80 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.040000; P(Reject H0_subgp) = 0.520000; P(Reject H0) = 0.560000
-## P(Early stop for efficacy [futility]) = 0.200000 [0.040000]
-## Mean [SD] Randomized N = 472.000000 [53.604752]
+<pre><code>## P(Reject H0_ITT) = 0.120000; P(Reject H0_subgp) = 0.420000; P(Reject H0) = 0.540000
+## P(Early stop for efficacy [futility]) = 0.260000 [0.020000]
+## Mean [SD] Randomized N = 460.000000 [69.985421]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.04
-##          2         0.20
-##          3         0.76
+##          1         0.12
+##          2         0.16
+##          3         0.72
 ## 
-## Mean [SD] Lost N = 224.720000 [95.940041]
-## Mean [SD] Analyzed N = 247.280000 [97.164292]
+## Mean [SD] Lost N = 223.540000 [126.875837]
+## Mean [SD] Analyzed N = 236.460000 [122.725546]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   249.50000    3.535534
-##              1               2   201.00000    6.128259
-##              1               3   153.50000   16.263456
-##              1               4   109.00000    1.414214
-##              1               5    56.00000          NA
-##              2               2   264.40000    9.208692
-##              2               4   128.00000          NA
-##              3               1   413.00000          NA
-##              3               2   336.33333    7.923880
-##              3               3   248.66667   14.500575
-##              3               4   168.00000    5.291503
-##              3               5    83.66667    6.027714
+##  FutilityStage   selectedGroup       mean           sd
+## --------------  --------------  ---------  -----------
+##              1               1   251.6667    4.3204938
+##              1               2   199.7500    7.8898669
+##              1               3   142.0000    8.4852814
+##              1               4   108.0000           NA
+##              1               5    49.0000           NA
+##              2               1   335.7500    6.7515430
+##              2               2   267.0000           NA
+##              2               3   209.0000           NA
+##              2               5    65.0000           NA
+##              3               1   416.8000    5.8480766
+##              3               2   334.3750    9.8841504
+##              3               3   261.6667   11.5902258
+##              3               4   166.8000    9.8843310
+##              3               5    82.5000    0.7071068
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       2         0.04
-##      2      19         0.38
-##      3       3         0.06
-##      4       1         0.02
+##      1      12         0.24
+##      2       6         0.12
+##      3       2         0.04
 ##      5       1         0.02
-##      6       2         0.04
+##      6       6         0.12
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    2   10    2    2    1
-##              2    0    5    0    1    0
-##              3    1   12    6    3    3
+##              1    6    4    2    1    1
+##              2    4    1    1    0    1
+##              3    5    8    3    5    2
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.44           0
+##     0.46           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.3333333               3               2
-##  0.2962963              27              19
-##  0.6250000               8               3
-##  0.8333333               6               1
+##  0.2000000              15              12
+##  0.5384615              13               6
+##  0.6666667               6               2
+##  1.0000000               6               0
 ##  0.7500000               4               1
-##  0.0000000               2               2
+##  0.0000000               6               6
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s4" class="section level3">
@@ -527,55 +531,56 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.100000; P(Reject H0_subgp) = 0.060000; P(Reject H0) = 0.160000
-## P(Early stop for efficacy [futility]) = 0.080000 [0.180000]
-## Mean [SD] Randomized N = 464.000000 [66.270934]
+<pre><code>## P(Reject H0_ITT) = 0.060000; P(Reject H0_subgp) = 0.100000; P(Reject H0) = 0.160000
+## P(Early stop for efficacy [futility]) = 0.040000 [0.180000]
+## Mean [SD] Randomized N = 466.000000 [68.838765]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.10
-##          2         0.16
-##          3         0.74
+##          1         0.12
+##          2         0.10
+##          3         0.78
 ## 
-## Mean [SD] Lost N = 125.720000 [73.367412]
-## Mean [SD] Analyzed N = 338.280000 [81.961175]
+## Mean [SD] Lost N = 146.480000 [84.999457]
+## Mean [SD] Analyzed N = 319.520000 [101.819015]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup        mean          sd
 ## --------------  --------------  ----------  ----------
-##              1               1   252.50000    7.778175
-##              1               3   149.50000    7.047458
-##              1               4    98.42857    6.629659
-##              1               5    59.33333    6.658328
-##              2               2   262.00000          NA
-##              2               4   128.33333   11.718931
-##              2               5    66.50000   10.878113
-##              3               3   249.75000    9.069179
-##              3               4   172.90909    9.585975
-##              3               5    83.66667    7.312090
+##              1               1   251.80000    1.483240
+##              1               4   100.25000    8.811518
+##              1               5    52.66667    1.527525
+##              2               4   130.00000    8.366600
+##              2               5    66.50000   24.748737
+##              3               1   416.00000          NA
+##              3               3   251.66667    8.524475
+##              3               4   170.91667   11.712141
+##              3               5    79.16667    5.980524
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
+##      1       1         0.02
 ##      3       1         0.02
-##      4       2         0.04
-##      6       5         0.10
+##      4       1         0.02
+##      5       2         0.04
+##      6       3         0.06
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    2    0    4    7    3
-##              2    0    1    0    3    4
-##              3    0    0    4   11    6
+##              1    5    0    0    8    3
+##              2    0    0    0    4    2
+##              3    1    0    6   12    6
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
@@ -589,12 +594,11 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  1.0000000               2               0
-##  1.0000000               1               0
-##  0.8750000               8               1
-##  0.9047619              21               2
-##  1.0000000              13               0
-##  0.0000000               5               5
+##  0.8333333               6               1
+##  0.8333333               6               1
+##  0.9583333              24               1
+##  0.8181818              11               2
+##  0.0000000               3               3
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s5" class="section level3">
@@ -608,37 +612,34 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.180000; P(Reject H0_subgp) = 0.720000; P(Reject H0) = 0.900000
-## P(Early stop for efficacy [futility]) = 0.420000 [0.000000]
-## Mean [SD] Randomized N = 440.000000 [78.246080]
+<pre><code>## P(Reject H0_ITT) = 0.140000; P(Reject H0_subgp) = 0.660000; P(Reject H0) = 0.800000
+## P(Early stop for efficacy [futility]) = 0.460000 [0.000000]
+## Mean [SD] Randomized N = 444.000000 [67.491496]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.18
-##          2         0.24
-##          3         0.58
+##          1         0.10
+##          2         0.36
+##          3         0.54
 ## 
-## Mean [SD] Lost N = 255.500000 [146.381282]
-## Mean [SD] Analyzed N = 184.500000 [130.926565]
+## Mean [SD] Lost N = 270.120000 [141.724314]
+## Mean [SD] Analyzed N = 173.880000 [126.469427]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               1   250.7692   4.7108712
-##              1               2   201.5000   0.7071068
-##              1               4   100.0000          NA
-##              2               1   333.6667   2.5166115
-##              2               2   263.0000          NA
-##              2               4   130.0000          NA
-##              3               1   412.7333   7.7133156
-##              3               2   335.0000   6.0827625
-##              3               3   250.0000          NA
-##              3               4   172.0000          NA
+##              1               1   248.6923    5.807820
+##              1               2   206.5000    2.121320
+##              1               3   157.0000    4.242641
+##              1               4   104.5000    4.949747
+##              2               1   333.3333    4.457204
+##              3               1   417.3125    5.313113
+##              3               2   330.0000   12.727922
 ## 
 ## Chance of each subpopulation rejected
 ## 
@@ -646,36 +647,37 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ##  group   count   proportion
 ## ------  ------  -----------
 ##      1      30         0.60
-##      2       4         0.08
-##      4       2         0.04
-##      6       9         0.18
+##      2       1         0.02
+##      3       1         0.02
+##      4       1         0.02
+##      6       7         0.14
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   13    2    0    1    0
-##              2    3    1    0    1    0
-##              3   15    3    1    1    0
+##              1   13    2    2    2    0
+##              2    6    0    0    0    0
+##              3   16    2    0    0    0
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##      0.1           0
+##      0.2           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.0322581              31              30
-##  0.3333333               6               4
-##  1.0000000               1               0
-##  0.3333333               3               2
-##  0.0000000               9               9
+##  0.1428571              35              30
+##  0.7500000               4               1
+##  0.5000000               2               1
+##  0.5000000               2               1
+##  0.0000000               7               7
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s6" class="section level3">
@@ -689,75 +691,74 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.120000; P(Reject H0_subgp) = 0.620000; P(Reject H0) = 0.740000
-## P(Early stop for efficacy [futility]) = 0.400000 [0.060000]
-## Mean [SD] Randomized N = 438.000000 [75.295337]
+<pre><code>## P(Reject H0_ITT) = 0.060000; P(Reject H0_subgp) = 0.720000; P(Reject H0) = 0.780000
+## P(Early stop for efficacy [futility]) = 0.480000 [0.040000]
+## Mean [SD] Randomized N = 436.000000 [69.282032]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.16
-##          2         0.30
-##          3         0.54
+##          1         0.12
+##          2         0.40
+##          3         0.48
 ## 
-## Mean [SD] Lost N = 261.200000 [129.838675]
-## Mean [SD] Analyzed N = 176.800000 [98.540989]
+## Mean [SD] Lost N = 254.060000 [123.124196]
+## Mean [SD] Analyzed N = 181.940000 [115.743808]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup       mean          sd
-## --------------  --------------  ---------  ----------
-##              1               1   250.2143    5.885818
-##              1               2   197.6667   12.096832
-##              1               3   138.0000          NA
-##              1               4   100.0000          NA
-##              2               1   332.0000    6.683313
-##              2               2   271.0000          NA
-##              2               3   188.0000          NA
-##              3               1   411.6154    6.801207
-##              3               2   324.6667   17.473790
-##              3               3   260.0000    4.242641
-##              3               5    94.0000          NA
+##  FutilityStage   selectedGroup        mean          sd
+## --------------  --------------  ----------  ----------
+##              1               1   249.85714    7.336496
+##              1               2   189.66667    5.507570
+##              1               4   102.66667   11.718931
+##              1               5    49.00000    8.485281
+##              2               1   330.42857    6.106203
+##              2               2   267.00000   14.142136
+##              3               1   416.55556    3.574602
+##              3               2   336.75000   12.685293
+##              3               5    95.66667    7.023769
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1      28         0.56
-##      2       3         0.06
-##      6       6         0.12
+##      1      26         0.52
+##      2       6         0.12
+##      4       1         0.02
+##      5       3         0.06
+##      6       3         0.06
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   14    3    1    1    0
-##              2    4    1    1    0    0
-##              3   13    3    2    0    1
+##              1   14    3    0    3    2
+##              2    7    2    0    0    0
+##              3    9    4    0    0    3
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.26           0
+##     0.22           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.0967742              31              28
-##  0.5714286               7               3
-##  1.0000000               4               0
-##  1.0000000               1               0
-##  1.0000000               1               0
-##  0.0000000               6               6
+##  0.1333333              30              26
+##  0.3333333               9               6
+##  0.6666667               3               1
+##  0.4000000               5               3
+##  0.0000000               3               3
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s7" class="section level3">
@@ -771,75 +772,76 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.440000; P(Reject H0_subgp) = 0.440000; P(Reject H0) = 0.880000
-## P(Early stop for efficacy [futility]) = 0.560000 [0.000000]
-## Mean [SD] Randomized N = 414.000000 [85.738092]
+<pre><code>## P(Reject H0_ITT) = 0.420000; P(Reject H0_subgp) = 0.480000; P(Reject H0) = 0.900000
+## P(Early stop for efficacy [futility]) = 0.460000 [0.000000]
+## Mean [SD] Randomized N = 428.000000 [85.809471]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.30
-##          2         0.26
-##          3         0.44
+##          1         0.26
+##          2         0.20
+##          3         0.54
 ## 
-## Mean [SD] Lost N = 128.160000 [128.008667]
-## Mean [SD] Analyzed N = 285.840000 [81.032712]
+## Mean [SD] Lost N = 137.180000 [132.051735]
+## Mean [SD] Analyzed N = 290.820000 [102.494338]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   257.00000          NA
-##              1               2   203.50000    7.778175
-##              1               3   160.00000    4.966555
-##              2               2   271.00000          NA
-##              2               3   202.00000          NA
-##              3               2   334.00000   17.073371
-##              3               3   261.88889   10.240171
-##              3               4   171.00000    8.485281
-##              3               5    87.33333    3.785939
+##  FutilityStage   selectedGroup       mean           sd
+## --------------  --------------  ---------  -----------
+##              1               1   243.5000   12.0208153
+##              1               2   198.7500    5.5000000
+##              1               3   153.5000    0.7071068
+##              1               4    95.0000           NA
+##              2               3   206.0000    8.4852814
+##              3               1   422.0000           NA
+##              3               2   341.0000    6.1644140
+##              3               3   257.0000    5.0709255
+##              3               4   165.6667    1.5275252
+##              3               5    83.0000           NA
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       1         0.02
-##      2       7         0.14
-##      3      12         0.24
-##      4       2         0.04
-##      6      22         0.44
+##      1       3         0.06
+##      2       9         0.18
+##      3       9         0.18
+##      4       3         0.06
+##      6      21         0.42
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    2    4    0    0
-##              2    0    1    1    0    0
-##              3    0    5    9    2    3
+##              1    2    4    2    1    0
+##              2    0    0    2    0    0
+##              3    1    5    8    3    1
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.12           0
+##      0.1           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.0000000               1               1
-##  0.1250000               8               7
-##  0.1428571              14              12
-##  0.0000000               2               2
-##  1.0000000               3               0
-##  0.0000000              22              22
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##      0.00               3               3
+##      0.00               9               9
+##      0.25              12               9
+##      0.25               4               3
+##      1.00               1               0
+##      0.00              21              21
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s8" class="section level3">
@@ -853,9 +855,9 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.380000; P(Reject H0_subgp) = 0.340000; P(Reject H0) = 0.720000
-## P(Early stop for efficacy [futility]) = 0.360000 [0.000000]
-## Mean [SD] Randomized N = 450.000000 [73.540215]
+<pre><code>## P(Reject H0_ITT) = 0.180000; P(Reject H0_subgp) = 0.500000; P(Reject H0) = 0.680000
+## P(Early stop for efficacy [futility]) = 0.260000 [0.000000]
+## Mean [SD] Randomized N = 460.000000 [72.843136]
 ## 
 ## Stage at exit (proportion)
 ## 
@@ -863,67 +865,66 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ##  exitStage   proportion
 ## ----------  -----------
 ##          1         0.14
-##          2         0.22
-##          3         0.64
+##          2         0.12
+##          3         0.74
 ## 
-## Mean [SD] Lost N = 155.020000 [139.444304]
-## Mean [SD] Analyzed N = 294.980000 [113.289496]
+## Mean [SD] Lost N = 170.720000 [104.977556]
+## Mean [SD] Analyzed N = 289.280000 [85.082682]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               1   249.0000    1.414214
-##              1               2   198.0000          NA
-##              1               3   148.0000          NA
-##              1               4   109.0000   11.313709
-##              2               2   285.0000          NA
-##              2               3   208.0000          NA
-##              3               1   413.6667   12.096832
-##              3               2   332.5000    7.141428
-##              3               3   254.3333    8.003787
-##              3               4   164.6667   12.503333
-##              3               5    79.0000          NA
+##              1               1   250.0000    5.291503
+##              1               3   147.6000    2.509980
+##              1               4   106.0000    6.055301
+##              2               1   322.0000          NA
+##              2               3   207.0000          NA
+##              3               2   331.3333   11.590226
+##              3               3   250.7647   10.195155
+##              3               4   160.0000    1.732051
+##              3               5    89.5000    3.109126
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       3         0.06
-##      2       4         0.08
-##      3       8         0.16
-##      4       2         0.04
-##      6      19         0.38
+##      1       4         0.08
+##      2       3         0.06
+##      3      14         0.28
+##      4       3         0.06
+##      5       1         0.02
+##      6       9         0.18
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    2    1    1    2    0
-##              2    0    1    1    0    0
-##              3    3    4   12    3    1
+##              1    3    0    5    4    0
+##              2    1    0    1    0    0
+##              3    0    3   17    3    4
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.28           0
+##     0.32           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.4000000               5               3
-##  0.3333333               6               4
-##  0.4285714              14               8
-##  0.6000000               5               2
-##  1.0000000               1               0
-##  0.0000000              19              19
+##  0.0000000               4               4
+##  0.0000000               3               3
+##  0.3913043              23              14
+##  0.5714286               7               3
+##  0.7500000               4               1
+##  0.0000000               9               9
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s9" class="section level3">
@@ -937,74 +938,75 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.360000; P(Reject H0_subgp) = 0.520000; P(Reject H0) = 0.880000
-## P(Early stop for efficacy [futility]) = 0.440000 [0.000000]
-## Mean [SD] Randomized N = 428.000000 [88.155706]
+<pre><code>## P(Reject H0_ITT) = 0.560000; P(Reject H0_subgp) = 0.360000; P(Reject H0) = 0.920000
+## P(Early stop for efficacy [futility]) = 0.480000 [0.000000]
+## Mean [SD] Randomized N = 426.000000 [85.260705]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.28
-##          2         0.16
-##          3         0.56
+##          1         0.26
+##          2         0.22
+##          3         0.52
 ## 
-## Mean [SD] Lost N = 182.640000 [159.846069]
-## Mean [SD] Analyzed N = 245.360000 [124.374313]
+## Mean [SD] Lost N = 125.840000 [153.421968]
+## Mean [SD] Analyzed N = 300.160000 [127.468341]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               1   254.3333    6.429100
-##              1               2   198.0000          NA
-##              1               3   156.5000   12.020815
-##              2               2   273.0000          NA
-##              2               3   214.0000    0.000000
-##              3               1   416.6667    6.772493
-##              3               2   339.5000    6.786424
-##              3               3   252.5000    4.203173
-##              3               5    84.0000    7.211103
+##              1               1   235.0000          NA
+##              1               2   194.0000          NA
+##              2               1   329.6667    2.081666
+##              3               1   418.5000    4.949747
+##              3               2   330.6250   13.394429
+##              3               3   243.2500    7.365460
+##              3               4   168.0000    1.414214
+##              3               5    83.0000          NA
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       7         0.14
-##      2      11         0.22
-##      3       7         0.14
+##      1       5         0.10
+##      2       8         0.16
+##      3       3         0.06
+##      4       1         0.02
 ##      5       1         0.02
-##      6      18         0.36
+##      6      28         0.56
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    3    1    2    0    0
-##              2    0    1    2    0    0
-##              3    6   10    4    0    3
+##              1    1    1    0    0    0
+##              2    3    0    0    0    0
+##              3    2    8    4    2    1
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.12           0
+##     0.08           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.2222222               9               7
-##  0.0833333              12              11
-##  0.1250000               8               7
-##  0.6666667               3               1
-##  0.0000000              18              18
+##  0.1666667               6               5
+##  0.1111111               9               8
+##  0.2500000               4               3
+##  0.5000000               2               1
+##  0.0000000               1               1
+##  0.0000000              28              28
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s10" class="section level3">
@@ -1018,69 +1020,65 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">trueParameters =</span> trueParameters, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.460000; P(Reject H0_subgp) = 0.000000; P(Reject H0) = 0.460000
-## P(Early stop for efficacy [futility]) = 0.440000 [0.140000]
-## Mean [SD] Randomized N = 400.000000 [92.582010]
+<pre><code>## P(Reject H0_ITT) = 0.420000; P(Reject H0_subgp) = 0.000000; P(Reject H0) = 0.420000
+## P(Early stop for efficacy [futility]) = 0.300000 [0.160000]
+## Mean [SD] Randomized N = 422.000000 [91.003476]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.42
-##          2         0.16
-##          3         0.42
+##          1         0.32
+##          2         0.14
+##          3         0.54
 ## 
-## Mean [SD] Lost N = 82.200000 [118.810602]
-## Mean [SD] Analyzed N = 317.800000 [107.994898]
+## Mean [SD] Lost N = 78.100000 [118.835206]
+## Mean [SD] Analyzed N = 343.900000 [117.819345]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup        mean         sd
 ## --------------  --------------  ----------  ---------
-##              1               1   246.50000    2.12132
-##              1               2   198.00000         NA
-##              1               4   114.00000         NA
-##              1               5    48.66667   15.69501
-##              3               1   411.25000   10.87428
-##              3               3   252.00000         NA
-##              3               5    84.13333   10.87505
+##              1               1   252.00000         NA
+##              1               5    50.42857   4.035556
+##              3               1   418.25000   9.979145
+##              3               2   331.00000         NA
+##              3               5    81.00000   8.074652
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      6      23         0.46
+##      6      21         0.42
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    2    1    0    1    3
+##              1    1    0    0    0    7
 ##              2    0    0    0    0    0
-##              3    4    0    1    0   15
+##              3    4    1    0    0   16
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.54           0
+##     0.58           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##  coverage   selectedCount   rejectedCount
 ## ---------  --------------  --------------
-##         1               6               0
+##         1               5               0
 ##         1               1               0
-##         1               1               0
-##         1               1               0
-##         1              18               0
-##         0              23              23
+##         1              23               0
+##         0              21              21
 ## NULL</code></pre>
 </div>
 </div>
@@ -1140,76 +1138,77 @@ designA &lt;-<span class="st"> </span>ASSISTDesign<span class="op">$</span><span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">explore</span>(<span class="dt">numberOfSimulations =</span> <span class="dv">50</span>, <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.000000; P(Reject H0_subgp) = 0.060000; P(Reject H0) = 0.060000
-## P(Early stop for efficacy [futility]) = 0.060000 [0.400000]
-## Mean [SD] Randomized N = 440.000000 [72.843136]
+<pre><code>## P(Reject H0_ITT) = 0.020000; P(Reject H0_subgp) = 0.020000; P(Reject H0) = 0.040000
+## P(Early stop for efficacy [futility]) = 0.040000 [0.620000]
+## Mean [SD] Randomized N = 406.000000 [79.308234]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.14
-##          2         0.32
-##          3         0.54
+##          1         0.28
+##          2         0.38
+##          3         0.34
 ## 
-## Mean [SD] Lost N = 210.980000 [93.765337]
-## Mean [SD] Analyzed N = 229.020000 [102.968688]
+## Mean [SD] Lost N = 175.400000 [80.752835]
+## Mean [SD] Analyzed N = 230.600000 [105.285811]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   236.71429    8.099654
-##              1               2   209.55556    5.246692
-##              1               3   121.00000    4.242641
-##              1               4    83.66667    4.509250
-##              1               5    59.00000    1.732051
-##              2               1   325.00000   15.556349
-##              2               2   277.00000    1.414214
-##              2               3   161.33333   13.868429
-##              2               4   140.00000          NA
-##              2               5    88.00000          NA
-##              3               1   402.75000    6.946222
-##              3               2   342.50000   12.020815
-##              3               3   183.00000          NA
-##              3               5    94.66667    1.527525
+##  FutilityStage   selectedGroup       mean          sd
+## --------------  --------------  ---------  ----------
+##              1               1   240.0000    9.518403
+##              1               2   211.3333    7.364946
+##              1               3   116.0000   16.970563
+##              1               4    86.0000    7.071068
+##              1               5    59.0000    3.162278
+##              2               1   325.0000          NA
+##              2               2   283.0000    4.242641
+##              2               3   158.5000   14.849242
+##              2               4   111.0000          NA
+##              2               5    94.0000          NA
+##              3               1   369.0000          NA
+##              3               3   192.0000    7.071068
+##              3               4   156.0000          NA
+##              3               5   105.0000    7.937254
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       2         0.04
 ##      2       1         0.02
+##      6       1         0.02
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   14    9    2    3    3
-##              2    2    2    3    1    1
-##              3    4    2    1    0    3
+##              1   11   12    2    5    5
+##              2    1    2    2    1    1
+##              3    1    0    2    1    3
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.94           0
+##     0.96           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.9000000              20               2
-##  0.9230769              13               1
+##  1.0000000              13               0
+##  0.9285714              14               1
 ##  1.0000000               6               0
-##  1.0000000               4               0
 ##  1.0000000               7               0
+##  1.0000000               9               0
+##  0.0000000               1               1
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s1-1" class="section level3">
@@ -1223,67 +1222,69 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.820000; P(Reject H0_subgp) = 0.060000; P(Reject H0) = 0.880000
-## P(Early stop for efficacy [futility]) = 0.720000 [0.020000]
-## Mean [SD] Randomized N = 370.000000 [86.307471]
+<pre><code>## P(Reject H0_ITT) = 0.780000; P(Reject H0_subgp) = 0.060000; P(Reject H0) = 0.840000
+## P(Early stop for efficacy [futility]) = 0.760000 [0.000000]
+## Mean [SD] Randomized N = 366.000000 [84.780629]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.56
+##          1         0.58
 ##          2         0.18
-##          3         0.26
+##          3         0.24
 ## 
-## Mean [SD] Lost N = 33.220000 [90.364633]
-## Mean [SD] Analyzed N = 336.780000 [85.578771]
+## Mean [SD] Lost N = 44.200000 [97.398403]
+## Mean [SD] Analyzed N = 321.800000 [67.726340]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup     mean         sd
-## --------------  --------------  -------  ---------
-##              1               1   244.00         NA
-##              1               5    64.00         NA
-##              3               1   402.00   4.242641
-##              3               3   190.00         NA
-##              3               5    89.75   6.396614
+##  FutilityStage   selectedGroup       mean         sd
+## --------------  --------------  ---------  ---------
+##              2               2   282.0000         NA
+##              3               2   347.6667   4.725816
+##              3               3   205.0000         NA
+##              3               4   133.5000   3.535534
+##              3               5   103.2500   1.707825
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       1         0.02
-##      5       2         0.04
-##      6      41         0.82
+##      2       1         0.02
+##      3       1         0.02
+##      5       1         0.02
+##      6      39         0.78
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    0    0    0    1
-##              2    0    0    0    0    0
-##              3    2    0    1    0    4
+##              1    0    0    0    0    0
+##              2    0    1    0    0    0
+##              3    0    3    1    2    4
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.12           0
+##     0.16           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.6666667               3               1
-##  1.0000000               1               0
-##  0.6000000               5               2
-##  0.0000000              41              41
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##      0.75               4               1
+##      0.00               1               1
+##      1.00               2               0
+##      0.75               4               1
+##      0.00              39              39
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s2-1" class="section level3">
@@ -1297,77 +1298,76 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.440000; P(Reject H0_subgp) = 0.340000; P(Reject H0) = 0.780000
-## P(Early stop for efficacy [futility]) = 0.420000 [0.020000]
-## Mean [SD] Randomized N = 428.000000 [88.155706]
+<pre><code>## P(Reject H0_ITT) = 0.520000; P(Reject H0_subgp) = 0.220000; P(Reject H0) = 0.740000
+## P(Early stop for efficacy [futility]) = 0.520000 [0.020000]
+## Mean [SD] Randomized N = 424.000000 [79.693290]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.28
-##          2         0.16
-##          3         0.56
+##          1         0.22
+##          2         0.32
+##          3         0.46
 ## 
-## Mean [SD] Lost N = 88.600000 [96.316231]
-## Mean [SD] Analyzed N = 339.400000 [79.185136]
+## Mean [SD] Lost N = 79.800000 [98.886866]
+## Mean [SD] Analyzed N = 344.200000 [80.416264]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup       mean          sd
-## --------------  --------------  ---------  ----------
-##              1               1   235.0000          NA
-##              1               3   108.0000    8.485281
-##              1               4    85.0000    6.082763
-##              2               3   147.5000    4.949747
-##              2               4   108.0000          NA
-##              3               1   398.0000          NA
-##              3               2   339.0000          NA
-##              3               3   204.2000    6.685806
-##              3               4   147.1429   12.088956
-##              3               5   106.6000    7.797435
+##  FutilityStage   selectedGroup        mean          sd
+## --------------  --------------  ----------  ----------
+##              1               1   237.00000          NA
+##              1               2   222.00000          NA
+##              1               3   122.00000          NA
+##              1               4    87.00000    5.567764
+##              2               2   281.00000          NA
+##              2               4   137.00000          NA
+##              3               2   353.00000    4.242641
+##              3               3   198.00000   26.870058
+##              3               4   149.00000   11.302655
+##              3               5    95.66667    5.686241
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       2         0.04
+##      1       1         0.02
 ##      2       1         0.02
-##      3       4         0.08
-##      4       7         0.14
-##      5       3         0.06
-##      6      22         0.44
+##      4       8         0.16
+##      5       1         0.02
+##      6      26         0.52
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    0    2    3    0
-##              2    0    0    2    1    0
-##              3    1    1    5    7    5
+##              1    1    1    1    3    0
+##              2    0    1    0    1    0
+##              3    0    2    2    9    3
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.22           0
+##     0.26           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.0000000               2               2
 ##  0.0000000               1               1
-##  0.5555556               9               4
-##  0.3636364              11               7
-##  0.4000000               5               3
-##  0.0000000              22              22
+##  0.7500000               4               1
+##  1.0000000               3               0
+##  0.3846154              13               8
+##  0.6666667               3               1
+##  0.0000000              26              26
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s3-1" class="section level3">
@@ -1381,9 +1381,9 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.040000; P(Reject H0_subgp) = 0.560000; P(Reject H0) = 0.600000
-## P(Early stop for efficacy [futility]) = 0.340000 [0.060000]
-## Mean [SD] Randomized N = 452.000000 [64.649763]
+<pre><code>## P(Reject H0_ITT) = 0.060000; P(Reject H0_subgp) = 0.560000; P(Reject H0) = 0.620000
+## P(Early stop for efficacy [futility]) = 0.300000 [0.040000]
+## Mean [SD] Randomized N = 458.000000 [64.174507]
 ## 
 ## Stage at exit (proportion)
 ## 
@@ -1391,69 +1391,67 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ##  exitStage   proportion
 ## ----------  -----------
 ##          1         0.08
-##          2         0.32
-##          3         0.60
+##          2         0.26
+##          3         0.66
 ## 
-## Mean [SD] Lost N = 216.640000 [94.901616]
-## Mean [SD] Analyzed N = 235.360000 [103.355689]
+## Mean [SD] Lost N = 244.860000 [104.019035]
+## Mean [SD] Analyzed N = 213.140000 [90.550022]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup       mean          sd
-## --------------  --------------  ---------  ----------
-##              1               1   235.7500    5.560276
-##              1               2   211.3125    8.631097
-##              1               3   123.0000          NA
-##              1               4    98.0000    0.000000
-##              1               5    61.0000    1.414214
-##              2               1   316.5000   13.435029
-##              2               2   291.0000   14.000000
-##              2               5    85.0000          NA
-##              3               1   407.0000    7.549834
-##              3               2   354.5000    7.937254
-##              3               3   198.8571   14.427157
-##              3               4   166.5000    6.363961
-##              3               5   112.0000          NA
+##  FutilityStage   selectedGroup       mean           sd
+## --------------  --------------  ---------  -----------
+##              1               1   240.1250    7.7170960
+##              1               2   209.8000    7.5099933
+##              1               4   100.0000           NA
+##              2               1   323.0000    4.2426407
+##              2               2   277.5000    6.3639610
+##              2               4   116.0000           NA
+##              2               5    75.0000           NA
+##              3               1   401.5000    2.1213203
+##              3               2   345.6667   12.6923299
+##              3               3   187.5000    0.7071068
+##              3               4   151.0000           NA
+##              3               5   109.0000    1.4142136
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       7         0.14
-##      2      17         0.34
-##      3       3         0.06
+##      1       9         0.18
+##      2      18         0.36
 ##      4       1         0.02
-##      6       2         0.04
+##      6       3         0.06
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    4   16    1    2    2
-##              2    2    3    0    0    1
-##              3    3    4    7    2    1
+##              1    8   10    0    1    0
+##              2    2    2    0    1    1
+##              3    2   15    2    1    2
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##      0.4           0
+##     0.38           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.2222222               9               7
-##  0.2608696              23              17
-##  0.6250000               8               3
-##  0.7500000               4               1
-##  1.0000000               4               0
-##  0.0000000               2               2
+##  0.2500000              12               9
+##  0.3333333              27              18
+##  1.0000000               2               0
+##  0.6666667               3               1
+##  1.0000000               3               0
+##  0.0000000               3               3
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s4-1" class="section level3">
@@ -1467,78 +1465,70 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.100000; P(Reject H0_subgp) = 0.120000; P(Reject H0) = 0.220000
-## P(Early stop for efficacy [futility]) = 0.120000 [0.200000]
-## Mean [SD] Randomized N = 456.000000 [70.450446]
+<pre><code>## P(Reject H0_ITT) = 0.160000; P(Reject H0_subgp) = 0.120000; P(Reject H0) = 0.280000
+## P(Early stop for efficacy [futility]) = 0.140000 [0.160000]
+## Mean [SD] Randomized N = 452.000000 [78.869564]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.12
-##          2         0.20
-##          3         0.68
+##          1         0.18
+##          2         0.12
+##          3         0.70
 ## 
-## Mean [SD] Lost N = 125.700000 [75.198038]
-## Mean [SD] Analyzed N = 330.300000 [69.693571]
+## Mean [SD] Lost N = 103.560000 [60.185143]
+## Mean [SD] Analyzed N = 348.440000 [65.372140]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup        mean          sd
 ## --------------  --------------  ----------  ----------
-##              1               1   235.00000    1.414214
-##              1               3   122.33333    1.527525
-##              1               4    89.66667   12.176480
-##              1               5    59.75000    7.632169
-##              2               3   153.25000    7.932003
-##              2               4   117.00000   10.954451
-##              3               1   385.00000          NA
-##              3               2   344.00000          NA
-##              3               3   206.00000    8.185353
-##              3               4   149.60000   11.423173
-##              3               5   105.00000    5.138093
+##              1               1   238.00000          NA
+##              1               3   127.00000    8.485281
+##              1               4    96.33333    8.594572
+##              1               5    61.50000    9.071935
+##              3               3   196.00000   22.538855
+##              3               4   151.64286    7.601692
+##              3               5   102.80000   10.347302
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       1         0.02
-##      2       1         0.02
-##      3       1         0.02
-##      4       1         0.02
-##      5       2         0.04
-##      6       5         0.10
+##      4       5         0.10
+##      5       1         0.02
+##      6       8         0.16
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    2    0    3    6    4
-##              2    0    0    4    5    0
-##              3    1    1    3   10    6
+##              1    1    0    2    6    6
+##              2    0    0    0    0    0
+##              3    0    0    3   14   10
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.78           0
+##     0.72           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.6666667               3               1
-##  0.0000000               1               1
-##  0.9000000              10               1
-##  0.9523810              21               1
-##  0.8000000              10               2
-##  0.0000000               5               5
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##    1.0000               1               0
+##    1.0000               5               0
+##    0.7500              20               5
+##    0.9375              16               1
+##    0.0000               8               8
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s5-1" class="section level3">
@@ -1552,70 +1542,72 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.160000; P(Reject H0_subgp) = 0.720000; P(Reject H0) = 0.880000
-## P(Early stop for efficacy [futility]) = 0.440000 [0.000000]
-## Mean [SD] Randomized N = 438.000000 [77.958649]
+<pre><code>## P(Reject H0_ITT) = 0.100000; P(Reject H0_subgp) = 0.740000; P(Reject H0) = 0.840000
+## P(Early stop for efficacy [futility]) = 0.400000 [0.000000]
+## Mean [SD] Randomized N = 446.000000 [73.429127]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.18
+##          1         0.14
 ##          2         0.26
-##          3         0.56
+##          3         0.60
 ## 
-## Mean [SD] Lost N = 272.520000 [142.082793]
-## Mean [SD] Analyzed N = 165.480000 [108.078248]
+## Mean [SD] Lost N = 282.580000 [122.120230]
+## Mean [SD] Analyzed N = 163.420000 [104.629783]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               1   243.6667    6.169328
-##              1               2   211.5000   10.606602
-##              2               1   322.3333    7.371115
-##              3               1   399.6316    8.519328
-##              3               2   353.2500    5.678908
-##              3               3   210.0000          NA
-##              3               5    96.0000          NA
+##              1               1   238.8182    7.769404
+##              1               2   200.3333   10.503967
+##              2               1   330.0000    9.183318
+##              2               2   278.0000          NA
+##              2               4   113.0000          NA
+##              3               1   399.2667   10.746871
+##              3               2   357.6000    6.655824
+##              3               3   211.5000    3.535534
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1      32         0.64
-##      2       4         0.08
-##      6       8         0.16
+##      1      28         0.56
+##      2       8         0.16
+##      3       1         0.02
+##      6       5         0.10
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   12    2    0    0    0
-##              2    3    0    0    0    0
-##              3   19    4    1    0    1
+##              1   11    3    0    0    0
+##              2    7    1    0    1    0
+##              3   15    5    2    0    0
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.12           0
+##     0.16           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.0588235              34              32
-##  0.3333333               6               4
+##  0.1515152              33              28
+##  0.1111111               9               8
+##  0.5000000               2               1
 ##  1.0000000               1               0
-##  1.0000000               1               0
-##  0.0000000               8               8
+##  0.0000000               5               5
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s6-1" class="section level3">
@@ -1630,43 +1622,46 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
 <pre><code>## P(Reject H0_ITT) = 0.080000; P(Reject H0_subgp) = 0.680000; P(Reject H0) = 0.760000
-## P(Early stop for efficacy [futility]) = 0.360000 [0.000000]
-## Mean [SD] Randomized N = 458.000000 [60.911445]
+## P(Early stop for efficacy [futility]) = 0.320000 [0.000000]
+## Mean [SD] Randomized N = 456.000000 [70.450446]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.06
-##          2         0.30
-##          3         0.64
+##          1         0.12
+##          2         0.20
+##          3         0.68
 ## 
-## Mean [SD] Lost N = 260.880000 [118.040747]
-## Mean [SD] Analyzed N = 197.120000 [120.615029]
+## Mean [SD] Lost N = 275.360000 [129.742722]
+## Mean [SD] Analyzed N = 180.640000 [114.948215]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   241.20000    6.232531
-##              1               2   211.50000    9.000000
-##              1               4    99.00000          NA
-##              2               1   320.50000    5.612486
-##              2               2   283.50000    4.949747
-##              3               1   397.36364   11.775166
-##              3               2   352.00000   11.768602
-##              3               3   193.50000   11.090537
-##              3               5    97.33333   14.571662
+##  FutilityStage   selectedGroup       mean          sd
+## --------------  --------------  ---------  ----------
+##              1               1   236.8750    7.453427
+##              1               2   199.5000   13.435029
+##              1               3   126.0000          NA
+##              1               4   106.0000          NA
+##              1               5    61.0000          NA
+##              2               1   326.8000    6.648308
+##              2               4   134.0000          NA
+##              3               1   395.0526    9.507153
+##              3               2   359.0000   14.000000
+##              3               3   204.3333    8.504900
+##              3               4   132.0000          NA
+##              3               5    85.0000          NA
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1      24         0.48
-##      2       7         0.14
+##      1      26         0.52
+##      2       5         0.10
 ##      3       3         0.06
 ##      6       4         0.08
 ## 
@@ -1675,9 +1670,9 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1   10    4    0    1    0
-##              2    6    2    0    0    0
-##              3   11    5    4    0    3
+##              1    8    2    1    1    1
+##              2    5    0    0    1    0
+##              3   19    3    3    1    1
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
@@ -1689,14 +1684,14 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.1111111              27              24
-##  0.3636364              11               7
-##  0.2500000               4               3
-##  1.0000000               1               0
-##  1.0000000               3               0
-##  0.0000000               4               4
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##    0.1875              32              26
+##    0.0000               5               5
+##    0.2500               4               3
+##    1.0000               3               0
+##    1.0000               2               0
+##    0.0000               4               4
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s7-1" class="section level3">
@@ -1710,72 +1705,69 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.600000; P(Reject H0_subgp) = 0.340000; P(Reject H0) = 0.940000
+<pre><code>## P(Reject H0_ITT) = 0.580000; P(Reject H0_subgp) = 0.380000; P(Reject H0) = 0.960000
 ## P(Early stop for efficacy [futility]) = 0.540000 [0.000000]
-## Mean [SD] Randomized N = 414.000000 [88.086229]
+## Mean [SD] Randomized N = 416.000000 [86.567185]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.32
-##          2         0.22
+##          1         0.30
+##          2         0.24
 ##          3         0.46
 ## 
-## Mean [SD] Lost N = 95.640000 [130.072313]
-## Mean [SD] Analyzed N = 318.360000 [112.931035]
+## Mean [SD] Lost N = 104.820000 [132.987446]
+## Mean [SD] Analyzed N = 311.180000 [105.744144]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup      mean           sd
-## --------------  --------------  --------  -----------
-##              1               1   242.000    6.2449980
-##              1               3   109.000           NA
-##              2               3   157.000           NA
-##              3               1   391.000    8.0000000
-##              3               2   346.500    4.9497475
-##              3               3   201.875   14.0553752
-##              3               4   154.500    0.7071068
+##  FutilityStage   selectedGroup       mean         sd
+## --------------  --------------  ---------  ---------
+##              1               2   212.5000    5.00000
+##              1               3   123.0000         NA
+##              2               2   290.0000         NA
+##              3               1   393.0000         NA
+##              3               2   345.2000   10.94075
+##              3               3   206.5556   12.74864
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       5         0.10
-##      2       2         0.04
+##      1       1         0.02
+##      2      10         0.20
 ##      3       8         0.16
-##      4       2         0.04
-##      6      30         0.60
+##      6      29         0.58
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    3    0    1    0    0
-##              2    0    0    1    0    0
-##              3    3    2    8    2    0
+##              1    0    4    1    0    0
+##              2    0    1    0    0    0
+##              3    1    5    9    0    0
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.06           0
+##     0.04           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##   coverage   selectedCount   rejectedCount
-## ----------  --------------  --------------
-##  0.1666667               6               5
-##  0.0000000               2               2
-##  0.2000000              10               8
-##  0.0000000               2               2
-##  0.0000000              30              30
+##  coverage   selectedCount   rejectedCount
+## ---------  --------------  --------------
+##       0.0               1               1
+##       0.0              10              10
+##       0.2              10               8
+##       0.0              29              29
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s8-1" class="section level3">
@@ -1789,77 +1781,75 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.400000; P(Reject H0_subgp) = 0.360000; P(Reject H0) = 0.760000
-## P(Early stop for efficacy [futility]) = 0.420000 [0.020000]
-## Mean [SD] Randomized N = 432.000000 [84.370417]
+<pre><code>## P(Reject H0_ITT) = 0.360000; P(Reject H0_subgp) = 0.480000; P(Reject H0) = 0.840000
+## P(Early stop for efficacy [futility]) = 0.400000 [0.000000]
+## Mean [SD] Randomized N = 438.000000 [83.029378]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.24
-##          2         0.20
-##          3         0.56
+##          1         0.22
+##          2         0.18
+##          3         0.60
 ## 
-## Mean [SD] Lost N = 109.100000 [113.048707]
-## Mean [SD] Analyzed N = 322.900000 [89.845729]
+## Mean [SD] Lost N = 121.880000 [114.118563]
+## Mean [SD] Analyzed N = 316.120000 [89.724440]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup        mean          sd
-## --------------  --------------  ----------  ----------
-##              1               1   245.00000          NA
-##              1               2   212.00000    1.414214
-##              1               3   120.00000   16.000000
-##              1               5    56.66667    7.023769
-##              2               2   285.00000    4.242641
-##              2               3   165.00000          NA
-##              3               1   407.00000          NA
-##              3               2   350.00000   11.313709
-##              3               3   199.00000   10.569498
-##              3               4   142.00000    8.717798
-##              3               5    99.00000    5.597619
+##  FutilityStage   selectedGroup    mean          sd
+## --------------  --------------  ------  ----------
+##              1               2   209.0   12.727922
+##              1               3   120.0    5.385165
+##              1               4    87.0          NA
+##              3               1   393.0          NA
+##              3               2   350.5   11.030261
+##              3               3   198.0   11.162437
+##              3               4   153.5    4.203173
+##              3               5   100.5    9.110434
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       2         0.04
-##      2       4         0.08
-##      3       9         0.18
+##      1       1         0.02
+##      2       5         0.10
+##      3      11         0.22
 ##      4       3         0.06
-##      6      20         0.40
+##      5       4         0.08
+##      6      18         0.36
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    2    3    0    3
-##              2    0    2    1    0    0
-##              3    1    2    8    3    4
+##              1    0    2    5    1    0
+##              2    0    0    0    0    0
+##              3    1    4   11    4    4
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.24           0
+##     0.16           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
 ##   coverage   selectedCount   rejectedCount
 ## ----------  --------------  --------------
-##  0.0000000               2               2
-##  0.3333333               6               4
-##  0.2500000              12               9
-##  0.0000000               3               3
-##  1.0000000               7               0
-##  0.0000000              20              20
+##  0.0000000               1               1
+##  0.1666667               6               5
+##  0.3125000              16              11
+##  0.4000000               5               3
+##  0.0000000               4               4
+##  0.0000000              18              18
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s9-1" class="section level3">
@@ -1873,70 +1863,74 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
                           <span class="dt">showProgress =</span> <span class="ot">FALSE</span>)
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
-<pre><code>## P(Reject H0_ITT) = 0.620000; P(Reject H0_subgp) = 0.360000; P(Reject H0) = 0.980000
-## P(Early stop for efficacy [futility]) = 0.540000 [0.000000]
-## Mean [SD] Randomized N = 412.000000 [89.533941]
+<pre><code>## P(Reject H0_ITT) = 0.540000; P(Reject H0_subgp) = 0.420000; P(Reject H0) = 0.960000
+## P(Early stop for efficacy [futility]) = 0.480000 [0.000000]
+## Mean [SD] Randomized N = 426.000000 [85.260705]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1         0.34
-##          2         0.20
-##          3         0.46
+##          1         0.26
+##          2         0.22
+##          3         0.52
 ## 
-## Mean [SD] Lost N = 111.000000 [153.152052]
-## Mean [SD] Analyzed N = 301.000000 [111.933107]
+## Mean [SD] Lost N = 124.200000 [148.980207]
+## Mean [SD] Analyzed N = 301.800000 [115.994370]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
 ##  FutilityStage   selectedGroup       mean          sd
 ## --------------  --------------  ---------  ----------
-##              1               1   243.0000          NA
-##              2               1   315.0000          NA
-##              3               1   399.0000   11.518102
-##              3               2   343.0000    8.809086
-##              3               3   204.6667    6.055301
-##              3               5   110.0000          NA
+##              1               1   234.0000          NA
+##              1               2   219.5000    2.121320
+##              1               5    65.0000          NA
+##              2               2   288.0000          NA
+##              3               1   384.0000    2.828427
+##              3               2   346.6667   15.491933
+##              3               3   195.4000    7.300685
+##              3               4   159.5000   10.606602
 ## 
 ## Chance of each subpopulation rejected
 ## 
 ## 
 ##  group   count   proportion
 ## ------  ------  -----------
-##      1       6         0.12
-##      2       6         0.12
-##      3       6         0.12
-##      6      31         0.62
+##      1       3         0.06
+##      2      11         0.22
+##      3       5         0.10
+##      4       2         0.04
+##      6      27         0.54
 ## 
 ## Counts by futility stage and subgroup choice
 ## 
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    1    0    0    0    0
-##              2    1    0    0    0    0
-##              3    4    6    6    0    1
+##              1    1    2    0    0    1
+##              2    0    1    0    0    0
+##              3    2    9    5    2    0
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
 ## 
 ##  overall   rejection
 ## --------  ----------
-##     0.02           0
+##     0.04           0
 ## 
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##  coverage   selectedCount   rejectedCount
-## ---------  --------------  --------------
-##         0               6               6
-##         0               6               6
-##         0               6               6
-##         1               1               0
-##         0              31              31
+##   coverage   selectedCount   rejectedCount
+## ----------  --------------  --------------
+##  0.0000000               3               3
+##  0.0833333              12              11
+##  0.0000000               5               5
+##  0.0000000               2               2
+##  1.0000000               1               0
+##  0.0000000              27              27
 ## NULL</code></pre>
 </div>
 <div id="alternative-scenario-s10-1" class="section level3">
@@ -1951,34 +1945,34 @@ result &lt;-<span class="st"> </span>designA<span class="op">$</span><span class
 analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span class="kw">analyze</span>(result)
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(designA<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(analysis))</code></pre></div>
 <pre><code>## P(Reject H0_ITT) = 0.280000; P(Reject H0_subgp) = 0.020000; P(Reject H0) = 0.300000
-## P(Early stop for efficacy [futility]) = 0.180000 [0.120000]
-## Mean [SD] Randomized N = 460.000000 [67.005939]
+## P(Early stop for efficacy [futility]) = 0.260000 [0.280000]
+## Mean [SD] Randomized N = 420.000000 [83.299313]
 ## 
 ## Stage at exit (proportion)
 ## 
 ## 
 ##  exitStage   proportion
 ## ----------  -----------
-##          1          0.1
-##          2          0.2
-##          3          0.7
+##          1         0.26
+##          2         0.28
+##          3         0.46
 ## 
-## Mean [SD] Lost N = 127.660000 [126.674677]
-## Mean [SD] Analyzed N = 332.340000 [122.026864]
+## Mean [SD] Lost N = 105.280000 [101.708876]
+## Mean [SD] Analyzed N = 314.720000 [98.752430]
 ## 
 ## Mean loss by futility stage and subgroup
 ## 
 ## 
-##  FutilityStage   selectedGroup     mean          sd
-## --------------  --------------  -------  ----------
-##              1               1   240.00    3.741657
-##              2               4   123.00          NA
-##              2               5    87.00          NA
-##              3               1   403.80   13.065221
-##              3               2   349.00    5.656854
-##              3               3   211.00          NA
-##              3               4   153.00    7.071068
-##              3               5    98.95    7.917170
+##  FutilityStage   selectedGroup       mean          sd
+## --------------  --------------  ---------  ----------
+##              1               1   237.0000    5.244044
+##              1               2   215.0000    8.869423
+##              1               5    56.5000    7.148426
+##              2               1   325.0000          NA
+##              2               5    84.0000          NA
+##              3               1   400.0000          NA
+##              3               2   359.0000          NA
+##              3               5   100.7059   10.042190
 ## 
 ## Chance of each subpopulation rejected
 ## 
@@ -1993,9 +1987,9 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## 
 ##  FutilityStage   G1   G2   G3   G4   G5
 ## --------------  ---  ---  ---  ---  ---
-##              1    4    0    0    0    0
-##              2    0    0    0    1    1
-##              3    5    2    1    2   20
+##              1    5    4    0    0    6
+##              2    1    0    0    0    1
+##              3    1    1    0    0   17
 ## 
 ## CI Statistics:
 ## Overall coverage and coverage for rejections:
@@ -2007,14 +2001,12 @@ analysis &lt;-<span class="st"> </span>designA<span class="op">$</span><span cla
 ## P(theta_test is in the confidence interval)
 ## 
 ## 
-##  coverage   selectedCount   rejectedCount
-## ---------  --------------  --------------
-##  1.000000               9               0
-##  1.000000               2               0
-##  1.000000               1               0
-##  1.000000               3               0
-##  0.952381              21               1
-##  0.000000              14              14
+##   coverage   selectedCount   rejectedCount
+## ----------  --------------  --------------
+##  1.0000000               7               0
+##  1.0000000               5               0
+##  0.9583333              24               1
+##  0.0000000              14              14
 ## NULL</code></pre>
 </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adaptive Subgroup Selection in Group Sequential Trials • ASSISTant</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Adaptive Subgroup Selection in Group Sequential Trials">
@@ -21,7 +21,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-home">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -59,6 +59,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/Rankin.html">Using Discrete Rankin Scores</a>
+    </li>
+    <li>
       <a href="articles/defuse3.html">Design of the DEFUSE3 Trial</a>
     </li>
   </ul>
@@ -81,17 +84,18 @@
 
       
       </header><div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
+    
+
+    
+    
+<!-- README.md is generated from the source: README.Rmd -->
 <div id="assistant" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#assistant" class="anchor"></a>ASSISTant</h1></div>
+
 <p><code>ASSISTant</code> is a package to assist in performing <strong>A</strong>daptive <strong>S</strong>ubgroup <strong>S</strong>election <strong>I</strong>n <strong>S</strong>equential <strong>T</strong>rials.</p>
-<p>Install this package (after taking care of dependencies shown) the usual way in R once it gets on CRAN or via:</p>
-<pre class="{r}"><code><a href="https://www.rdocumentation.org/packages/base/topics/library">require("mvtnorm")
-require("R6")
-library(devtools)
-install_github("bnaras/ASSISTant")</a></code></pre>
-<p><code>ASSISTant</code> provides a three-stage adaptive group sequential clinical trial design with provision for selecting a subgroup where the treatment may be effective. The package provides facilities for design, exploration and analysis of such trials. A complete implementation of the initial design for the DEFUSE-3 trial is also provided as a vignette.</p>
+<p><code>ASSISTant</code> provides a three-stage adaptive group sequential clinical trial design with provision for selecting a subgroup where the treatment may be effective. The package provides facilities for design, exploration and analysis of such trials using either continuous or discrete outcomes. A complete implementation of the initial design for the DEFUSE-3 trial is also provided as a vignette.</p>
 </div>
   </div>
 
@@ -118,20 +122,30 @@ install_github("bnaras/ASSISTant")</a></code></pre>
 <ul class="list-unstyled">
 <li>
 <a href="https://profiles.stanford.edu/philip-lavori">Philip Lavori</a> <br><small class="roles"> Author </small>  </li>
+<li>Olivia Liao <br><small class="roles"> Author </small>  </li>
 <li>
-<a href="https://med.stanford.edu/profiles/tho-duc-pham">Olivia Liao</a> <br><small class="roles"> Author </small>  </li>
+<a href="https://web.stanford.edu/~naras">Balasubramanian Narasimhan</a> <br><small class="roles"> Author, maintainer </small>  </li>
 <li>
-<a href="https://statweb.stanford.edu/~naras">Balasubramanian Narasimhan</a> <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Ka Wai Tsang <br><small class="roles"> Author </small>  </li>
+<a href="http://sse.cuhk.edu.cn/en/content/1449">Ka Wai Tsang</a> <br><small class="roles"> Author </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
 
-  </div>
+      <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://travis-ci.org/bnaras/ASSISTant"><img src="https://travis-ci.org/bnaras/ASSISTant.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://cran.r-project.org/package=ASSISTant"><img src="http://www.r-pkg.org/badges/version/ASSISTant" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://CRAN.R-project.org/package=ASSISTant"><img src="https://cranlogs.r-pkg.org/badges/ASSISTant"></a></li>
+</ul>
+</div>
 </div>
 
+</div>
+
+
       <footer><div class="copyright">
-  <p>Developed by <a href="https://profiles.stanford.edu/philip-lavori">Philip Lavori</a>, <a href="https://med.stanford.edu/profiles/tho-duc-pham">Olivia Liao</a>, <a href="https://statweb.stanford.edu/~naras">Balasubramanian Narasimhan</a>, Ka Wai Tsang.</p>
+  <p>Developed by <a href="https://profiles.stanford.edu/philip-lavori">Philip Lavori</a>, Olivia Liao, <a href="https://web.stanford.edu/~naras">Balasubramanian Narasimhan</a>, <a href="http://sse.cuhk.edu.cn/en/content/1449">Ka Wai Tsang</a>.</p>
 </div>
 
 <div class="pkgdown">

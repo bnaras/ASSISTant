@@ -92,6 +92,9 @@ score rather than a normal distribution" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/Rankin.html">Using Discrete Rankin Scores</a>
+    </li>
+    <li>
       <a href="../articles/defuse3.html">Design of the DEFUSE3 Trial</a>
     </li>
   </ul>
@@ -183,36 +186,36 @@ score rather than a normal distribution</p>
 #&gt; 3         4   0     6
 #&gt; 4         2   0     2
 #&gt; 5         2   0     0
-#&gt; 6         3   0     6
+#&gt; 6         3   1     6
 #&gt; 7         3   0     1
 #&gt; 8         3   0     4
-#&gt; 9         4   0     5
+#&gt; 9         4   1     4
 #&gt; 10        1   1     5</div><div class='input'><span class='no'>trtDist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>bottom.heavy</span>, <span class='no'>bottom.heavy</span>, <span class='no'>top.heavy</span>, <span class='no'>top.heavy</span>)
 <span class='fu'>generateDiscreteData</span>(<span class='kw'>prevalence</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>, <span class='fl'>4</span>), <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>ctlDist</span> <span class='kw'>=</span> <span class='no'>ctlDist</span>,
                      <span class='kw'>trtDist</span> <span class='kw'>=</span> <span class='no'>trtDist</span>)</div><div class='output co'>#&gt;    subGroup trt score
 #&gt; 1         2   1     1
 #&gt; 2         2   0     3
 #&gt; 3         3   1     5
-#&gt; 4         4   1     6
-#&gt; 5         3   0     4
-#&gt; 6         3   1     3
+#&gt; 4         4   0     4
+#&gt; 5         3   1     6
+#&gt; 6         3   0     6
 #&gt; 7         4   1     4
 #&gt; 8         1   1     4
-#&gt; 9         2   1     2
-#&gt; 10        2   0     3</div><div class='input'><span class='no'>support</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>2</span>, -<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>) <span class='co'>## Support of distribution</span>
+#&gt; 9         2   0     1
+#&gt; 10        2   1     0</div><div class='input'><span class='no'>support</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(-<span class='fl'>2</span>, -<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>) <span class='co'>## Support of distribution</span>
 <span class='no'>top.loaded</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>3</span>) <span class='co'>## Top is heavier</span>
 <span class='no'>ctl.dist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>) <span class='co'>## null on 5 support points</span>
 <span class='no'>trt.dist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>ctl.dist</span>, <span class='no'>ctl.dist</span>, <span class='no'>top.loaded</span>) <span class='co'>## 3 groups</span>
 <span class='fu'>generateDiscreteData</span>(<span class='kw'>prevalence</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>, <span class='fl'>3</span>), <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>support</span> <span class='kw'>=</span> <span class='no'>support</span>,
                      <span class='kw'>ctlDist</span> <span class='kw'>=</span> <span class='no'>ctl.dist</span>, <span class='kw'>trtDist</span> <span class='kw'>=</span> <span class='no'>trt.dist</span>)</div><div class='output co'>#&gt;    subGroup trt score
-#&gt; 1         1   0     1
-#&gt; 2         2   0     2
-#&gt; 3         3   0     0
+#&gt; 1         1   1     1
+#&gt; 2         2   1     2
+#&gt; 3         3   1     2
 #&gt; 4         3   0     0
-#&gt; 5         3   0     1
+#&gt; 5         3   1     1
 #&gt; 6         2   0    -2
-#&gt; 7         1   0     1
-#&gt; 8         3   1     2
+#&gt; 7         1   1     1
+#&gt; 8         3   0     0
 #&gt; 9         3   1     0
 #&gt; 10        2   0    -1</div></pre>
   </div>
