@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the three modified Haybittle-Peto boundaries — computeMHPBoundaries • ASSISTant</title>
+<title>Changelog • ASSISTant</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,7 @@
 
 
 
-<meta property="og:title" content="Compute the three modified Haybittle-Peto boundaries — computeMHPBoundaries" />
-
-<meta property="og:description" content="Compute the three modified Haybittle-Peto boundaries" />
-<meta name="twitter:card" content="summary" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -50,7 +47,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -120,79 +117,91 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the three modified Haybittle-Peto boundaries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/bnaras/ASSISTant/blob/master/R/utilities.R'><code>R/utilities.R</code></a></small>
-    <div class="hidden name"><code>computeMHPBoundaries.Rd</code></div>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/bnaras/ASSISTant/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    
-    <p>Compute the three modified Haybittle-Peto boundaries</p>
-    
-    </div>
-
-    <pre class="usage"><span class='fu'>computeMHPBoundaries</span>(<span class='no'>prevalence</span>, <span class='no'>N</span>, <span class='no'>alpha</span>, <span class='no'>beta</span>, <span class='no'>eps</span>,
-  <span class='kw'>futilityOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>prevalence</th>
-      <td><p>the vector of prevalences between 0 and 1 summing
-to 1. \(J\), the number of groups, is implicitly the length
-of this vector and should be at least 2.</p></td>
-    </tr>
-    <tr>
-      <th>N</th>
-      <td><p>a three-vector of total sample size at each stage</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>the type I error</p></td>
-    </tr>
-    <tr>
-      <th>beta</th>
-      <td><p>the type II error</p></td>
-    </tr>
-    <tr>
-      <th>eps</th>
-      <td><p>the fraction (between 0 and 1) of the type 1 error to
-spend in the interim stages 1 and 2</p></td>
-    </tr>
-    <tr>
-      <th>futilityOnly</th>
-      <td><p>a logical value indicating only the futility
-boundary is to be computed; default <code>FALSE</code></p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a named vector of three values containing
-\(\tilde{b}\), b, c</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Adaptive Choice of Patient Subgroup for Comparing Two
-Treatments by Tze Leung Lai and Philip W. Lavori and Olivia
-Yueh-Wen Liao. Contemporary Clinical Trials, Vol. 39, No. 2, pp
-191-200
-(2014). <a href='http://www.sciencedirect.com/science/article/pii/S1551714414001311'>http://www.sciencedirect.com/science/article/pii/S1551714414001311</a></p>
-    
-
+    <div id="assistant-1-4-2" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-4-2" class="anchor"></a>ASSISTant 1.4-2<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added Rankin Score vignette</li>
+<li>Generated pkgdown docs</li>
+</ul>
+</div>
+    <div id="assistant-1-4-1" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-4-1" class="anchor"></a>ASSISTant 1.4-1<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed typo in <code>setBoundaries()</code>
+</li>
+<li>Updated discrete Rankin score parts</li>
+</ul>
+</div>
+    <div id="assistant-1-4" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-4" class="anchor"></a>ASSISTant 1.4<small> Unreleased </small>
+</h1>
+<ul>
+<li>Wilcoxon fix for Discrete Data</li>
+<li>Added discrete data simulation capability</li>
+</ul>
+</div>
+    <div id="assistant-1-3" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-3" class="anchor"></a>ASSISTant 1.3<small> Unreleased </small>
+</h1>
+<ul>
+<li>Fixed up boundary calculation bugs</li>
+<li>Added computation of stage statistics</li>
+<li>Added confidence intervals per Ka Wai Tsang</li>
+</ul>
+</div>
+    <div id="assistant-1-2-2" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-2-2" class="anchor"></a>ASSISTant 1.2-2<small> 2016-05-02 </small>
+</h1>
+<ul>
+<li>First CRAN submission</li>
+</ul>
+</div>
+    <div id="assistant-1-2" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-2" class="anchor"></a>ASSISTant 1.2<small> Unreleased </small>
+</h1>
+<ul>
+<li>Added power calculations</li>
+<li>Added more vignettes</li>
+<li>Fixed typos</li>
+</ul>
+</div>
+    <div id="assistant-1-0" class="section level1">
+<h1 class="page-header">
+<a href="#assistant-1-0" class="anchor"></a>ASSISTant 1.0<small> Unreleased </small>
+</h1>
+<ul>
+<li>Initial package for testing</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-          </ul>
-
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#assistant-1-4-2">1.4-2</a></li>
+        <li><a href="#assistant-1-4-1">1.4-1</a></li>
+        <li><a href="#assistant-1-4">1.4</a></li>
+        <li><a href="#assistant-1-3">1.3</a></li>
+        <li><a href="#assistant-1-2-2">1.2-2</a></li>
+        <li><a href="#assistant-1-2">1.2</a></li>
+        <li><a href="#assistant-1-0">1.0</a></li>
+      </ul>
+    </div>
   </div>
+
 </div>
 
       <footer>
