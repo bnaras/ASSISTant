@@ -77,10 +77,11 @@ ASSISTDesign <-
                     if (!identical(order(trialParameters$N), seq_along(trialParameters$N))) {
                         stop("Improper values for sample sizes; need increasing sequence")
                     }
-                    if (!scalarInRange(designParameters$J, low = 2, high = 10)) {
+                    prevalence <- designParameters$prevalence
+                    J <- length(prevalence)
+                    if (!scalarInRange(J, low = 2, high = 10)) {
                         stop("Improper number of subgroups; need at least 2; max 10")
                     }
-
                     if (!scalarInRange(trialParameters$type1Error, low=0.0001, 0.2)) {
                         stop("Improper type 1 error")
                     }
@@ -90,15 +91,25 @@ ASSISTDesign <-
                     if (!scalarInRange(trialParameters$eps, low=1e-5, high = 1 - 1e-5)) {
                         stop("Improper epsilon specified")
                     }
-                    if (any(designParameters$prevalence <= 0)) {
+                    if (any(prevalence <= 0)) {
                         stop("Improper prevalence specified")
                     }
-                    J = designParameters$J
                     if (discreteData) {
-                        K <- length(designParameters$distSupport)
+                        support <- designParameters$distSupport
+                        ## Assume Rankin is 0:6 unless specified in designParameters
+                        if (is.null(support)) {
+                            support <- 0L:6L
+                        }
+                        K <- length(support)
                         ctlDist <- designParameters$ctlDist
-                        if ((length(ctlDist) != K) || any(ctlDist < 0)) {
-                            stop(sprintf("Improper ctlDist; need a %d-length probability vector for Rankin scores", K))
+                        if (!is.matrix(ctlDist)) {
+                            if ((length(ctlDist) != K) || any(ctlDist < 0)) {
+                                stop(sprintf("Improper ctlDist; need a %d-length probability vector for Rankin scores", K))
+                            }
+                        } else {
+                            if ((nrow(ctlDist) != K) || (ncol(ctlDist) != J) || any(ctlDist < 0)) {
+                                stop(sprintf("Improper ctlDist; need a %d x %d matrix, with each column a probability vector", K, J))
+                            }
                         }
                         trtDist <- designParameters$trtDist
                         if ((nrow(trtDist) != K) || (ncol(trtDist) != J) || any(trtDist < 0)) {
@@ -204,44 +215,17 @@ ASSISTDesign <-
             ),
             public = list(
                 initialize = function(designParameters, trialParameters, discreteData = FALSE, boundaries) {
-                    ##browser()
-                    prevalence <- designParameters$prevalence
-                    designParameters$J <- J <- length(prevalence)
-                    ## Assume Rankin is 0:6 unless specified in designParameters
-                    support <- designParameters$distSupport
-                    if (is.null(support)) {
-                        support <- designParameters$distSupport <- 0L:6L
-                    }
-
-                    ## Check and fix parameters
+                    ## Check parameters
                     private$checkParameters(designParameters, trialParameters, discreteData)
+                    private$discreteData <- discreteData
+                    ## Conform parameters
+                    private$designParameters  <- conformParameters(designParameters, discreteData)
                     trialParameters$effectSize <- (qnorm(1 - trialParameters$type1Error) +
                                                    qnorm(1 - trialParameters$type2Error)) /
                         sqrt(3 * trialParameters$N[3])
-                    prevalence <- prevalence / sum(prevalence)
-                    if (discreteData) {
-                        ctlDist <- designParameters$ctlDist
-                        ctlDist <- ctlDist / sum(ctlDist)
-                        names(ctlDist) <- support
-                        designParameters$ctlDist <- ctlDist
-                        trtDist <- designParameters$trtDist
-                        trtDist <- apply(trtDist, 2, function(x) x/sum(x))
-                        rownames(trtDist) <- support
-                        colnames(trtDist) <- paste0("Group", seq_len(J))
-                        designParameters$trtDist <- trtDist
-                    } else {
-                        mean <- designParameters$mean
-                        sd <- designParameters$sd
-                        rownames(mean) <- rownames(sd) <- c("Null", "Alt")
-                        colnames(mean) <- colnames(sd) <- paste0("Group", seq_len(J))
-                        designParameters$mean <- mean
-                        designParameters$sd <- sd
-                    }
-                    names(prevalence) <- paste0("Group", seq_len(J))
-                    designParameters$prevalence <- prevalence
-                    private$designParameters <- designParameters
+
                     private$trialParameters <- trialParameters
-                    private$discreteData <- discreteData
+
                     if (missing(boundaries)) {
                         private$boundaries <- self$computeCriticalValues()
                     } else {
@@ -269,12 +253,10 @@ ASSISTDesign <-
                     if (private$discreteData) {
                         support <- designParameters$distSupport
                         cat(" Null Rankin Distribution:")
-                        ctlDist <- matrix(designParameters$ctlDist, ncol = 1)
-                        rownames(ctlDist) <- support
-                        colnames(ctlDist) <- "Prob."
-                        print(knitr::kable(ctlDist))
-                        stats <- computeMeanAndSD(ctlDist[, 1], support = support)
-                        cat(sprintf("\ Null Distribution Mean: %f, SD: %f\n\n", stats["mean"], stats["sd"]))
+                        print(knitr::kable(designParameters$ctlDist))
+                        cat(" Null Mean and SD")
+                        print(knitr::kable(apply(designParameters$ctlDist, 2,
+                                                 computeMeanAndSD, support = support)))
                         cat(" Alternative Rankin Distribution:\n")
                         print(knitr::kable(designParameters$trtDist))
                         cat(" Alternative Mean and SD")
@@ -321,12 +303,9 @@ ASSISTDesign <-
                     ## SOME CHECKS needed here when trueParameters is provided
                     ## for conformity
                     trialParameters <- private$trialParameters
-                    J <- length(trueParameters$prevalence)
-                    if (is.null(trueParameters$J)) {
-                        trueParameters$J <- J
-                    }
-
-                    support <- private$designParameters$distSupport
+                    trueParameters  <- conformParameters(trueParameters, private$discreteData)
+                    J  <- trueParameters$J
+                    support <- trueParameters$distSupport
                     glrBoundary <- private$boundaries
                     prevalence <- trueParameters$prevalence
 
@@ -873,13 +852,14 @@ ASSISTDesignB <-
 
                     trialParameters <- private$trialParameters
 
-                    if (is.null(trueParameters$J)) {
-                        trueParameters$J <- length(trueParameters$prevalence)
-                    }
+                    ## SOME CHECKS needed here when trueParameters is provided
+                    ## for conformity
+                    trueParameters  <- conformParameters(trueParameters, private$discreteData)
+                    support <- trueParameters$distSupport
                     J <- trueParameters$J
 
                     glrBoundary <- private$boundaries
-                    support <- private$designParameters$distSupport
+                    support <- trueParameters$distSupport
 
                     naVec <- rep(NA, numberOfSimulations)
                     zeroVec <- integer(numberOfSimulations)
@@ -1050,13 +1030,11 @@ ASSISTDesignC <-
                     ## set our seed
                     set.seed(seed = rngSeed, normal.kind = NULL)
                     trialParameters <- private$trialParameters
-
-                    if (is.null(trueParameters$J)) {
-                        trueParameters$J <- length(trueParameters$prevalence)
-                    }
+                    trueParameters  <- conformParameters(trueParameters, private$discreteData)
                     J <- trueParameters$J
+
                     glrBoundary <- private$boundaries
-                    support <- private$designParameters$distSupport
+                    support <- trueParameters$distSupport
 
                     naVec <- rep(NA, numberOfSimulations)
                     zeroVec <- integer(numberOfSimulations)
