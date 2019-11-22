@@ -676,15 +676,22 @@ colNamesForStage <- function(stage, J) {
 #' trt.dist <- cbind(ctl.dist, ctl.dist, top.loaded) ## 3 groups
 #' generateDiscreteData(prevalence = rep(1, 3), N = 10, support = support,
 #'                      ctlDist = ctl.dist, trtDist = trt.dist)
+#' ## ctl.dist can also be a matrix with different nulls for each subgroup
+#' uniform <- rep(1, 5)
+#' bot.loaded <- c(3, 3, 1, 1, 1)
+#' ctl.dist <- matrix(c(uniform, bot.loaded, top.loaded), nrow = 5)
+#' generateDiscreteData(prevalence = rep(1, 3), N = 10, support = support,
+#'                      ctlDist = ctl.dist, trtDist = trt.dist)
 #' @export
 #' @md
 generateDiscreteData <- function(prevalence, N, support = 0L:6L, ctlDist, trtDist) {
     nR <- length(support)
-    stopifnot(length(ctlDist) == nR && nrow(trtDist) == nR)
     J <- length(prevalence)
-    stopifnot(J == ncol(trtDist))
-    null <- sapply(seq_len(J), function(x) ctlDist)
-    dists <- cbind(null, trtDist)
+
+    if(nrow(ctlDist) != nR || nrow(trtDist) != nR || ncol(trtDist) != J) {
+        stop("generateDiscreteData: wrong dimensions for trtDist")
+    }
+    dists <- cbind(ctlDist[, seq_len(J)], trtDist)
 
     if (N == 0) {
         data.frame(subGroup = integer(0), trt = integer(0),
@@ -742,4 +749,49 @@ computeMeanAndSD <- function(probVec = rep(1, 7L), support = 0L:6L) {
     mean <- sum(support * probVec)
     sd <- sqrt(sum(probVec * support^2) - mean^2)
     c(mean = mean, sd = sd)
+}
+
+
+#' Conform designParameters so that weights are turned in to probabilities, the null and control distributions are proper matrices etc.
+#' @param plist the parameter list
+#' @param discreteData flag if data is discrete
+#' @return the modified parameter list
+conformParameters  <- function(plist, discreteData = FALSE) {
+    prevalence  <- plist$prevalence
+    J  <- length(prevalence)
+    plist$J <- J
+    prevalence <- prevalence / sum(prevalence)
+    names(prevalence) <- paste0("Group", seq_len(J))
+    plist$prevalence <- prevalence
+    if (discreteData) {
+        support <- plist$distSupport
+        ## Assume Rankin is 0:6 unless specified in designParameters
+        if (is.null(support)) {
+            support <- 0L:6L
+        }
+        plist$distSupport  <- support
+
+        ctlDist <- plist$ctlDist
+        if (!is.matrix(ctlDist)) {
+            ctlDist  <- matrix(c(rep(ctlDist, J)), ncol = J)
+        }
+        ctlDist <- apply(ctlDist, 2, function(x) x/sum(x))
+        rownames(ctlDist) <- support
+        colnames(ctlDist)  <- names(prevalence)
+        plist$ctlDist <- ctlDist
+
+        trtDist <- plist$trtDist
+        trtDist <- apply(trtDist, 2, function(x) x/sum(x))
+        rownames(trtDist) <- support
+        colnames(trtDist) <- names(prevalence)
+        plist$trtDist <- trtDist
+    } else {
+        mean <- plist$mean
+        sd <- plist$sd
+        rownames(mean) <- rownames(sd) <- c("Null", "Alt")
+        colnames(mean) <- colnames(sd) <- names(prevalence)
+        plist$mean <- mean
+        plist$sd <- sd
+    }
+    plist
 }
